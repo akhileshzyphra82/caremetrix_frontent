@@ -381,10 +381,6 @@ body {
 }
 
 .module-strip {
-  margin-bottom: 16px;
-}
-
-.module-strip {
   display: grid;
   gap: 10px;
   margin-bottom: 16px;
@@ -2073,10 +2069,6 @@ label {
     padding: 20px;
   }
 
-  .dashboard-columns {
-    grid-template-columns: 1fr;
-  }
-
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -2091,6 +2083,19 @@ label {
 
   .app[data-sidebar="expanded"] {
     grid-template-columns: 240px 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .toast {
+    right: 16px;
+    bottom: 92px;
+    max-width: calc(100vw - 32px);
+  }
+
+  .chatbot {
+    right: 16px;
+    bottom: 16px;
   }
 }
 

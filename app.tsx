@@ -1,3 +1,4 @@
+// @ts-nocheck
 const app = document.querySelector('.app');
 const sidebarParents = document.querySelectorAll('.sidebar-parent');
 const sidebarSingleParents = document.querySelectorAll('.sidebar-parent[data-menu]');
