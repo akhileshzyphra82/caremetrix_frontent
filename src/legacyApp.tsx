@@ -1,5 +1,7 @@
 // @ts-nocheck
-export function initLegacyApp() {
+import { fetchMockApiResponse } from './mockApiResponse';
+
+export async function initLegacyApp() {
   if (window.__caremetrixLegacyInitialized) return;
   window.__caremetrixLegacyInitialized = true;
 
@@ -33,104 +35,16 @@ export function initLegacyApp() {
   let activeRow = null;
   let lastFocusedElement = null;
   
-  const statusStyles = {
-    Active: 'badge--teal',
-    Inactive: 'badge--gray',
-    Resolved: 'badge--teal',
-    Investigating: 'badge--blue'
+  const mockApiData = {
+    dashboard: { details: {} },
+    records: { statusStyles: {}, priorityStyles: {} },
+    chatbot: { replies: {}, defaultReply: '' },
+    sidebar: { modules: [] },
+    userProfile: {}
   };
-  
-  const priorityStyles = {
-    High: 'priority--high',
-    Medium: 'priority--medium',
-    Low: 'priority--low'
-  };
-  
-  const dashboardDetails = {
-    operations: {
-      title: 'Operational Queue',
-      subtitle: 'Expanded operational snapshot for today.',
-      metrics: [
-        { label: 'Shifts Today', value: '86', note: '18 sites' },
-        { label: 'Coverage Gaps', value: '3', note: 'Immediate fill' },
-        { label: 'Late Clock-ins', value: '6', note: 'Last 24 hrs' },
-        { label: 'Escalations', value: '2', note: 'Clinical alerts' }
-      ],
-      list: [
-        { badge: 'On Track', badgeClass: 'badge--teal', text: '83 shifts confirmed' },
-        { badge: 'At Risk', badgeClass: 'badge--blue', text: '3 gaps across North Hub' },
-        { badge: 'Pending', badgeClass: 'badge--gray', text: '4 shift swaps awaiting approval' }
-      ]
-    },
-    funding: {
-      title: 'Funding & Claims',
-      subtitle: 'NDIS billing health and claim throughput.',
-      metrics: [
-        { label: 'Claims Submitted', value: '72', note: 'Awaiting payment' },
-        { label: 'Claims Paid', value: '118', note: 'This month' },
-        { label: 'Rejected', value: '6', note: 'Needs review' },
-        { label: 'Avg Payment Time', value: '4.2d', note: 'Rolling 30 days' }
-      ],
-      list: [
-        { badge: 'NDIA', badgeClass: 'badge--teal', text: '62% managed funding mix' },
-        { badge: 'Plan', badgeClass: 'badge--blue', text: '28% plan-managed participants' },
-        { badge: 'Self', badgeClass: 'badge--gray', text: '10% self-managed participants' }
-      ]
-    },
-    compliance: {
-      title: 'Compliance & Risk',
-      subtitle: 'Incident monitoring and WHS readiness.',
-      metrics: [
-        { label: 'Open Incidents', value: '6', note: '2 critical' },
-        { label: 'WHS Actions', value: '2', note: 'Overdue' },
-        { label: 'Audit Reviews', value: '4', note: 'Due this month' },
-        { label: 'Training Expiry', value: '9', note: 'Next 30 days' }
-      ],
-      list: [
-        { badge: 'Investigating', badgeClass: 'badge--blue', text: 'Medication delay report - 3 days' },
-        { badge: 'Resolved', badgeClass: 'badge--teal', text: '8 incidents closed this month' },
-        { badge: 'WHS', badgeClass: 'badge--gray', text: '2 actions awaiting sign-off' }
-      ]
-    },
-    approvals: {
-      title: 'Approvals & Tasks',
-      subtitle: 'Items awaiting superadmin review.',
-      metrics: [
-        { label: 'Plan Reviews', value: '12', note: 'Due in 14 days' },
-        { label: 'Agreement Renewals', value: '8', note: 'Pending signatures' },
-        { label: 'Access Requests', value: '5', note: 'Awaiting approval' },
-        { label: 'Audit Exports', value: '3', note: 'Compliance review' }
-      ],
-      list: [
-        { badge: 'High', badgeClass: 'badge--teal', text: '3 urgent plan renewals' },
-        { badge: 'Standard', badgeClass: 'badge--blue', text: '8 agreements awaiting signatures' },
-        { badge: 'Info', badgeClass: 'badge--gray', text: '3 audit exports requested' }
-      ]
-    },
-    quality: {
-      title: 'Service Quality Pulse',
-      subtitle: 'Participant feedback, complaints, and outcomes.',
-      metrics: [
-        { label: 'Feedback Score', value: '4.6/5', note: 'Last 30 days' },
-        { label: 'Open Complaints', value: '2', note: 'Pending review' },
-        { label: 'Follow-ups Due', value: '7', note: 'Next 14 days' },
-        { label: 'Positive Notes', value: '14', note: 'This week' }
-      ],
-      list: [
-        { badge: 'Feedback', badgeClass: 'badge--teal', text: '92% satisfaction rate' },
-        { badge: 'Complaints', badgeClass: 'badge--blue', text: '2 active investigations' },
-        { badge: 'Recognition', badgeClass: 'badge--gray', text: '14 positive notes logged' }
-      ]
-    }
-  };
-  
-  const chatbotReplies = {
-    'Show coverage gaps for today': 'There are 3 coverage gaps across today’s roster. Two are in North Hub and one in Central Clinic.',
-    'Which plans are expiring soon?': '18 participant plans are expiring within 30 days. 6 of those require priority review this week.',
-    'Open incidents needing review': 'There are 3 incidents under investigation and 2 WHS actions overdue.',
-    'Summarize claims status': '72 claims submitted, 118 paid this month, and 6 rejected requiring review.'
-  };
-  
+
+  const statusStyles = mockApiData.records.statusStyles;
+  const priorityStyles = mockApiData.records.priorityStyles;
   const toasts = {
     show(message) {
       if (!toast) return;
@@ -142,6 +56,101 @@ export function initLegacyApp() {
   };
   
   const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  function applyProfileData() {
+    const { name, role, avatar } = mockApiData.userProfile || {};
+    if (!name) return;
+
+    const profileNames = document.querySelectorAll('.profile-trigger__name, .profile-dropdown__name');
+    profileNames.forEach(node => {
+      node.textContent = name;
+    });
+
+    const roleNode = document.querySelector('.profile-dropdown__role');
+    if (roleNode && role) roleNode.textContent = role;
+
+    const avatarNodes = document.querySelectorAll('.profile-trigger__avatar, .profile-dropdown__avatar');
+    avatarNodes.forEach(node => {
+      if (avatar) {
+        node.setAttribute('src', avatar);
+        node.setAttribute('alt', `${name} avatar`);
+      }
+    });
+  }
+
+  function applySidebarData() {
+    const moduleMap = new Map((mockApiData.sidebar.modules || []).map(module => [module.key, module]));
+
+    document.querySelectorAll('.sidebar-parent').forEach(parent => {
+      const key = parent.dataset.parent || parent.dataset.menu;
+      const module = moduleMap.get(key);
+      if (!module) return;
+
+      const label = parent.querySelector('.sidebar-parent__text');
+      if (label && module.label) label.textContent = module.label;
+      if (module.title) parent.setAttribute('title', module.title);
+    });
+
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      const parentKey = item.dataset.parent;
+      const module = moduleMap.get(parentKey);
+      if (!module?.children?.length) return;
+
+      const child = module.children.find(entry => entry.key === item.dataset.menu);
+      if (!child) return;
+
+      const label = item.querySelector('.sidebar-item__text');
+      if (label && child.label) label.textContent = child.label;
+      if (child.title) item.setAttribute('title', child.title);
+    });
+  }
+
+  function applyDashboardCardData() {
+    const cards = mockApiData.dashboard.cards || [];
+    const cardButtons = document.querySelectorAll('[data-action="open-dashboard-detail"]');
+
+    cardButtons.forEach((button, index) => {
+      const cardData = cards[index];
+      if (!cardData) return;
+
+      const detailKey = cardData.detailKey || button.dataset.detail;
+      if (detailKey) button.dataset.detail = detailKey;
+
+      const label = button.querySelector('p');
+      const value = button.querySelector('h3');
+      const note = button.querySelector('.muted, span:not([class]), p:last-child');
+
+      if (label && cardData.label) label.textContent = cardData.label;
+      if (value && cardData.value) value.textContent = cardData.value;
+      if (note && cardData.note) note.textContent = cardData.note;
+    });
+  }
+
+  async function hydrateFromMockApi() {
+    const response = await fetchMockApiResponse();
+    Object.assign(mockApiData, response);
+
+    mockApiData.dashboard = response.dashboard || { details: {} };
+    mockApiData.records = response.records || { statusStyles: {}, priorityStyles: {} };
+    mockApiData.chatbot = response.chatbot || { replies: {}, defaultReply: '' };
+    mockApiData.sidebar = response.sidebar || { modules: [] };
+    mockApiData.userProfile = response.userProfile || {};
+
+    Object.keys(statusStyles).forEach(key => delete statusStyles[key]);
+    Object.assign(statusStyles, mockApiData.records.statusStyles || {});
+
+    Object.keys(priorityStyles).forEach(key => delete priorityStyles[key]);
+    Object.assign(priorityStyles, mockApiData.records.priorityStyles || {});
+
+    applyProfileData();
+    applySidebarData();
+    applyDashboardCardData();
+
+    if (mockApiData.sidebar.mainMenu) {
+      activeMenu = mockApiData.sidebar.mainMenu;
+    }
+  }
+
   
   function trapFocus(modal) {
     const focusable = Array.from(modal.querySelectorAll(focusableSelector));
@@ -225,7 +234,7 @@ export function initLegacyApp() {
   function handleChatQuestion(text) {
     if (!text) return;
     addChatMessage(text, 'user');
-    const reply = chatbotReplies[text] || 'Thanks for the question. I can prepare a detailed snapshot once data refresh completes.';
+    const reply = mockApiData.chatbot.replies[text] || mockApiData.chatbot.defaultReply;
     setTimeout(() => addChatMessage(reply, 'assistant'), 250);
   }
   
@@ -294,7 +303,7 @@ export function initLegacyApp() {
   
   function populateDashboardDetail(key) {
     if (!dashboardModal) return;
-    const detail = dashboardDetails[key] || dashboardDetails.operations;
+    const detail = mockApiData.dashboard.details[key] || mockApiData.dashboard.details.operations;
     if (dashboardModalTitle) dashboardModalTitle.textContent = detail.title;
     if (dashboardModalSubtitle) dashboardModalSubtitle.textContent = detail.subtitle;
     if (dashboardModalMetrics) {
@@ -662,6 +671,7 @@ export function initLegacyApp() {
     }
   });
   
+  await hydrateFromMockApi();
   setActiveMenu(activeMenu);
   updateEmptyState();
   setGreeting();

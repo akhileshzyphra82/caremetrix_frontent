@@ -4,7 +4,7 @@ import { initLegacyApp } from './legacyApp';
 
 function App() {
   useEffect(() => {
-    initLegacyApp();
+    void initLegacyApp();
   }, []);
 
   return <div dangerouslySetInnerHTML={{ __html: legacyMarkup }} />;
