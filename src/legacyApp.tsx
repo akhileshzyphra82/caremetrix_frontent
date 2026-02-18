@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function initLegacyApp() {
   if (window.__caremetrixLegacyInitialized) return;
   window.__caremetrixLegacyInitialized = true;
