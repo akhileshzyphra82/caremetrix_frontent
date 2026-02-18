@@ -3,6 +3,21 @@ import { fetchDummyApiResponse, type DashboardDetail, type DummyApiResponse } fr
 
 const fallbackBadgeClass = 'badge--gray';
 
+const statIcons = [
+  {
+    className: 'stat-card__icon--operations',
+    path: 'M4 5h16v3H4V5zm0 5h10v3H4v-3zm0 5h16v3H4v-3zm12-5h4v3h-4v-3z'
+  },
+  {
+    className: 'stat-card__icon--alerts',
+    path: 'M12 3l9 16H3L12 3zm0 5.5a1 1 0 00-1 1V13a1 1 0 002 0V9.5a1 1 0 00-1-1zm0 8a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z'
+  },
+  {
+    className: 'stat-card__icon--schedule',
+    path: 'M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm11 8H6v10h12V10zm-9 2h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2z'
+  }
+] as const;
+
 function getStatusBadgeClass(status: string) {
   const normalized = status.toLowerCase();
   if (normalized.includes('active') || normalized.includes('resolved')) return 'badge--teal';
@@ -67,7 +82,11 @@ export default function DashboardPage() {
             key={metric.label}
             className={`stat-card ${index === 0 ? 'stat-card--mint' : index === 1 ? 'stat-card--sky' : 'stat-card--lavender'}`}
           >
-            <div className="stat-card__icon" />
+            <div className={`stat-card__icon ${statIcons[index]?.className ?? ''}`}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d={statIcons[index]?.path ?? statIcons[0].path} />
+              </svg>
+            </div>
             <div>
               <p>{metric.label}</p>
               <h3>{metric.value}</h3>
