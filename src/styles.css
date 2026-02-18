@@ -56,7 +56,7 @@ body {
   margin-top: 0.25rem;
 }
 
-.sidebar button {
+.sidebar a {
   width: 100%;
   text-align: left;
   border: 0;
@@ -67,8 +67,8 @@ body {
   cursor: pointer;
 }
 
-.sidebar button:hover,
-.sidebar button.active {
+.sidebar a:hover,
+.sidebar a.active {
   background: #1e293b;
   color: #f8fafc;
 }
