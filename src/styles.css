@@ -700,6 +700,13 @@ body {
   align-items: center;
   gap: 14px;
   box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(var(--accent-2-rgb), 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-grid--compact .stat-card {
@@ -755,10 +762,26 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: var(--surface-soft);
-  color: var(--accent-1);
+  background: linear-gradient(135deg, rgba(var(--accent-1-rgb), 0.15), rgba(var(--accent-2-rgb), 0.2));
+  color: var(--accent-2);
   display: grid;
   place-items: center;
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-2-rgb), 0.16);
+}
+
+.stat-card__icon--operations {
+  background: linear-gradient(135deg, rgba(var(--accent-1-rgb), 0.18), rgba(var(--warning-rgb), 0.2));
+  color: #9f3f8f;
+}
+
+.stat-card__icon--alerts {
+  background: linear-gradient(135deg, rgba(var(--warning-rgb), 0.2), rgba(var(--danger-rgb), 0.2));
+  color: #c54c7d;
+}
+
+.stat-card__icon--schedule {
+  background: linear-gradient(135deg, rgba(var(--success-rgb), 0.2), rgba(var(--accent-2-rgb), 0.2));
+  color: #4b6fa6;
 }
 
 .stat-card__icon svg {
@@ -1287,6 +1310,13 @@ body {
   border-radius: var(--radius-md);
   padding: 14px;
   border: 1px solid var(--border);
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-2-rgb), 0.06);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.info-card:hover {
+  border-color: rgba(var(--accent-2-rgb), 0.24);
+  transform: translateY(-1px);
 }
 
 .info-grid--tight .info-card {
