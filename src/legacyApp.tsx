@@ -1,4 +1,6 @@
 // @ts-nocheck
+import { fetchDummyApiResponse } from './dummyApiResponse';
+
 export function initLegacyApp() {
   if (window.__caremetrixLegacyInitialized) return;
   window.__caremetrixLegacyInitialized = true;
@@ -46,90 +48,14 @@ export function initLegacyApp() {
     Low: 'priority--low'
   };
   
-  const dashboardDetails = {
-    operations: {
-      title: 'Operational Queue',
-      subtitle: 'Expanded operational snapshot for today.',
-      metrics: [
-        { label: 'Shifts Today', value: '86', note: '18 sites' },
-        { label: 'Coverage Gaps', value: '3', note: 'Immediate fill' },
-        { label: 'Late Clock-ins', value: '6', note: 'Last 24 hrs' },
-        { label: 'Escalations', value: '2', note: 'Clinical alerts' }
-      ],
-      list: [
-        { badge: 'On Track', badgeClass: 'badge--teal', text: '83 shifts confirmed' },
-        { badge: 'At Risk', badgeClass: 'badge--blue', text: '3 gaps across North Hub' },
-        { badge: 'Pending', badgeClass: 'badge--gray', text: '4 shift swaps awaiting approval' }
-      ]
-    },
-    funding: {
-      title: 'Funding & Claims',
-      subtitle: 'NDIS billing health and claim throughput.',
-      metrics: [
-        { label: 'Claims Submitted', value: '72', note: 'Awaiting payment' },
-        { label: 'Claims Paid', value: '118', note: 'This month' },
-        { label: 'Rejected', value: '6', note: 'Needs review' },
-        { label: 'Avg Payment Time', value: '4.2d', note: 'Rolling 30 days' }
-      ],
-      list: [
-        { badge: 'NDIA', badgeClass: 'badge--teal', text: '62% managed funding mix' },
-        { badge: 'Plan', badgeClass: 'badge--blue', text: '28% plan-managed participants' },
-        { badge: 'Self', badgeClass: 'badge--gray', text: '10% self-managed participants' }
-      ]
-    },
-    compliance: {
-      title: 'Compliance & Risk',
-      subtitle: 'Incident monitoring and WHS readiness.',
-      metrics: [
-        { label: 'Open Incidents', value: '6', note: '2 critical' },
-        { label: 'WHS Actions', value: '2', note: 'Overdue' },
-        { label: 'Audit Reviews', value: '4', note: 'Due this month' },
-        { label: 'Training Expiry', value: '9', note: 'Next 30 days' }
-      ],
-      list: [
-        { badge: 'Investigating', badgeClass: 'badge--blue', text: 'Medication delay report - 3 days' },
-        { badge: 'Resolved', badgeClass: 'badge--teal', text: '8 incidents closed this month' },
-        { badge: 'WHS', badgeClass: 'badge--gray', text: '2 actions awaiting sign-off' }
-      ]
-    },
-    approvals: {
-      title: 'Approvals & Tasks',
-      subtitle: 'Items awaiting superadmin review.',
-      metrics: [
-        { label: 'Plan Reviews', value: '12', note: 'Due in 14 days' },
-        { label: 'Agreement Renewals', value: '8', note: 'Pending signatures' },
-        { label: 'Access Requests', value: '5', note: 'Awaiting approval' },
-        { label: 'Audit Exports', value: '3', note: 'Compliance review' }
-      ],
-      list: [
-        { badge: 'High', badgeClass: 'badge--teal', text: '3 urgent plan renewals' },
-        { badge: 'Standard', badgeClass: 'badge--blue', text: '8 agreements awaiting signatures' },
-        { badge: 'Info', badgeClass: 'badge--gray', text: '3 audit exports requested' }
-      ]
-    },
-    quality: {
-      title: 'Service Quality Pulse',
-      subtitle: 'Participant feedback, complaints, and outcomes.',
-      metrics: [
-        { label: 'Feedback Score', value: '4.6/5', note: 'Last 30 days' },
-        { label: 'Open Complaints', value: '2', note: 'Pending review' },
-        { label: 'Follow-ups Due', value: '7', note: 'Next 14 days' },
-        { label: 'Positive Notes', value: '14', note: 'This week' }
-      ],
-      list: [
-        { badge: 'Feedback', badgeClass: 'badge--teal', text: '92% satisfaction rate' },
-        { badge: 'Complaints', badgeClass: 'badge--blue', text: '2 active investigations' },
-        { badge: 'Recognition', badgeClass: 'badge--gray', text: '14 positive notes logged' }
-      ]
-    }
+  const defaultDashboardDetail = {
+    title: 'Operational Queue',
+    subtitle: 'Expanded operational snapshot for today.',
+    metrics: [],
+    list: []
   };
-  
-  const chatbotReplies = {
-    'Show coverage gaps for today': 'There are 3 coverage gaps across today’s roster. Two are in North Hub and one in Central Clinic.',
-    'Which plans are expiring soon?': '18 participant plans are expiring within 30 days. 6 of those require priority review this week.',
-    'Open incidents needing review': 'There are 3 incidents under investigation and 2 WHS actions overdue.',
-    'Summarize claims status': '72 claims submitted, 118 paid this month, and 6 rejected requiring review.'
-  };
+  let dashboardDetails = {};
+  let chatbotReplies = {};
   
   const toasts = {
     show(message) {
@@ -240,6 +166,55 @@ export function initLegacyApp() {
     }
     greetingHeading.textContent = greeting;
   }
+
+  function hydrateProfile(profile) {
+    if (!profile) return;
+    document.querySelectorAll('.profile-trigger__avatar, .profile-dropdown__avatar').forEach(avatar => {
+      avatar.src = profile.avatar;
+      avatar.alt = `${profile.name} avatar`;
+    });
+    const profileTriggerName = document.querySelector('.profile-trigger__name');
+    const profileDropdownName = document.querySelector('.profile-dropdown__name');
+    const profileDropdownRole = document.querySelector('.profile-dropdown__role');
+    if (profileTriggerName) profileTriggerName.textContent = profile.name;
+    if (profileDropdownName) profileDropdownName.textContent = profile.name;
+    if (profileDropdownRole) profileDropdownRole.textContent = profile.role;
+  }
+
+  function hydrateSidebar(modules) {
+    if (!Array.isArray(modules)) return;
+    modules.forEach(module => {
+      const parent = document.querySelector(`.sidebar-parent[data-parent="${module.key}"], .sidebar-parent[data-menu="${module.key}"]`);
+      if (!parent) return;
+      const textEl = parent.querySelector('.sidebar-parent__text');
+      if (textEl) textEl.textContent = module.label;
+
+      const submenu = document.querySelector(`.sidebar-submenu[data-parent="${module.key}"]`);
+      if (!submenu) return;
+      const submenuButtons = Array.from(submenu.querySelectorAll('.sidebar-item'));
+      module.children.forEach((child, index) => {
+        const button = submenuButtons[index];
+        if (!button) return;
+        button.dataset.menu = child.menuId;
+        const buttonText = button.querySelector('.sidebar-item__text');
+        if (buttonText) buttonText.textContent = child.label;
+      });
+    });
+  }
+
+  function hydrateChatbotQuestions(questions) {
+    if (!Array.isArray(questions)) return;
+    const chatbotQuestionButtons = Array.from(document.querySelectorAll('[data-action="chatbot-question"]'));
+    chatbotQuestionButtons.forEach((button, index) => {
+      const question = questions[index];
+      if (!question) {
+        button.remove();
+        return;
+      }
+      button.dataset.question = question;
+      button.textContent = question;
+    });
+  }
   
   function updateEmptyState() {
     if (!tableBody || !emptyState) return;
@@ -255,6 +230,14 @@ export function initLegacyApp() {
         cell.textContent = String(index + 1).padStart(2, '0');
       }
     });
+  }
+
+  function hydrateDirectoryRows(records) {
+    if (!tableBody || !Array.isArray(records)) return;
+    tableBody.innerHTML = '';
+    records.forEach(record => tableBody.appendChild(createRow(record)));
+    renumberRows();
+    updateEmptyState();
   }
   
   function setBadge(badge, status) {
@@ -294,7 +277,7 @@ export function initLegacyApp() {
   
   function populateDashboardDetail(key) {
     if (!dashboardModal) return;
-    const detail = dashboardDetails[key] || dashboardDetails.operations;
+    const detail = dashboardDetails[key] || dashboardDetails.operations || defaultDashboardDetail;
     if (dashboardModalTitle) dashboardModalTitle.textContent = detail.title;
     if (dashboardModalSubtitle) dashboardModalSubtitle.textContent = detail.subtitle;
     if (dashboardModalMetrics) {
@@ -662,7 +645,17 @@ export function initLegacyApp() {
     }
   });
   
-  setActiveMenu(activeMenu);
-  updateEmptyState();
-  setGreeting();
+  fetchDummyApiResponse().then((response) => {
+    dashboardDetails = response.dashboardDetails || {};
+    chatbotReplies = response.chatbot?.replies || {};
+    hydrateProfile(response.userProfile);
+    hydrateSidebar(response.sidebarModules);
+    hydrateDirectoryRows(response.directoryRecords);
+    hydrateChatbotQuestions(response.chatbot?.questions || []);
+
+    setActiveMenu(activeMenu);
+    updateEmptyState();
+    setGreeting();
+    populateDashboardDetail('operations');
+  });
 }
