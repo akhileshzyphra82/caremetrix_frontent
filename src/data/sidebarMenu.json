@@ -1,0 +1,177 @@
+{
+  "modules": [
+    {
+      "moduleKey": "dashboard",
+      "moduleLabel": "Dashboard",
+      "menus": [
+        {
+          "menuKey": "dashboard",
+          "menuLabel": "Dashboard",
+          "route": "/dashboard"
+        }
+      ]
+    },
+    {
+      "moduleKey": "participant-support",
+      "moduleLabel": "Participant & Support",
+      "menus": [
+        {
+          "menuKey": "clients",
+          "menuLabel": "Clients",
+          "route": "/participant-support/clients"
+        },
+        {
+          "menuKey": "funding",
+          "menuLabel": "Funding",
+          "route": "/participant-support/funding"
+        },
+        {
+          "menuKey": "irregular-support",
+          "menuLabel": "Irregular Support",
+          "route": "/participant-support/irregular-support"
+        },
+        {
+          "menuKey": "incident-accident",
+          "menuLabel": "Incident / Accident",
+          "route": "/participant-support/incident-accident"
+        },
+        {
+          "menuKey": "feedback-complaints",
+          "menuLabel": "Feedback & Complaints",
+          "route": "/participant-support/feedback-complaints"
+        }
+      ]
+    },
+    {
+      "moduleKey": "people-workforce",
+      "moduleLabel": "People & Workforce",
+      "menus": [
+        {
+          "menuKey": "staff",
+          "menuLabel": "Staff",
+          "route": "/people-workforce/staff"
+        },
+        {
+          "menuKey": "rosters",
+          "menuLabel": "Rosters",
+          "route": "/people-workforce/rosters"
+        },
+        {
+          "menuKey": "training-development",
+          "menuLabel": "Training & Development",
+          "route": "/people-workforce/training-development"
+        },
+        {
+          "menuKey": "timesheet-management",
+          "menuLabel": "Timesheet Management",
+          "route": "/people-workforce/timesheet-management"
+        },
+        {
+          "menuKey": "cost-category",
+          "menuLabel": "Cost Category",
+          "route": "/people-workforce/cost-category"
+        },
+        {
+          "menuKey": "leave-management",
+          "menuLabel": "Leave Management",
+          "route": "/people-workforce/leave-management"
+        }
+      ]
+    },
+    {
+      "moduleKey": "operations",
+      "moduleLabel": "Operations",
+      "menus": [
+        {
+          "menuKey": "policy",
+          "menuLabel": "Policy",
+          "route": "/operations/policy"
+        },
+        {
+          "menuKey": "suppliers",
+          "menuLabel": "Suppliers",
+          "route": "/operations/suppliers"
+        },
+        {
+          "menuKey": "properties",
+          "menuLabel": "Properties",
+          "route": "/operations/properties"
+        }
+      ]
+    },
+    {
+      "moduleKey": "whs-policies",
+      "moduleLabel": "WHS & Policies",
+      "menus": [
+        {
+          "menuKey": "work-health-safety",
+          "menuLabel": "Work Health Safety",
+          "route": "/whs-policies/work-health-safety"
+        },
+        {
+          "menuKey": "policy",
+          "menuLabel": "Policy",
+          "route": "/whs-policies/policy"
+        }
+      ]
+    },
+    {
+      "moduleKey": "asset-management",
+      "moduleLabel": "Asset Management",
+      "menus": [
+        {
+          "menuKey": "asset-register",
+          "menuLabel": "Asset Register",
+          "route": "/asset-management/asset-register"
+        },
+        {
+          "menuKey": "report",
+          "menuLabel": "Report",
+          "route": "/asset-management/report"
+        }
+      ]
+    },
+    {
+      "moduleKey": "media-library",
+      "moduleLabel": "Media Library",
+      "menus": [
+        {
+          "menuKey": "drive",
+          "menuLabel": "Drive",
+          "route": "/media-library/drive"
+        },
+        {
+          "menuKey": "documents",
+          "menuLabel": "Documents",
+          "route": "/media-library/documents"
+        }
+      ]
+    },
+    {
+      "moduleKey": "information",
+      "moduleLabel": "Information",
+      "menus": [
+        {
+          "menuKey": "notice-board",
+          "menuLabel": "Notice Board",
+          "route": "/information/notice-board"
+        },
+        {
+          "menuKey": "calendar",
+          "menuLabel": "Calendar",
+          "route": "/information/calendar"
+        },
+        {
+          "menuKey": "event",
+          "menuLabel": "Event",
+          "route": "/information/event"
+        },
+        {
+          "menuKey": "faq",
+          "menuLabel": "FAQ",
+          "route": "/information/faq"
+        }
+      ]
+    }
+  ]
+}

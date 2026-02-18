@@ -1,0 +1,952 @@
+{
+  "/dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Dummy data for Dashboard. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "29"
+      },
+      {
+        "label": "Active",
+        "value": "12"
+      },
+      {
+        "label": "Pending",
+        "value": "7"
+      }
+    ],
+    "table": [
+      {
+        "id": "DAS-001",
+        "name": "Dashboard Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "DAS-002",
+        "name": "Dashboard Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "DAS-003",
+        "name": "Dashboard Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/participant-support/clients": {
+    "title": "Clients",
+    "subtitle": "Dummy data for Clients. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "27"
+      },
+      {
+        "label": "Active",
+        "value": "10"
+      },
+      {
+        "label": "Pending",
+        "value": "7"
+      }
+    ],
+    "table": [
+      {
+        "id": "CLI-001",
+        "name": "Clients Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "CLI-002",
+        "name": "Clients Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "CLI-003",
+        "name": "Clients Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/participant-support/funding": {
+    "title": "Funding",
+    "subtitle": "Dummy data for Funding. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "27"
+      },
+      {
+        "label": "Active",
+        "value": "10"
+      },
+      {
+        "label": "Pending",
+        "value": "7"
+      }
+    ],
+    "table": [
+      {
+        "id": "FUN-001",
+        "name": "Funding Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "FUN-002",
+        "name": "Funding Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "FUN-003",
+        "name": "Funding Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/participant-support/irregular-support": {
+    "title": "Irregular Support",
+    "subtitle": "Dummy data for Irregular Support. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "37"
+      },
+      {
+        "label": "Active",
+        "value": "13"
+      },
+      {
+        "label": "Pending",
+        "value": "7"
+      }
+    ],
+    "table": [
+      {
+        "id": "IRR-001",
+        "name": "Irregular Support Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "IRR-002",
+        "name": "Irregular Support Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "IRR-003",
+        "name": "Irregular Support Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/participant-support/incident-accident": {
+    "title": "Incident / Accident",
+    "subtitle": "Dummy data for Incident / Accident. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "39"
+      },
+      {
+        "label": "Active",
+        "value": "13"
+      },
+      {
+        "label": "Pending",
+        "value": "7"
+      }
+    ],
+    "table": [
+      {
+        "id": "INC-001",
+        "name": "Incident / Accident Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "INC-002",
+        "name": "Incident / Accident Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "INC-003",
+        "name": "Incident / Accident Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/participant-support/feedback-complaints": {
+    "title": "Feedback & Complaints",
+    "subtitle": "Dummy data for Feedback & Complaints. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "41"
+      },
+      {
+        "label": "Active",
+        "value": "15"
+      },
+      {
+        "label": "Pending",
+        "value": "7"
+      }
+    ],
+    "table": [
+      {
+        "id": "FEE-001",
+        "name": "Feedback & Complaints Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "FEE-002",
+        "name": "Feedback & Complaints Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "FEE-003",
+        "name": "Feedback & Complaints Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/people-workforce/staff": {
+    "title": "Staff",
+    "subtitle": "Dummy data for Staff. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "25"
+      },
+      {
+        "label": "Active",
+        "value": "15"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "STA-001",
+        "name": "Staff Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "STA-002",
+        "name": "Staff Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "STA-003",
+        "name": "Staff Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/people-workforce/rosters": {
+    "title": "Rosters",
+    "subtitle": "Dummy data for Rosters. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "27"
+      },
+      {
+        "label": "Active",
+        "value": "10"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "ROS-001",
+        "name": "Rosters Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "ROS-002",
+        "name": "Rosters Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "ROS-003",
+        "name": "Rosters Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/people-workforce/training-development": {
+    "title": "Training & Development",
+    "subtitle": "Dummy data for Training & Development. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "42"
+      },
+      {
+        "label": "Active",
+        "value": "16"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "TRA-001",
+        "name": "Training & Development Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "TRA-002",
+        "name": "Training & Development Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "TRA-003",
+        "name": "Training & Development Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/people-workforce/timesheet-management": {
+    "title": "Timesheet Management",
+    "subtitle": "Dummy data for Timesheet Management. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "40"
+      },
+      {
+        "label": "Active",
+        "value": "16"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "TIM-001",
+        "name": "Timesheet Management Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "TIM-002",
+        "name": "Timesheet Management Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "TIM-003",
+        "name": "Timesheet Management Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/people-workforce/cost-category": {
+    "title": "Cost Category",
+    "subtitle": "Dummy data for Cost Category. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "33"
+      },
+      {
+        "label": "Active",
+        "value": "16"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "COS-001",
+        "name": "Cost Category Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "COS-002",
+        "name": "Cost Category Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "COS-003",
+        "name": "Cost Category Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/people-workforce/leave-management": {
+    "title": "Leave Management",
+    "subtitle": "Dummy data for Leave Management. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "36"
+      },
+      {
+        "label": "Active",
+        "value": "12"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "LEA-001",
+        "name": "Leave Management Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "LEA-002",
+        "name": "Leave Management Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "LEA-003",
+        "name": "Leave Management Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/operations/policy": {
+    "title": "Policy",
+    "subtitle": "Dummy data for Policy. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "26"
+      },
+      {
+        "label": "Active",
+        "value": "16"
+      },
+      {
+        "label": "Pending",
+        "value": "3"
+      }
+    ],
+    "table": [
+      {
+        "id": "POL-001",
+        "name": "Policy Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "POL-002",
+        "name": "Policy Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "POL-003",
+        "name": "Policy Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/operations/suppliers": {
+    "title": "Suppliers",
+    "subtitle": "Dummy data for Suppliers. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "29"
+      },
+      {
+        "label": "Active",
+        "value": "12"
+      },
+      {
+        "label": "Pending",
+        "value": "3"
+      }
+    ],
+    "table": [
+      {
+        "id": "SUP-001",
+        "name": "Suppliers Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "SUP-002",
+        "name": "Suppliers Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "SUP-003",
+        "name": "Suppliers Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/operations/properties": {
+    "title": "Properties",
+    "subtitle": "Dummy data for Properties. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "30"
+      },
+      {
+        "label": "Active",
+        "value": "13"
+      },
+      {
+        "label": "Pending",
+        "value": "3"
+      }
+    ],
+    "table": [
+      {
+        "id": "PRO-001",
+        "name": "Properties Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-002",
+        "name": "Properties Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "PRO-003",
+        "name": "Properties Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/whs-policies/work-health-safety": {
+    "title": "Work Health Safety",
+    "subtitle": "Dummy data for Work Health Safety. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "38"
+      },
+      {
+        "label": "Active",
+        "value": "14"
+      },
+      {
+        "label": "Pending",
+        "value": "5"
+      }
+    ],
+    "table": [
+      {
+        "id": "WOR-001",
+        "name": "Work Health Safety Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "WOR-002",
+        "name": "Work Health Safety Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "WOR-003",
+        "name": "Work Health Safety Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/whs-policies/policy": {
+    "title": "Policy",
+    "subtitle": "Dummy data for Policy. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "26"
+      },
+      {
+        "label": "Active",
+        "value": "16"
+      },
+      {
+        "label": "Pending",
+        "value": "5"
+      }
+    ],
+    "table": [
+      {
+        "id": "POL-001",
+        "name": "Policy Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "POL-002",
+        "name": "Policy Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "POL-003",
+        "name": "Policy Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/asset-management/asset-register": {
+    "title": "Asset Register",
+    "subtitle": "Dummy data for Asset Register. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "34"
+      },
+      {
+        "label": "Active",
+        "value": "10"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "ASS-001",
+        "name": "Asset Register Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "ASS-002",
+        "name": "Asset Register Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "ASS-003",
+        "name": "Asset Register Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/asset-management/report": {
+    "title": "Report",
+    "subtitle": "Dummy data for Report. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "26"
+      },
+      {
+        "label": "Active",
+        "value": "16"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "REP-001",
+        "name": "Report Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "REP-002",
+        "name": "Report Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "REP-003",
+        "name": "Report Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/media-library/drive": {
+    "title": "Drive",
+    "subtitle": "Dummy data for Drive. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "25"
+      },
+      {
+        "label": "Active",
+        "value": "15"
+      },
+      {
+        "label": "Pending",
+        "value": "6"
+      }
+    ],
+    "table": [
+      {
+        "id": "DRI-001",
+        "name": "Drive Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "DRI-002",
+        "name": "Drive Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "DRI-003",
+        "name": "Drive Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/media-library/documents": {
+    "title": "Documents",
+    "subtitle": "Dummy data for Documents. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "29"
+      },
+      {
+        "label": "Active",
+        "value": "12"
+      },
+      {
+        "label": "Pending",
+        "value": "6"
+      }
+    ],
+    "table": [
+      {
+        "id": "DOC-001",
+        "name": "Documents Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "DOC-002",
+        "name": "Documents Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "DOC-003",
+        "name": "Documents Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/information/notice-board": {
+    "title": "Notice Board",
+    "subtitle": "Dummy data for Notice Board. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "32"
+      },
+      {
+        "label": "Active",
+        "value": "15"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "NOT-001",
+        "name": "Notice Board Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "NOT-002",
+        "name": "Notice Board Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "NOT-003",
+        "name": "Notice Board Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/information/calendar": {
+    "title": "Calendar",
+    "subtitle": "Dummy data for Calendar. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "28"
+      },
+      {
+        "label": "Active",
+        "value": "11"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "CAL-001",
+        "name": "Calendar Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "CAL-002",
+        "name": "Calendar Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "CAL-003",
+        "name": "Calendar Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/information/event": {
+    "title": "Event",
+    "subtitle": "Dummy data for Event. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "25"
+      },
+      {
+        "label": "Active",
+        "value": "15"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "EVE-001",
+        "name": "Event Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "EVE-002",
+        "name": "Event Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "EVE-003",
+        "name": "Event Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  },
+  "/information/faq": {
+    "title": "FAQ",
+    "subtitle": "Dummy data for FAQ. Replace with API response later.",
+    "stats": [
+      {
+        "label": "Total",
+        "value": "23"
+      },
+      {
+        "label": "Active",
+        "value": "13"
+      },
+      {
+        "label": "Pending",
+        "value": "4"
+      }
+    ],
+    "table": [
+      {
+        "id": "FAQ-001",
+        "name": "FAQ Record A",
+        "type": "Operational",
+        "status": "Active"
+      },
+      {
+        "id": "FAQ-002",
+        "name": "FAQ Record B",
+        "type": "Review",
+        "status": "Pending"
+      },
+      {
+        "id": "FAQ-003",
+        "name": "FAQ Record C",
+        "type": "Archive",
+        "status": "Closed"
+      }
+    ]
+  }
+}
