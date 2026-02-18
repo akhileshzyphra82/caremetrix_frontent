@@ -1,3 +1,0 @@
-import pageData from '../../data/pageContent.json';
-
-export default pageData['/asset-management/asset-register'];
