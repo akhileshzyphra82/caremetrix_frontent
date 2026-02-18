@@ -63,6 +63,14 @@ type LoadedState = {
   activePath: string;
 };
 
+function normalizePath(pathname: string, validPaths: string[], defaultPath: string) {
+  if (pathname === '/') {
+    return defaultPath;
+  }
+
+  return validPaths.includes(pathname) ? pathname : '';
+}
+
 function App() {
   const [loadedState, setLoadedState] = useState<LoadedState | null>(null);
 
@@ -70,19 +78,30 @@ function App() {
     fetchDummyApiResponse().then((data) => {
       const allPaths = data.sidebarModules.flatMap((module) => module.menus.map((menu) => menu.path));
       const defaultPath = '/dashboard';
-      const initialPath = allPaths.includes(window.location.pathname) ? window.location.pathname : defaultPath;
+      const normalizedPath = normalizePath(window.location.pathname, allPaths, defaultPath);
 
-      if (window.location.pathname !== initialPath) {
-        window.history.replaceState({}, '', initialPath);
+      if (normalizedPath && window.location.pathname !== normalizedPath) {
+        window.history.replaceState({}, '', normalizedPath);
       }
 
-      setLoadedState({ data, activePath: initialPath });
+      setLoadedState({ data, activePath: normalizedPath || window.location.pathname });
     });
   }, []);
 
   useEffect(() => {
     const handlePopState = () => {
-      setLoadedState((prev) => (prev ? { ...prev, activePath: window.location.pathname } : prev));
+      setLoadedState((prev) => {
+        if (!prev) {
+          return prev;
+        }
+
+        const allPaths = prev.data.sidebarModules.flatMap((module) => module.menus.map((menu) => menu.path));
+        const normalizedPath = normalizePath(window.location.pathname, allPaths, '/dashboard');
+        return {
+          ...prev,
+          activePath: normalizedPath || window.location.pathname
+        };
+      });
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -104,6 +123,7 @@ function App() {
       if (!prev || prev.activePath === path) {
         return prev;
       }
+
       window.history.pushState({}, '', path);
       return { ...prev, activePath: path };
     });
@@ -125,13 +145,16 @@ function App() {
             <ul>
               {module.menus.map((menu) => (
                 <li key={menu.id}>
-                  <button
+                  <a
                     className={menu.path === loadedState.activePath ? 'active' : ''}
-                    onClick={() => openMenu(menu.path)}
-                    type="button"
+                    href={menu.path}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openMenu(menu.path);
+                    }}
                   >
                     {menu.label}
-                  </button>
+                  </a>
                 </li>
               ))}
             </ul>
