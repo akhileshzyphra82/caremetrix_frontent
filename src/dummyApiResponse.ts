@@ -41,16 +41,72 @@ const dummyApiResponse: DummyApiResponse = {
   },
   sidebarModules: [
     { key: 'dashboard', label: 'Dashboard', children: [] },
-    { key: 'worker-dashboard', label: 'Worker Dashboard', children: [{ menuId: 'worker-today', label: "Today's Shifts & Alerts" }] },
-    { key: 'participant-management', label: 'Participant Management', children: [{ menuId: 'participants', label: 'Participants' }] },
-    { key: 'module-management', label: 'Module Management', children: [{ menuId: 'modules', label: 'Modules' }] },
-    { key: 'service-management', label: 'Service Management', children: [{ menuId: 'services', label: 'Services' }] },
-    { key: 'funding-claims', label: 'Funding & Claims', children: [{ menuId: 'funding', label: 'Claims Overview' }] },
-    { key: 'role-access', label: 'Role & Access', children: [{ menuId: 'roles', label: 'Roles Directory' }] },
-    { key: 'notification-center', label: 'Notification Center', children: [{ menuId: 'notifications', label: 'Notifications' }] },
-    { key: 'compliance-risk', label: 'Compliance & Risk', children: [{ menuId: 'compliance', label: 'Compliance' }] },
-    { key: 'audit-log', label: 'Audit Log', children: [{ menuId: 'audit', label: 'Audit Trail' }] },
-    { key: 'communication', label: 'Communication', children: [{ menuId: 'communication', label: 'Announcements' }] }
+    {
+      key: 'participant-support',
+      label: 'Participant & Support',
+      children: [
+        { menuId: 'clients', label: 'Clients' },
+        { menuId: 'funding', label: 'Funding' },
+        { menuId: 'irregular-support', label: 'Irregular Support' },
+        { menuId: 'incident-accident', label: 'Incident / Accident' },
+        { menuId: 'feedback-complaints', label: 'Feedback & Complaints' }
+      ]
+    },
+    {
+      key: 'people-workforce',
+      label: 'People & Workforce',
+      children: [
+        { menuId: 'staff', label: 'Staff' },
+        { menuId: 'rosters', label: 'Rosters' },
+        { menuId: 'training-development', label: 'Training & Development' },
+        { menuId: 'timesheet-management', label: 'Timesheet Management' },
+        { menuId: 'cost-category', label: 'Cost Category' },
+        { menuId: 'leave-management', label: 'Leave Management' }
+      ]
+    },
+    {
+      key: 'operations',
+      label: 'Operations',
+      children: [
+        { menuId: 'policy', label: 'Policy' },
+        { menuId: 'suppliers', label: 'Suppliers' },
+        { menuId: 'properties', label: 'Properties' }
+      ]
+    },
+    {
+      key: 'whs-policies',
+      label: 'WHS & Policies',
+      children: [
+        { menuId: 'work-health-safety', label: 'Work Helth safety' },
+        { menuId: 'whs-policy', label: 'Policy' }
+      ]
+    },
+    {
+      key: 'asset-management',
+      label: 'Asset Management',
+      children: [
+        { menuId: 'asset-register', label: 'Asset Register' },
+        { menuId: 'asset-report', label: 'Report' }
+      ]
+    },
+    {
+      key: 'media-library',
+      label: 'Media Libaray',
+      children: [
+        { menuId: 'drive', label: 'Drive' },
+        { menuId: 'documents', label: 'Documents' }
+      ]
+    },
+    {
+      key: 'information',
+      label: 'Information',
+      children: [
+        { menuId: 'notice-board', label: 'Notice Board' },
+        { menuId: 'calendar', label: 'Calender' },
+        { menuId: 'event', label: 'Event' },
+        { menuId: 'faq', label: 'FAQ' }
+      ]
+    }
   ],
   dashboardDetails: {
     operations: {
