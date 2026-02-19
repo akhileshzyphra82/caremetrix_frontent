@@ -130,7 +130,7 @@ export default function ProfilePage() {
             aria-label="Back to clients"
             title="Back to clients"
           >
-            ←
+            <span aria-hidden="true">←</span>
           </button>
           <div className="clients-breadcrumb" aria-label="Breadcrumb">
             <span>Dashboard</span>
@@ -238,7 +238,10 @@ export default function ProfilePage() {
             <section className="profile-content__personal-insights" aria-label="Client health insights">
               <div className="profile-content__insights">
                 {quickInsightItems.map((item) => (
-                  <article key={item.title} className="profile-content__insight-card">
+                  <article
+                    key={item.title}
+                    className={`profile-content__insight-card ${item.title === 'Alert & Allergy' ? 'profile-content__insight-card--critical' : ''}`}
+                  >
                     <p>{item.title}</p>
                     <h4>
                       {item.value}{' '}

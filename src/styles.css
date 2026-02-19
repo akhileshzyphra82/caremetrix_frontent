@@ -1671,16 +1671,24 @@ body {
   border: 1px solid var(--border);
   background: var(--white);
   color: var(--accent-1);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  font-size: 20px;
-  line-height: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 0;
   padding: 0;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.profile-page__back span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-1px);
 }
 
 .profile-page__actions {
@@ -1912,6 +1920,21 @@ body {
   border-radius: 12px;
   padding: 12px;
   background: #faf8ff;
+}
+
+.profile-content__insight-card--critical {
+  border-color: #f8b4b4;
+  background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.12);
+}
+
+.profile-content__insight-card--critical p {
+  color: #b91c1c;
+}
+
+.profile-content__insight-card--critical h4 {
+  color: #7f1d1d;
+  font-weight: 600;
 }
 
 .profile-content__insight-card p,
