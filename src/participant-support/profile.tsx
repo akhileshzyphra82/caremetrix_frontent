@@ -17,6 +17,15 @@ const tabs: ProfileTab[] = [
   'Medical & Allied Health Services'
 ];
 
+const tabIcons: Record<ProfileTab, string> = {
+  'Personal Info': '👤',
+  'Compliance & Transition': '✅',
+  'Communication & Reporting': '💬',
+  Audit: '📋',
+  Confidential: '🔒',
+  'Medical & Allied Health Services': '🩺'
+};
+
 const tabContent: Record<ProfileTab, Array<{ label: string; value: string }>> = {
   'Personal Info': [
     { label: 'Full Name', value: 'Olivia Thompson' },
@@ -83,6 +92,15 @@ const rightPanelItems = [
   { icon: '📞', label: 'Emergency Support', value: '+61 1300 552 908' },
   { icon: '📄', label: 'Preferred Documentation', value: 'Digital records and e-sign' }
 ] as const;
+
+const personalInfoIcons: Record<string, string> = {
+  'Full Name': '👤',
+  'Date of Birth': '🎂',
+  Gender: '⚧️',
+  'Primary Contact': '📞',
+  Address: '📍',
+  'Support Coordinator': '🤝'
+};
 
 const quickInsightItems = [
   {
@@ -205,7 +223,10 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => setActiveTab(tab)}
                 >
-                  {tab}
+                  <span className="profile-tabs__item-icon" aria-hidden="true">
+                    {tabIcons[tab]}
+                  </span>
+                  <span>{tab}</span>
                 </button>
               ))}
             </nav>
@@ -214,8 +235,18 @@ export default function ProfilePage() {
 
         <article className="profile-content">
           <div className="profile-content__header">
-            <h3>{activeTab}</h3>
-            <p>Detailed participant information for this section.</p>
+            <h3>
+              <span className="profile-content__heading-icon" aria-hidden="true">
+                {tabIcons[activeTab]}
+              </span>
+              {activeTab}
+            </h3>
+            <p>
+              <span className="profile-content__subtitle-icon" aria-hidden="true">
+                ℹ️
+              </span>
+              Detailed participant information for this section.
+            </p>
           </div>
 
           <div className="profile-content__grid">
@@ -223,7 +254,9 @@ export default function ProfilePage() {
               {tabContent[activeTab].map((item) => (
                 <div className="profile-content__row" key={item.label}>
                   <p>
-                    <span>•</span>
+                    <span className="profile-content__row-icon" aria-hidden="true">
+                      {personalInfoIcons[item.label] || '•'}
+                    </span>
                     {item.label}
                   </p>
                   <h4>{item.value}</h4>
