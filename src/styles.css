@@ -349,7 +349,12 @@ body {
   outline: none;
   width: 100%;
   font-size: 12px;
+  text-align: left;
   color: var(--text);
+}
+
+.topbar-search input::placeholder {
+  text-align: left;
 }
 
 .header-brand {
