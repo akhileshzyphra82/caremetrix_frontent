@@ -1668,13 +1668,14 @@ body {
 }
 
 .profile-page__back {
-  border: 1px solid rgba(var(--accent-1-rgb), 0.35);
-  background: var(--surface);
+  border: none;
+  background: transparent;
   color: var(--accent-1);
-  border-radius: 10px;
-  width: 36px;
-  height: 36px;
-  font-weight: 600;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -1688,13 +1689,15 @@ body {
 }
 
 .profile-page__actions button {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(var(--accent-1-rgb), 0.35);
-  background: var(--surface);
+  width: auto;
+  height: auto;
+  border: none;
+  background: transparent;
   color: var(--accent-1);
   cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
 }
 
 .profile-layout {
@@ -1875,7 +1878,12 @@ body {
 .profile-content__insights {
   display: grid;
   gap: 10px;
-  margin-bottom: 16px;
+}
+
+.profile-content__personal-insights {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
 }
 
 .profile-content__insight-card,
