@@ -2,6 +2,7 @@ import { type ComponentType, useEffect, useMemo, useState } from 'react';
 import { getPathForMenu, sidebarModules } from './shared';
 import DashboardPage from './dashboard/dashboard';
 import ClientsPage from './participant-support/clients';
+import ProfilePage from './participant-support/profile';
 import FundingPage from './participant-support/funding';
 import IrregularSupportPage from './participant-support/irregular-support';
 import IncidentAccidentPage from './participant-support/incident-accident';
@@ -30,6 +31,7 @@ const routeComponents: Record<string, ComponentType> = {
   '/': DashboardPage,
   '/dashboard': DashboardPage,
   '/participant-support/clients': ClientsPage,
+  '/participant-support/profile': ProfilePage,
   '/participant-support/funding': FundingPage,
   '/participant-support/irregular-support': IrregularSupportPage,
   '/participant-support/incident-accident': IncidentAccidentPage,

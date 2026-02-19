@@ -208,6 +208,12 @@ export default function ClientsPage() {
     });
   }, [searchTerm, statusFilters, genderFilters, locationFilter]);
 
+  const openClientProfile = (client: Client) => {
+    const profilePath = `/participant-support/profile?uid=${encodeURIComponent(client.uid)}&name=${encodeURIComponent(client.name)}&ndis=${encodeURIComponent(client.ndisNo)}`;
+    window.history.pushState({}, '', profilePath);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   return (
     <section className="menu-panel active clients-page">
       <div className="clients-breadcrumb" aria-label="Breadcrumb">
@@ -312,10 +318,10 @@ export default function ClientsPage() {
               <tr key={client.uid}>
                 <td>{client.uid}</td>
                 <td>
-                  <div className="participant-cell">
+                  <button className="participant-cell participant-cell--link" type="button" onClick={() => openClientProfile(client)}>
                     <img src={client.avatar} alt={client.name} />
                     <span>{client.name}</span>
-                  </div>
+                  </button>
                 </td>
                 <td>{client.gender}</td>
                 <td>{client.dateOfBirth}</td>
