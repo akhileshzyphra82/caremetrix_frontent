@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type ClientStatus = 'Active' | 'Inactive' | 'Archive';
 
@@ -135,7 +135,59 @@ function getStatusClass(status: ClientStatus) {
 
 export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'All' | ClientStatus>('All');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isActionMenuOpenFor, setIsActionMenuOpenFor] = useState<string | null>(null);
+  const [statusFilters, setStatusFilters] = useState<Array<'All' | ClientStatus>>(['All']);
+  const [genderFilters, setGenderFilters] = useState<Array<'All' | Client['gender']>>(['All']);
+  const [locationFilter, setLocationFilter] = useState('All Locations');
+  const filterRef = useRef<HTMLDivElement | null>(null);
+  const actionMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+
+      if (actionMenuRef.current && !actionMenuRef.current.contains(event.target as Node)) {
+        setIsActionMenuOpenFor(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
+  const handleStatusFilterChange = (value: 'All' | ClientStatus) => {
+    if (value === 'All') {
+      setStatusFilters(['All']);
+      return;
+    }
+
+    setStatusFilters((current) => {
+      const withoutAll = current.filter((item) => item !== 'All');
+      const next = withoutAll.includes(value) ? withoutAll.filter((item) => item !== value) : [...withoutAll, value];
+
+      return next.length === 0 ? ['All'] : next;
+    });
+  };
+
+  const handleGenderFilterChange = (value: 'All' | Client['gender']) => {
+    if (value === 'All') {
+      setGenderFilters(['All']);
+      return;
+    }
+
+    setGenderFilters((current) => {
+      const withoutAll = current.filter((item) => item !== 'All');
+      const next = withoutAll.includes(value) ? withoutAll.filter((item) => item !== value) : [...withoutAll, value];
+
+      return next.length === 0 ? ['All'] : next;
+    });
+  };
 
   const filteredClients = useMemo(() => {
     const normalizedSearch = searchTerm.toLowerCase().trim();
@@ -148,11 +200,13 @@ export default function ClientsPage() {
           .toLowerCase()
           .includes(normalizedSearch);
 
-      const matchesStatus = statusFilter === 'All' || client.status === statusFilter;
+      const matchesStatus = statusFilters.includes('All') || statusFilters.includes(client.status);
+      const matchesGender = genderFilters.includes('All') || genderFilters.includes(client.gender);
+      const matchesLocation = locationFilter === 'All Locations' || client.culturalIdentity === locationFilter;
 
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesStatus && matchesGender && matchesLocation;
     });
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilters, genderFilters, locationFilter]);
 
   return (
     <section className="menu-panel active clients-page">
@@ -188,23 +242,51 @@ export default function ClientsPage() {
           />
         </label>
 
-        <div className="clients-toolbar__actions">
-          <label className="clients-filter">
+        <div className="clients-toolbar__actions" ref={filterRef}>
+          <button className="clients-filter" type="button" onClick={() => setIsFilterOpen((current) => !current)}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
             </svg>
             <span>Filter</span>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as 'All' | ClientStatus)}>
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Archive">Archive</option>
-            </select>
-          </label>
+          </button>
+
+          {isFilterOpen && (
+            <div className="clients-filter-panel" role="dialog" aria-label="Filter participants">
+              <div className="clients-filter-group">
+                <p>Status</p>
+                {(['All', 'Active', 'Inactive', 'Archive'] as Array<'All' | ClientStatus>).map((item) => (
+                  <label key={item}>
+                    <input type="checkbox" checked={statusFilters.includes(item)} onChange={() => handleStatusFilterChange(item)} />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="clients-filter-group">
+                <p>Gender</p>
+                {(['All', 'Female', 'Male', 'Other'] as Array<'All' | Client['gender']>).map((item) => (
+                  <label key={item}>
+                    <input type="checkbox" checked={genderFilters.includes(item)} onChange={() => handleGenderFilterChange(item)} />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="clients-filter-group">
+                <p>Location</p>
+                <select value={locationFilter} onChange={(event) => setLocationFilter(event.target.value)}>
+                  <option>All Locations</option>
+                  {Array.from(new Set(clientsData.map((client) => client.culturalIdentity))).map((location) => (
+                    <option key={location}>{location}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
 
           <button className="clients-export" type="button" aria-label="Export list">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 20h14v-2H5v2zM12 2l-5.5 5.5 1.4 1.4L11 5.8V16h2V5.8l3.1 3.1 1.4-1.4L12 2z" />
+              <path d="M4 2h12l4 4v16H4V2zm2 2v16h12V8h-4V4H6zm2 8h8v2H8v-2zm0 4h8v2H8v-2zm0-8h4v2H8V8z" />
             </svg>
           </button>
         </div>
@@ -244,11 +326,41 @@ export default function ClientsPage() {
                   <span className={`badge ${getStatusClass(client.status)}`}>{client.status}</span>
                 </td>
                 <td>
-                  <button className="clients-row-action" type="button" aria-label={`Actions for ${client.name}`}>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </button>
+                  <div className="clients-row-action-wrap" ref={isActionMenuOpenFor === client.uid ? actionMenuRef : undefined}>
+                    <button
+                      className="clients-row-action"
+                      type="button"
+                      aria-label={`Actions for ${client.name}`}
+                      onClick={() => setIsActionMenuOpenFor((current) => (current === client.uid ? null : client.uid))}
+                    >
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </button>
+
+                    {isActionMenuOpenFor === client.uid && (
+                      <div className="clients-row-action-menu">
+                        <button type="button">
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 17.3V21h3.8L18 9.8l-3.8-3.8L3 17.3zm18.7-11.1a1 1 0 000-1.4L19.1 2.3a1 1 0 00-1.4 0l-2 2 3.8 3.8 2.2-2.2z" />
+                          </svg>
+                          Edit
+                        </button>
+                        <button type="button">
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 7h12l-1 14H7L6 7zm3-4h6l1 2h4v2H4V5h4l1-2z" />
+                          </svg>
+                          Delete
+                        </button>
+                        <button type="button">
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 9V3h12v6H6zm12 2h2v8H4v-8h2v6h12v-6zm-3 2H9v2h6v-2z" />
+                          </svg>
+                          Print
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
