@@ -1661,13 +1661,39 @@ body {
   flex-wrap: wrap;
 }
 
+.profile-page__breadcrumb-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .profile-page__back {
   border: 1px solid rgba(var(--accent-1-rgb), 0.35);
   background: var(--surface);
   color: var(--accent-1);
   border-radius: 10px;
-  padding: 8px 12px;
+  width: 36px;
+  height: 36px;
   font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-page__actions button {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--accent-1-rgb), 0.35);
+  background: var(--surface);
+  color: var(--accent-1);
   cursor: pointer;
 }
 
@@ -1844,6 +1870,37 @@ body {
 .profile-content__side {
   border-left: 1px solid var(--border);
   padding-left: 20px;
+}
+
+.profile-content__insights {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.profile-content__insight-card,
+.profile-content__about {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: #faf8ff;
+}
+
+.profile-content__insight-card p,
+.profile-content__about p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-1);
+  text-transform: uppercase;
+}
+
+.profile-content__insight-card h4,
+.profile-content__about h4 {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 500;
 }
 
 .profile-content__side-row p span {

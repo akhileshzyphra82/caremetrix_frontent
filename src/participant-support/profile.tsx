@@ -2,19 +2,19 @@ import { useState } from 'react';
 
 type ProfileTab =
   | 'Personal Info'
-  | 'Complience & transition'
-  | 'Communication & reporting'
+  | 'Compliance & Transition'
+  | 'Communication & Reporting'
   | 'Audit'
   | 'Confidential'
-  | 'medical & allind helth services';
+  | 'Medical & Allied Health Services';
 
 const tabs: ProfileTab[] = [
   'Personal Info',
-  'Complience & transition',
-  'Communication & reporting',
+  'Compliance & Transition',
+  'Communication & Reporting',
   'Audit',
   'Confidential',
-  'medical & allind helth services'
+  'Medical & Allied Health Services'
 ];
 
 const tabContent: Record<ProfileTab, Array<{ label: string; value: string }>> = {
@@ -26,7 +26,7 @@ const tabContent: Record<ProfileTab, Array<{ label: string; value: string }>> = 
     { label: 'Address', value: '32 Greenview Street, Melbourne VIC' },
     { label: 'Support Coordinator', value: 'Daniel Harper' }
   ],
-  'Complience & transition': [
+  'Compliance & Transition': [
     { label: 'Plan Start Date', value: '01/01/2026' },
     { label: 'Plan End Date', value: '31/12/2026' },
     { label: 'Risk Assessment', value: 'Updated on 05/02/2026' },
@@ -34,7 +34,7 @@ const tabContent: Record<ProfileTab, Array<{ label: string; value: string }>> = 
     { label: 'Consent Status', value: 'Active' },
     { label: 'Review Window', value: 'Quarterly' }
   ],
-  'Communication & reporting': [
+  'Communication & Reporting': [
     { label: 'Preferred Communication', value: 'Email and fortnightly phone check-in' },
     { label: 'Guardian Contact', value: 'Carlos Thompson - +61 433 102 202' },
     { label: 'Latest Progress Report', value: 'Submitted 09/02/2026' },
@@ -58,7 +58,7 @@ const tabContent: Record<ProfileTab, Array<{ label: string; value: string }>> = 
     { label: 'Document Access', value: 'Need-to-know basis' },
     { label: 'Last Access Review', value: '12/02/2026' }
   ],
-  'medical & allind helth services': [
+  'Medical & Allied Health Services': [
     { label: 'Primary Practitioner', value: 'Dr. Amelia Smith' },
     { label: 'Allied Health', value: 'Physio, Occupational Therapy, Speech Therapy' },
     { label: 'Medication Plan', value: 'Reviewed weekly with support team' },
@@ -84,9 +84,20 @@ const rightPanelItems = [
   { icon: '📄', label: 'Preferred Documentation', value: 'Digital records and e-sign' }
 ] as const;
 
-const dummyAvatar = `data:image/svg+xml;utf8,${encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none"><defs><linearGradient id="g" x1="21" y1="22" x2="178" y2="181" gradientUnits="userSpaceOnUse"><stop stop-color="#dfdbfb"/><stop offset="1" stop-color="#bca8ff"/></linearGradient></defs><circle cx="100" cy="100" r="100" fill="url(#g)"/><circle cx="100" cy="78" r="32" fill="#fff" fill-opacity="0.95"/><path d="M39 168c0-30.376 24.624-55 55-55h12c30.376 0 55 24.624 55 55v5H39v-5z" fill="#fff" fill-opacity="0.95"/></svg>`
-)}`;
+const quickInsightItems = [
+  {
+    title: 'Alert & Allergy',
+    value: 'Peanut allergy and penicillin sensitivity. Emergency response guide attached to profile.'
+  },
+  {
+    title: 'Diagnosis',
+    value: 'Autism spectrum disorder (Level 2), anxiety, and mild mobility limitation in left knee.'
+  },
+  {
+    title: 'Medication',
+    value: 'Sertraline 50mg daily, Vitamin D weekly, and PRN antihistamine as advised by GP.'
+  }
+] as const;
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
@@ -105,18 +116,34 @@ export default function ProfilePage() {
   return (
     <section className="menu-panel active profile-page">
       <div className="profile-page__breadcrumb-row">
-        <div className="clients-breadcrumb" aria-label="Breadcrumb">
-          <span>Dashboard</span>
-          <span className="clients-breadcrumb__divider">›</span>
-          <span>Participant &amp; Support</span>
-          <span className="clients-breadcrumb__divider">›</span>
-          <span>Clients</span>
-          <span className="clients-breadcrumb__divider">›</span>
-          <strong>Profile</strong>
+        <div className="profile-page__breadcrumb-wrap">
+          <button
+            className="profile-page__back"
+            type="button"
+            onClick={() => window.history.back()}
+            aria-label="Back to clients"
+            title="Back to clients"
+          >
+            ←
+          </button>
+          <div className="clients-breadcrumb" aria-label="Breadcrumb">
+            <span>Dashboard</span>
+            <span className="clients-breadcrumb__divider">›</span>
+            <span>Participant &amp; Support</span>
+            <span className="clients-breadcrumb__divider">›</span>
+            <span>Clients</span>
+            <span className="clients-breadcrumb__divider">›</span>
+            <strong>Profile</strong>
+          </div>
         </div>
-        <button className="profile-page__back" type="button" onClick={() => window.history.back()}>
-          ← Back to clients
-        </button>
+        <div className="profile-page__actions" aria-label="Profile actions">
+          <button type="button" title="Download PDF" aria-label="Download PDF">
+            ⭳
+          </button>
+          <button type="button" title="Print" aria-label="Print profile">
+            🖨
+          </button>
+        </div>
       </div>
 
       <div className="profile-layout">
@@ -124,7 +151,7 @@ export default function ProfilePage() {
           <article className="profile-card">
             <div className="profile-card__banner" role="presentation" />
             <div className="profile-card__avatar-wrap">
-              <img className="profile-card__avatar" src={dummyAvatar} alt="Participant profile" />
+              <img className="profile-card__avatar" src="https://i.pravatar.cc/80?img=32" alt="Participant profile" />
             </div>
             <h2>{participantName}</h2>
             <p className="profile-card__uid">UID #{participantUid}</p>
@@ -178,6 +205,28 @@ export default function ProfilePage() {
             </section>
 
             <aside className="profile-content__side" aria-label="Additional profile highlights">
+              {activeTab === 'Personal Info' ? (
+                <>
+                  <section className="profile-content__insights" aria-label="Client health insights">
+                    {quickInsightItems.map((item) => (
+                      <article key={item.title} className="profile-content__insight-card">
+                        <p>{item.title}</p>
+                        <h4>{item.value}</h4>
+                      </article>
+                    ))}
+                  </section>
+
+                  <section className="profile-content__about" aria-label="About the client">
+                    <p>About the Client</p>
+                    <h4>
+                      Olivia is a positive and social participant who enjoys art workshops, structured routines,
+                      and community activities. She prefers clear communication, calm environments, and weekly
+                      progress summaries shared with her support network.
+                    </h4>
+                  </section>
+                </>
+              ) : null}
+
               {rightPanelItems.map((item) => (
                 <div className="profile-content__side-row" key={item.label}>
                   <p>
