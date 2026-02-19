@@ -86,14 +86,17 @@ const rightPanelItems = [
 
 const quickInsightItems = [
   {
+    icon: '🚨',
     title: 'Alert & Allergy',
     value: 'Peanut allergy and penicillin sensitivity. Emergency response guide attached to profile.'
   },
   {
+    icon: '🩺',
     title: 'Diagnosis',
     value: 'Autism spectrum disorder (Level 2), anxiety, and mild mobility limitation in left knee.'
   },
   {
+    icon: '💊',
     title: 'Medication',
     value: 'Sertraline 50mg daily, Vitamin D weekly, and PRN antihistamine as advised by GP.'
   }
@@ -102,6 +105,8 @@ const quickInsightItems = [
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
   const [activeDetail, setActiveDetail] = useState<{ title: string; value: string } | null>(null);
+  const [hasReadCriticalAlert, setHasReadCriticalAlert] = useState(false);
+  const [showCriticalAlertModal, setShowCriticalAlertModal] = useState(true);
   const params = new URLSearchParams(window.location.search);
   const participantName = params.get('name') || 'Olivia Thompson';
   const participantNdis = params.get('ndis') || '431762001';
@@ -242,7 +247,12 @@ export default function ProfilePage() {
                     key={item.title}
                     className={`profile-content__insight-card ${item.title === 'Alert & Allergy' ? 'profile-content__insight-card--critical' : ''}`}
                   >
-                    <p>{item.title}</p>
+                    <p>
+                      <span className="profile-content__insight-icon" aria-hidden="true">
+                        {item.icon}
+                      </span>
+                      {item.title}
+                    </p>
                     <h4>
                       {item.value}{' '}
                       <button className="profile-content__view-more" type="button" onClick={() => setActiveDetail(item)}>
@@ -254,7 +264,12 @@ export default function ProfilePage() {
               </div>
 
               <section className="profile-content__about" aria-label="About the client">
-                <p>About the Client</p>
+                <p>
+                  <span className="profile-content__insight-icon" aria-hidden="true">
+                    👋
+                  </span>
+                  About the Client
+                </p>
                 <h4>
                   {aboutClientSummary}{' '}
                   <button
@@ -285,6 +300,42 @@ export default function ProfilePage() {
             </button>
             <h3 id="profile-detail-title">{activeDetail.title}</h3>
             <p>{activeDetail.value}</p>
+          </div>
+        </div>
+      ) : null}
+
+      {showCriticalAlertModal ? (
+        <div className="profile-detail-modal profile-detail-modal--critical" role="dialog" aria-modal="true" aria-labelledby="critical-alert-title">
+          <div className="profile-detail-modal__backdrop" aria-hidden="true" />
+          <div className="profile-detail-modal__dialog" role="document">
+            <h3 id="critical-alert-title">🚨 Alert & Allergy - Mandatory Acknowledgement</h3>
+            <p>
+              Peanut allergy and penicillin sensitivity. Emergency response guide attached to profile.
+              <button className="profile-content__view-more" type="button" onClick={() => setActiveDetail(quickInsightItems[0])}>
+                {' '}View more
+              </button>
+            </p>
+            <p>
+              <strong>Diagnosis:</strong> Autism spectrum disorder (Level 2), anxiety, and mild mobility limitation in left knee.
+            </p>
+            <label className="profile-detail-modal__consent">
+              <input
+                type="checkbox"
+                checked={hasReadCriticalAlert}
+                onChange={(event) => setHasReadCriticalAlert(event.target.checked)}
+              />
+              I have read and understood this alert clearly.
+            </label>
+            <div className="profile-detail-modal__actions">
+              <button
+                className="profile-detail-modal__acknowledge"
+                type="button"
+                disabled={!hasReadCriticalAlert}
+                onClick={() => setShowCriticalAlertModal(false)}
+              >
+                Continue to Profile
+              </button>
+            </div>
           </div>
         </div>
       ) : null}
