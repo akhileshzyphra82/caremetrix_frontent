@@ -101,6 +101,7 @@ const quickInsightItems = [
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
+  const [activeDetail, setActiveDetail] = useState<{ title: string; value: string } | null>(null);
   const params = new URLSearchParams(window.location.search);
   const participantName = params.get('name') || 'Olivia Thompson';
   const participantNdis = params.get('ndis') || '431762001';
@@ -113,6 +114,11 @@ export default function ProfilePage() {
     'Melbourne, VIC'
   ];
 
+  const aboutClientSummary =
+    'Olivia is a positive and social participant who enjoys art workshops, structured routines, and community activities.';
+  const aboutClientFull =
+    'Olivia is a positive and social participant who enjoys art workshops, structured routines, and community activities. She prefers clear communication, calm environments, and weekly progress summaries shared with her support network.';
+
   return (
     <section className="menu-panel active profile-page">
       <div className="profile-page__breadcrumb-row">
@@ -124,7 +130,7 @@ export default function ProfilePage() {
             aria-label="Back to clients"
             title="Back to clients"
           >
-            ↩
+            ←
           </button>
           <div className="clients-breadcrumb" aria-label="Breadcrumb">
             <span>Dashboard</span>
@@ -137,11 +143,22 @@ export default function ProfilePage() {
           </div>
         </div>
         <div className="profile-page__actions" aria-label="Profile actions">
-          <button type="button" title="Download PDF" aria-label="Download PDF">
-            📄
+          <button className="profile-page__action-btn profile-page__action-btn--pdf" type="button" title="Download PDF" aria-label="Download PDF">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" strokeWidth="1.8" />
+              <path d="M14 2v6h6" fill="none" stroke="currentColor" strokeWidth="1.8" />
+              <path d="M8 16h2.2a1.2 1.2 0 1 0 0-2.4H8V18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <path d="M12 18v-4.4h1.3a2.2 2.2 0 1 1 0 4.4z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              <path d="M17.8 13.6H16V18h1.8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
           </button>
-          <button type="button" title="Print" aria-label="Print profile">
-            🖨
+          <button className="profile-page__action-btn profile-page__action-btn--print" type="button" title="Print" aria-label="Print profile">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 8V3h10v5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+              <rect x="5" y="9" width="14" height="8" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+              <path d="M8 14h8v7H8z" fill="none" stroke="currentColor" strokeWidth="1.8" />
+              <circle cx="16.5" cy="12.5" r="1" fill="currentColor" />
+            </svg>
           </button>
         </div>
       </div>
@@ -223,7 +240,12 @@ export default function ProfilePage() {
                 {quickInsightItems.map((item) => (
                   <article key={item.title} className="profile-content__insight-card">
                     <p>{item.title}</p>
-                    <h4>{item.value}</h4>
+                    <h4>
+                      {item.value}{' '}
+                      <button className="profile-content__view-more" type="button" onClick={() => setActiveDetail(item)}>
+                        View more
+                      </button>
+                    </h4>
                   </article>
                 ))}
               </div>
@@ -231,15 +253,38 @@ export default function ProfilePage() {
               <section className="profile-content__about" aria-label="About the client">
                 <p>About the Client</p>
                 <h4>
-                  Olivia is a positive and social participant who enjoys art workshops, structured routines,
-                  and community activities. She prefers clear communication, calm environments, and weekly
-                  progress summaries shared with her support network.
+                  {aboutClientSummary}{' '}
+                  <button
+                    className="profile-content__view-more"
+                    type="button"
+                    onClick={() => setActiveDetail({ title: 'About the Client', value: aboutClientFull })}
+                  >
+                    View more
+                  </button>
                 </h4>
               </section>
             </section>
           ) : null}
         </article>
       </div>
+
+      {activeDetail ? (
+        <div className="profile-detail-modal" role="dialog" aria-modal="true" aria-labelledby="profile-detail-title">
+          <div className="profile-detail-modal__backdrop" onClick={() => setActiveDetail(null)} aria-hidden="true" />
+          <div className="profile-detail-modal__dialog" role="document">
+            <button
+              className="profile-detail-modal__close"
+              type="button"
+              onClick={() => setActiveDetail(null)}
+              aria-label="Close details"
+            >
+              ×
+            </button>
+            <h3 id="profile-detail-title">{activeDetail.title}</h3>
+            <p>{activeDetail.value}</p>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -1668,12 +1668,13 @@ body {
 }
 
 .profile-page__back {
-  border: none;
-  background: transparent;
+  border: 1px solid var(--border);
+  background: var(--white);
   color: var(--accent-1);
-  width: 22px;
-  height: 22px;
-  font-size: 22px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 20px;
   line-height: 1;
   padding: 0;
   cursor: pointer;
@@ -1689,15 +1690,34 @@ body {
 }
 
 .profile-page__actions button {
-  width: auto;
-  height: auto;
-  border: none;
-  background: transparent;
-  color: var(--accent-1);
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
   cursor: pointer;
-  font-size: 20px;
-  line-height: 1;
+  line-height: 0;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-page__action-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.profile-page__action-btn--pdf {
+  color: #d32f2f;
+  border-color: #f3b4b4;
+  background: #fff5f5;
+}
+
+.profile-page__action-btn--print {
+  color: #4b5563;
+  border-color: #cfd4dc;
+  background: #f5f7fb;
 }
 
 .profile-layout {
@@ -1909,6 +1929,63 @@ body {
   font-size: 13px;
   line-height: 1.5;
   font-weight: 500;
+}
+
+.profile-content__view-more {
+  border: none;
+  background: transparent;
+  color: var(--accent-1);
+  font-weight: 700;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.profile-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+}
+
+.profile-detail-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.55);
+}
+
+.profile-detail-modal__dialog {
+  position: relative;
+  width: min(520px, calc(100vw - 32px));
+  background: var(--white);
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px rgba(16, 24, 40, 0.25);
+}
+
+.profile-detail-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.profile-detail-modal__dialog h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--accent-1);
+}
+
+.profile-detail-modal__dialog p {
+  margin: 12px 0 0;
+  line-height: 1.6;
+  font-size: 14px;
 }
 
 .profile-content__side-row p span {
