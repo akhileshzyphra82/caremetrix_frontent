@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 type ProfileTab =
   | 'Personal Info'
@@ -68,14 +68,25 @@ const tabContent: Record<ProfileTab, Array<{ label: string; value: string }>> = 
   ]
 };
 
-function profileInitials(name: string) {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-}
+const profileInfoItems = [
+  { icon: '👤', label: 'Name' },
+  { icon: '✉️', label: 'Email' },
+  { icon: '🆔', label: 'NDIS Number' },
+  { icon: '📍', label: 'Location' }
+] as const;
+
+const rightPanelItems = [
+  { icon: '📅', label: 'Profile Created', value: '11/03/2024' },
+  { icon: '🕒', label: 'Last Updated', value: '15/02/2026' },
+  { icon: '📌', label: 'Current Status', value: 'Active Participant' },
+  { icon: '🏥', label: 'Primary Support Team', value: 'Clinical & Community Care' },
+  { icon: '📞', label: 'Emergency Support', value: '+61 1300 552 908' },
+  { icon: '📄', label: 'Preferred Documentation', value: 'Digital records and e-sign' }
+] as const;
+
+const dummyAvatar = `data:image/svg+xml;utf8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none"><defs><linearGradient id="g" x1="21" y1="22" x2="178" y2="181" gradientUnits="userSpaceOnUse"><stop stop-color="#dfdbfb"/><stop offset="1" stop-color="#bca8ff"/></linearGradient></defs><circle cx="100" cy="100" r="100" fill="url(#g)"/><circle cx="100" cy="78" r="32" fill="#fff" fill-opacity="0.95"/><path d="M39 168c0-30.376 24.624-55 55-55h12c30.376 0 55 24.624 55 55v5H39v-5z" fill="#fff" fill-opacity="0.95"/></svg>`
+)}`;
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
@@ -84,7 +95,12 @@ export default function ProfilePage() {
   const participantNdis = params.get('ndis') || '431762001';
   const participantUid = params.get('uid') || '701';
 
-  const avatarFallback = useMemo(() => profileInitials(participantName), [participantName]);
+  const infoValues = [
+    participantName,
+    `${participantName.toLowerCase().replace(/\s+/g, '.')}@example.com`,
+    participantNdis,
+    'Melbourne, VIC'
+  ];
 
   return (
     <section className="menu-panel active profile-page">
@@ -108,45 +124,38 @@ export default function ProfilePage() {
           <article className="profile-card">
             <div className="profile-card__banner" role="presentation" />
             <div className="profile-card__avatar-wrap">
-              <div className="profile-card__avatar" aria-label="Participant avatar">
-                {avatarFallback}
-              </div>
+              <img className="profile-card__avatar" src={dummyAvatar} alt="Participant profile" />
             </div>
             <h2>{participantName}</h2>
             <p className="profile-card__uid">UID #{participantUid}</p>
 
             <ul className="profile-card__details">
-              <li>
-                <span>👤</span>
-                <p>Name: {participantName}</p>
-              </li>
-              <li>
-                <span>✉️</span>
-                <p>Email: {participantName.toLowerCase().replace(/\s+/g, '.')}@example.com</p>
-              </li>
-              <li>
-                <span>🆔</span>
-                <p>NDIS Number: {participantNdis}</p>
-              </li>
-              <li>
-                <span>📍</span>
-                <p>Location: Melbourne, VIC</p>
-              </li>
+              {profileInfoItems.map((item, index) => (
+                <li key={item.label}>
+                  <span>{item.icon}</span>
+                  <p>
+                    <strong>{item.label}</strong>
+                    {infoValues[index]}
+                  </p>
+                </li>
+              ))}
             </ul>
-          </article>
 
-          <nav className="profile-tabs" aria-label="Profile sections">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`profile-tabs__item ${activeTab === tab ? 'is-active' : ''}`}
-                type="button"
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </nav>
+            <div className="profile-card__partition" role="presentation" />
+
+            <nav className="profile-tabs" aria-label="Profile sections">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  className={`profile-tabs__item ${activeTab === tab ? 'is-active' : ''}`}
+                  type="button"
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
+          </article>
         </aside>
 
         <article className="profile-content">
@@ -156,12 +165,29 @@ export default function ProfilePage() {
           </div>
 
           <div className="profile-content__grid">
-            {tabContent[activeTab].map((item) => (
-              <section className="profile-content__card" key={item.label}>
-                <p>{item.label}</p>
-                <h4>{item.value}</h4>
-              </section>
-            ))}
+            <section className="profile-content__list" aria-label={`${activeTab} details`}>
+              {tabContent[activeTab].map((item) => (
+                <div className="profile-content__row" key={item.label}>
+                  <p>
+                    <span>•</span>
+                    {item.label}
+                  </p>
+                  <h4>{item.value}</h4>
+                </div>
+              ))}
+            </section>
+
+            <aside className="profile-content__side" aria-label="Additional profile highlights">
+              {rightPanelItems.map((item) => (
+                <div className="profile-content__side-row" key={item.label}>
+                  <p>
+                    <span>{item.icon}</span>
+                    {item.label}
+                  </p>
+                  <h4>{item.value}</h4>
+                </div>
+              ))}
+            </aside>
           </div>
         </article>
       </div>
