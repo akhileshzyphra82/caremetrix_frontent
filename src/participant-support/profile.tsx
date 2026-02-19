@@ -124,7 +124,7 @@ export default function ProfilePage() {
             aria-label="Back to clients"
             title="Back to clients"
           >
-            ←
+            ↩
           </button>
           <div className="clients-breadcrumb" aria-label="Breadcrumb">
             <span>Dashboard</span>
@@ -138,7 +138,7 @@ export default function ProfilePage() {
         </div>
         <div className="profile-page__actions" aria-label="Profile actions">
           <button type="button" title="Download PDF" aria-label="Download PDF">
-            ⭳
+            📄
           </button>
           <button type="button" title="Print" aria-label="Print profile">
             🖨
@@ -205,28 +205,6 @@ export default function ProfilePage() {
             </section>
 
             <aside className="profile-content__side" aria-label="Additional profile highlights">
-              {activeTab === 'Personal Info' ? (
-                <>
-                  <section className="profile-content__insights" aria-label="Client health insights">
-                    {quickInsightItems.map((item) => (
-                      <article key={item.title} className="profile-content__insight-card">
-                        <p>{item.title}</p>
-                        <h4>{item.value}</h4>
-                      </article>
-                    ))}
-                  </section>
-
-                  <section className="profile-content__about" aria-label="About the client">
-                    <p>About the Client</p>
-                    <h4>
-                      Olivia is a positive and social participant who enjoys art workshops, structured routines,
-                      and community activities. She prefers clear communication, calm environments, and weekly
-                      progress summaries shared with her support network.
-                    </h4>
-                  </section>
-                </>
-              ) : null}
-
               {rightPanelItems.map((item) => (
                 <div className="profile-content__side-row" key={item.label}>
                   <p>
@@ -238,6 +216,28 @@ export default function ProfilePage() {
               ))}
             </aside>
           </div>
+
+          {activeTab === 'Personal Info' ? (
+            <section className="profile-content__personal-insights" aria-label="Client health insights">
+              <div className="profile-content__insights">
+                {quickInsightItems.map((item) => (
+                  <article key={item.title} className="profile-content__insight-card">
+                    <p>{item.title}</p>
+                    <h4>{item.value}</h4>
+                  </article>
+                ))}
+              </div>
+
+              <section className="profile-content__about" aria-label="About the client">
+                <p>About the Client</p>
+                <h4>
+                  Olivia is a positive and social participant who enjoys art workshops, structured routines,
+                  and community activities. She prefers clear communication, calm environments, and weekly
+                  progress summaries shared with her support network.
+                </h4>
+              </section>
+            </section>
+          ) : null}
         </article>
       </div>
     </section>
