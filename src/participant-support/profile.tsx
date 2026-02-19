@@ -124,6 +124,11 @@ export default function ProfilePage() {
   const aboutClientFull =
     'Olivia is a positive and social participant who enjoys art workshops, structured routines, and community activities. She prefers clear communication, calm environments, and weekly progress summaries shared with her support network.';
 
+  const handleOpenCriticalAlert = () => {
+    setShowCriticalAlertModal(true);
+    setHasReadCriticalAlert(false);
+  };
+
   return (
     <section className="menu-panel active profile-page">
       <div className="profile-page__breadcrumb-row">
@@ -246,6 +251,19 @@ export default function ProfilePage() {
                   <article
                     key={item.title}
                     className={`profile-content__insight-card ${item.title === 'Alert & Allergy' ? 'profile-content__insight-card--critical' : ''}`}
+                    onClick={item.title === 'Alert & Allergy' ? handleOpenCriticalAlert : undefined}
+                    onKeyDown={
+                      item.title === 'Alert & Allergy'
+                        ? (event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              handleOpenCriticalAlert();
+                            }
+                          }
+                        : undefined
+                    }
+                    role={item.title === 'Alert & Allergy' ? 'button' : undefined}
+                    tabIndex={item.title === 'Alert & Allergy' ? 0 : undefined}
                   >
                     <p>
                       <span className="profile-content__insight-icon" aria-hidden="true">
@@ -253,12 +271,7 @@ export default function ProfilePage() {
                       </span>
                       {item.title}
                     </p>
-                    <h4>
-                      {item.value}{' '}
-                      <button className="profile-content__view-more" type="button" onClick={() => setActiveDetail(item)}>
-                        View more
-                      </button>
-                    </h4>
+                    <h4>{item.value}</h4>
                   </article>
                 ))}
               </div>
@@ -309,15 +322,23 @@ export default function ProfilePage() {
           <div className="profile-detail-modal__backdrop" aria-hidden="true" />
           <div className="profile-detail-modal__dialog" role="document">
             <h3 id="critical-alert-title">🚨 Alert & Allergy - Mandatory Acknowledgement</h3>
-            <p>
-              Peanut allergy and penicillin sensitivity. Emergency response guide attached to profile.
-              <button className="profile-content__view-more" type="button" onClick={() => setActiveDetail(quickInsightItems[0])}>
-                {' '}View more
-              </button>
+            <p className="profile-detail-modal__client-name">
+              <strong>Client:</strong> {participantName}
             </p>
-            <p>
-              <strong>Diagnosis:</strong> Autism spectrum disorder (Level 2), anxiety, and mild mobility limitation in left knee.
-            </p>
+            <div className="profile-detail-modal__content" role="region" aria-label="Critical alert details">
+              <p>
+                <strong>Alert & Allergy:</strong> Peanut allergy and penicillin sensitivity. Emergency response guide attached to profile.
+              </p>
+              <p>
+                <strong>Diagnosis:</strong> Autism spectrum disorder (Level 2), anxiety, and mild mobility limitation in left knee.
+              </p>
+              <p>
+                <strong>Medication:</strong> Sertraline 50mg daily, Vitamin D weekly, and PRN antihistamine as advised by GP.
+              </p>
+              <p>
+                <strong>Communication Note:</strong> Use calm and clear instructions, allow additional response time, and escalate to clinical manager immediately for any allergic reaction signs.
+              </p>
+            </div>
             <label className="profile-detail-modal__consent">
               <input
                 type="checkbox"
