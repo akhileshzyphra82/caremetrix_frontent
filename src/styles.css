@@ -3067,19 +3067,24 @@ label {
 }
 
 .login-card h1 {
-  margin: 10px 0 10px;
-  font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 2.9vw, 2.5rem);
 }
 
 .login-card__heading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .login-card__heading-text {
   color: var(--hero-text);
+}
+
+.login-card__heading-logo-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .login-card__heading-logo {
@@ -3150,11 +3155,17 @@ label {
 .login-form__toggle {
   border: none;
   background: none;
-  color: #6d5aa7;
-  font-weight: 600;
-  font-size: 0.84rem;
   cursor: pointer;
   padding: 0 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form__toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: #6d5aa7;
 }
 
 .login-form__links {
