@@ -149,16 +149,14 @@ function App() {
       <div className="login-page">
         <div className="login-page__panel login-page__panel--form">
           <div className="login-card">
-            <p className="login-card__tag">Welcome back</p>
             <h1 className="login-card__heading">
-              <span className="login-card__heading-text">Sign in to</span>
-              <img className="login-card__heading-logo" src={CARE_MATRIX_LOGO} alt="CareMatrix" />
+              Welcome to <span className="login-card__heading-logo-text">Caremetrix</span>
             </h1>
             <p className="login-card__subtitle">Deliver exceptional care operations with one secure workspace.</p>
 
             <form className="login-form" onSubmit={onLoginSubmit}>
               <label className="login-form__field" htmlFor="login-email">
-                ID
+                User ID
                 <span className="login-form__input-wrap">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 2.4-8 5.3V22h16v-2.7c0-2.9-3.6-5.3-8-5.3z" />
@@ -167,7 +165,7 @@ function App() {
                     id="login-email"
                     type="text"
                     value={loginEmail}
-                    placeholder="Enter your ID"
+                    placeholder="Enter your User ID"
                     onChange={(event) => setLoginEmail(event.target.value)}
                     required
                   />
@@ -188,8 +186,21 @@ function App() {
                     onChange={(event) => setLoginPassword(event.target.value)}
                     required
                   />
-                  <button className="login-form__toggle" type="button" onClick={() => setShowPassword((state) => !state)}>
-                    {showPassword ? 'Hide' : 'Show'}
+                  <button
+                    className="login-form__toggle"
+                    type="button"
+                    onClick={() => setShowPassword((state) => !state)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? (
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 4.3L4.3 3l16.7 16.7-1.3 1.3-3.1-3.1A11.7 11.7 0 0112 19C6.5 19 2.1 15.5.5 12c.9-2 2.3-3.8 4-5.2L3 4.3zm8.6 8.6a2 2 0 002.5 2.5l-2.5-2.5zM12 5c5.5 0 9.9 3.5 11.5 7a12 12 0 01-3.9 4.8L18 15.2A9.9 9.9 0 0021 12c-1.3-2.5-4.7-5-9-5-1.2 0-2.3.2-3.3.6L7.2 6.1C8.7 5.4 10.3 5 12 5zm-4 4a4 4 0 015.2 5.2l-1.5-1.5a2 2 0 00-2.4-2.4L7.8 8.8A4 4 0 018 9z" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 5c5.5 0 9.9 3.5 11.5 7-1.6 3.5-6 7-11.5 7S2.1 15.5.5 12C2.1 8.5 6.5 5 12 5zm0 2c-4.3 0-7.7 2.5-9 5 1.3 2.5 4.7 5 9 5s7.7-2.5 9-5c-1.3-2.5-4.7-5-9-5zm0 2.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z" />
+                      </svg>
+                    )}
                   </button>
                 </span>
               </label>
