@@ -130,6 +130,16 @@ function App() {
     event.preventDefault();
     setIsAuthenticated(true);
     window.localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+    navigate('/dashboard');
+  };
+
+  const onLogout = () => {
+    setIsAuthenticated(false);
+    setProfileMenuOpen(false);
+    setLoginEmail('');
+    setLoginPassword('');
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    navigate('/login');
   };
 
   if (!isAuthenticated) {
@@ -259,7 +269,7 @@ function App() {
               <button className="profile-dropdown__item" role="menuitem" type="button">
                 Settings
               </button>
-              <button className="profile-dropdown__item profile-dropdown__item--danger" role="menuitem" type="button">
+              <button className="profile-dropdown__item profile-dropdown__item--danger" role="menuitem" type="button" onClick={onLogout}>
                 Logout
               </button>
             </div>
