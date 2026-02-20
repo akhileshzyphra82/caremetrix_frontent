@@ -1,4 +1,4 @@
-import { type ComponentType, useEffect, useMemo, useState } from 'react';
+import { type ComponentType, type FormEvent, useEffect, useMemo, useState } from 'react';
 import { getPathForMenu, sidebarModules } from './shared';
 import DashboardPage from './dashboard/dashboard';
 import ClientsPage from './participant-support/clients';
@@ -26,6 +26,8 @@ import NoticeBoardPage from './information/notice-board';
 import CalendarPage from './information/calendar';
 import EventPage from './information/event';
 import FaqPage from './information/faq';
+
+const CARE_MATRIX_LOGO = 'https://pub-c61fbd9fa813427186a41ed133f48034.r2.dev/asset/website-banner/bg-logo.png';
 
 const routeComponents: Record<string, ComponentType> = {
   '/': DashboardPage,
@@ -94,6 +96,9 @@ function App() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   useEffect(() => {
     const onChange = () => setPath(getCurrentPath());
@@ -120,6 +125,74 @@ function App() {
     [path]
   );
 
+  const onLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsAuthenticated(true);
+    navigate('/dashboard');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="login-page">
+        <div className="login-page__panel login-page__panel--form">
+          <div className="login-card">
+            <p className="login-card__tag">Welcome back</p>
+            <h1>Sign in to CareMatrix</h1>
+            <p className="login-card__subtitle">Deliver exceptional care operations with one secure workspace.</p>
+
+            <form className="login-form" onSubmit={onLoginSubmit}>
+              <label className="login-form__field" htmlFor="login-email">
+                Email address
+                <input
+                  id="login-email"
+                  type="email"
+                  value={loginEmail}
+                  placeholder="you@carematrix.com"
+                  onChange={(event) => setLoginEmail(event.target.value)}
+                  required
+                />
+              </label>
+
+              <label className="login-form__field" htmlFor="login-password">
+                Password
+                <input
+                  id="login-password"
+                  type="password"
+                  value={loginPassword}
+                  placeholder="Enter your password"
+                  onChange={(event) => setLoginPassword(event.target.value)}
+                  required
+                />
+              </label>
+
+              <button className="login-form__forgot" type="button">
+                Forgot password?
+              </button>
+
+              <button className="login-form__submit" type="submit">
+                Login to dashboard
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="login-page__panel login-page__panel--brand">
+          <img className="login-brand__logo" src={CARE_MATRIX_LOGO} alt="CareMatrix logo" />
+          <h2>Care that scales. Operations that inspire.</h2>
+          <p>
+            Build stronger teams, protect compliance, and create more meaningful participant outcomes with one elegant platform built for modern
+            support services.
+          </p>
+          <ul className="login-brand__points">
+            <li>Unified participant, staff, and shift management</li>
+            <li>Real-time dashboards for confident decision making</li>
+            <li>Designed for quality, speed, and trust</li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <header className="topbar">
@@ -130,7 +203,7 @@ function App() {
             </svg>
           </button>
           <div className="header-brand" aria-label="CareMatrix">
-            <img className="header-logo" src="https://pub-c61fbd9fa813427186a41ed133f48034.r2.dev/asset/website-banner/bg-logo.png" alt="CareMatrix logo" />
+            <img className="header-logo" src={CARE_MATRIX_LOGO} alt="CareMatrix logo" />
           </div>
         </div>
 
