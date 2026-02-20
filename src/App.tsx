@@ -150,7 +150,8 @@ function App() {
         <div className="login-page__panel login-page__panel--form">
           <div className="login-card">
             <h1 className="login-card__heading">
-              Welcome to <span className="login-card__heading-logo-text">Caremetrix</span>
+              <span>Welcome to</span>
+              <img className="login-card__heading-logo" src={CARE_MATRIX_LOGO} alt="CareMatrix logo" />
             </h1>
             <p className="login-card__subtitle">Deliver exceptional care operations with one secure workspace.</p>
 
