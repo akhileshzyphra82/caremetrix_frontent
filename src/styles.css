@@ -3071,6 +3071,19 @@ label {
   font-size: clamp(1.8rem, 2.6vw, 2.3rem);
 }
 
+.login-card__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-card__heading-logo {
+  height: clamp(30px, 2.8vw, 38px);
+  width: auto;
+  object-fit: contain;
+}
+
 .login-card__subtitle {
   margin: 0 0 24px;
   color: var(--muted);
@@ -3137,7 +3150,7 @@ label {
   color: var(--white);
   background:
     linear-gradient(145deg, rgba(19, 13, 44, 0.85), rgba(58, 31, 128, 0.72)),
-    url('https://images.unsplash.com/photo-1573495627361-d9b87960b12d?auto=format&fit=crop&w=1400&q=80') center/cover;
+    url('https://images.unsplash.com/photo-1666214280391-8ff5bd3c0bf0?auto=format&fit=crop&w=1400&q=80') center/cover;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
