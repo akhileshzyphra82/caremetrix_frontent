@@ -100,6 +100,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => window.localStorage.getItem(AUTH_STORAGE_KEY) === 'true');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const onChange = () => setPath(getCurrentPath());
@@ -138,6 +139,7 @@ function App() {
     setProfileMenuOpen(false);
     setLoginEmail('');
     setLoginPassword('');
+    setShowPassword(false);
     window.localStorage.removeItem(AUTH_STORAGE_KEY);
     navigate('/login');
   };
@@ -149,39 +151,57 @@ function App() {
           <div className="login-card">
             <p className="login-card__tag">Welcome back</p>
             <h1 className="login-card__heading">
-              <span>Sign in to</span>
+              <span className="login-card__heading-text">Sign in to</span>
               <img className="login-card__heading-logo" src={CARE_MATRIX_LOGO} alt="CareMatrix" />
             </h1>
             <p className="login-card__subtitle">Deliver exceptional care operations with one secure workspace.</p>
 
             <form className="login-form" onSubmit={onLoginSubmit}>
               <label className="login-form__field" htmlFor="login-email">
-                Email address
-                <input
-                  id="login-email"
-                  type="email"
-                  value={loginEmail}
-                  placeholder="you@carematrix.com"
-                  onChange={(event) => setLoginEmail(event.target.value)}
-                  required
-                />
+                ID
+                <span className="login-form__input-wrap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 2.4-8 5.3V22h16v-2.7c0-2.9-3.6-5.3-8-5.3z" />
+                  </svg>
+                  <input
+                    id="login-email"
+                    type="text"
+                    value={loginEmail}
+                    placeholder="Enter your ID"
+                    onChange={(event) => setLoginEmail(event.target.value)}
+                    required
+                  />
+                </span>
               </label>
 
               <label className="login-form__field" htmlFor="login-password">
                 Password
-                <input
-                  id="login-password"
-                  type="password"
-                  value={loginPassword}
-                  placeholder="Enter your password"
-                  onChange={(event) => setLoginPassword(event.target.value)}
-                  required
-                />
+                <span className="login-form__input-wrap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M17 10h-1V8a4 4 0 10-8 0v2H7a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-8a2 2 0 00-2-2zm-6 6.7V18a1 1 0 102 0v-1.3a2 2 0 10-2 0zM10 10V8a2 2 0 114 0v2h-4z" />
+                  </svg>
+                  <input
+                    id="login-password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={loginPassword}
+                    placeholder="Enter your password"
+                    onChange={(event) => setLoginPassword(event.target.value)}
+                    required
+                  />
+                  <button className="login-form__toggle" type="button" onClick={() => setShowPassword((state) => !state)}>
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                </span>
               </label>
 
-              <button className="login-form__forgot" type="button">
-                Forgot password?
-              </button>
+              <div className="login-form__links">
+                <button className="login-form__link" type="button">
+                  Forgot password?
+                </button>
+                <button className="login-form__link" type="button">
+                  Ask for Help
+                </button>
+              </div>
 
               <button className="login-form__submit" type="submit">
                 Login to dashboard
