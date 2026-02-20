@@ -28,6 +28,7 @@ import EventPage from './information/event';
 import FaqPage from './information/faq';
 
 const CARE_MATRIX_LOGO = 'https://pub-c61fbd9fa813427186a41ed133f48034.r2.dev/asset/website-banner/bg-logo.png';
+const AUTH_STORAGE_KEY = 'carematrix-authenticated';
 
 const routeComponents: Record<string, ComponentType> = {
   '/': DashboardPage,
@@ -96,7 +97,7 @@ function App() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => window.localStorage.getItem(AUTH_STORAGE_KEY) === 'true');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
@@ -128,7 +129,7 @@ function App() {
   const onLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsAuthenticated(true);
-    navigate('/dashboard');
+    window.localStorage.setItem(AUTH_STORAGE_KEY, 'true');
   };
 
   if (!isAuthenticated) {
@@ -137,7 +138,10 @@ function App() {
         <div className="login-page__panel login-page__panel--form">
           <div className="login-card">
             <p className="login-card__tag">Welcome back</p>
-            <h1>Sign in to CareMatrix</h1>
+            <h1 className="login-card__heading">
+              <span>Sign in to</span>
+              <img className="login-card__heading-logo" src={CARE_MATRIX_LOGO} alt="CareMatrix" />
+            </h1>
             <p className="login-card__subtitle">Deliver exceptional care operations with one secure workspace.</p>
 
             <form className="login-form" onSubmit={onLoginSubmit}>
