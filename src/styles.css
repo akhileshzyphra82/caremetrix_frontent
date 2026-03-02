@@ -86,7 +86,7 @@ body {
 }
 
 .app[data-sidebar="expanded"] {
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 260px 1fr;
 }
 
 .app[data-sidebar="expanded"] .sidebar-item {
@@ -1484,7 +1484,7 @@ body {
 
 .clients-page__topbar h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.1;
   letter-spacing: -0.02em;
   font-weight: 700;
@@ -1528,7 +1528,7 @@ body {
   border-radius: 14px;
   background: #fff;
   padding: 0 14px;
-  height: 46px;
+  height: 40px;
 }
 
 .clients-search svg,
@@ -1571,7 +1571,7 @@ body {
   color: #b65ab7;
   border-radius: 12px;
   padding: 8px 16px;
-  height: 46px;
+  height: 40px;
   font-weight: 600;
   min-width: 108px;
   background: var(--surface);
@@ -1622,8 +1622,8 @@ body {
 }
 
 .clients-export {
-  height: 46px;
-  width: 56px;
+  height: 40px;
+  width: 50px;
   border-radius: 12px;
   border: 1px solid #d88dd5;
   background: #fff;
@@ -2600,11 +2600,16 @@ body {
 .menu-tab:focus-visible,
 .sidebar-item:focus-visible,
 .profile-trigger:focus-visible,
-input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: 3px solid rgba(var(--accent-1-rgb), 0.35);
   outline-offset: 2px;
+}
+
+input:focus,
+input:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .timeline {
