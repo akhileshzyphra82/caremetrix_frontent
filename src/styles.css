@@ -1629,20 +1629,29 @@ body {
 .clients-table-wrap {
   border-radius: 12px;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 68vh;
 }
 
 .clients-table thead th {
   background: #eee6f5;
   color: #393746;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
+  border-right: 1px solid #e7e0f0;
 }
 
 .clients-table tbody td {
-  font-size: 12px;
+  font-size: 14px;
   color: #3a3a3a;
   vertical-align: middle;
+  border-right: 1px solid #ece9f0;
+}
+
+.clients-table thead th:last-child,
+.clients-table tbody td:last-child {
+  border-right: none;
 }
 
 .clients-table {
@@ -1661,7 +1670,7 @@ body {
 
 .clients-pagination-bar p {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   color: #45414f;
   font-weight: 500;
 }
@@ -1686,7 +1695,7 @@ body {
 .clients-records-per-page select {
   border: 1px solid #ece9f0;
   border-radius: 16px;
-  min-height: 44px;
+  height: 35px;
   min-width: 84px;
   padding: 0 12px;
   font-size: 14px;
@@ -1700,7 +1709,7 @@ body {
   border: 1px solid #ece9f0;
   background: #fff;
   border-radius: 16px;
-  min-height: 44px;
+  height: 35px;
   padding: 0 20px;
   font-size: 14px;
   font-weight: 600;
