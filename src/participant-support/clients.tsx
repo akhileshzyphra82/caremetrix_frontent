@@ -400,7 +400,7 @@ export default function ClientsPage() {
           <table className="data-table clients-table">
           <thead>
             <tr>
-              <th>UID</th>
+              <th>S.No.</th>
               <th>Participant Name</th>
               <th className="hide-on-compact">Gender</th>
               <th className="hide-on-compact">Date of Birth</th>
@@ -414,13 +414,21 @@ export default function ClientsPage() {
             </tr>
           </thead>
           <tbody>
-            {paginatedClients.map((client) => (
+            {paginatedClients.map((client, index) => {
+              const serialNumber = startRecord + index;
+
+              return (
               <tr key={client.uid}>
-                <td>{client.uid}</td>
+                <td>{serialNumber}</td>
                 <td>
                   <button className="participant-cell participant-cell--link" type="button" onClick={() => openClientProfile(client)}>
                     <img src={client.avatar} alt={client.name} />
-                    <span>{client.name}</span>
+                    <span className="participant-cell__details">
+                      <strong>{client.name}</strong>
+                      <small>
+                        S.No: {serialNumber} &nbsp;|&nbsp; Gender: {client.gender}
+                      </small>
+                    </span>
                   </button>
                 </td>
                 <td className="hide-on-compact">{client.gender}</td>
@@ -481,7 +489,8 @@ export default function ClientsPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {filteredClients.length === 0 && (
               <tr>
                 <td colSpan={11} className="clients-empty-state">
