@@ -1640,7 +1640,6 @@ body {
   overflow-y: auto;
   width: 100%;
   max-width: 100%;
-  max-height: min(62vh, 680px);
 }
 
 .clients-table thead th {

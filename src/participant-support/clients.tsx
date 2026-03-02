@@ -402,8 +402,6 @@ export default function ClientsPage() {
             <tr>
               <th>S.No.</th>
               <th>Participant Name</th>
-              <th className="hide-on-compact">Gender</th>
-              <th className="hide-on-compact">Date of Birth</th>
               <th className="show-on-compact">Personal Info</th>
               <th>Informal Decision Maker</th>
               <th>Cultural Identity</th>
@@ -425,14 +423,17 @@ export default function ClientsPage() {
                     <img src={client.avatar} alt={client.name} />
                     <span className="participant-cell__details">
                       <strong>{client.name}</strong>
+                       <small> <span>DOB: {client.dateOfBirth}</span></small>
                       <small>
-                        S.No: {serialNumber} &nbsp;|&nbsp; Gender: {client.gender}
+                      UID : {client.uid} &nbsp;|&nbsp; Gender: {client.gender}
+                     
                       </small>
+                      
                     </span>
                   </button>
                 </td>
-                <td className="hide-on-compact">{client.gender}</td>
-                <td className="hide-on-compact">{client.dateOfBirth}</td>
+               
+
                 <td className="show-on-compact">
                   <div className="compact-info">
                     <strong>{client.gender}</strong>
