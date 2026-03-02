@@ -1475,7 +1475,7 @@ body {
 
 .clients-page__topbar h1 {
   margin: 0;
-  font-size: 40px;
+  font-size: 28px;
   line-height: 1.1;
   letter-spacing: -0.02em;
   font-weight: 700;
@@ -1485,21 +1485,21 @@ body {
 .clients-page__topbar p {
   margin: 8px 0 0;
   color: #8f8f95;
-  font-size: 28px;
-  line-height: 1.2;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .clients-page__add-btn {
   border: 0;
-  padding: 13px 24px;
-  border-radius: 14px;
-  font-size: 30px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
   background: linear-gradient(90deg, #5d78de 0%, #c06dd9 54%, #f4af4f 100%);
   color: var(--white);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .clients-toolbar {
@@ -1539,7 +1539,7 @@ body {
   background: transparent;
   height: 100%;
   width: 100%;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .clients-search input::placeholder {
@@ -1633,19 +1633,114 @@ body {
 .clients-table thead th {
   background: #eee6f5;
   color: #393746;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
 }
 
 .clients-table tbody td {
-  font-size: 13px;
+  font-size: 12px;
   color: #3a3a3a;
   vertical-align: middle;
 }
 
 .clients-table {
-  min-width: 1120px;
+  min-width: 1024px;
+}
+
+.clients-pagination-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #ece9f0;
+  flex-wrap: wrap;
+}
+
+.clients-pagination-bar p {
+  margin: 0;
+  font-size: 16px;
+  color: #45414f;
+  font-weight: 500;
+}
+
+.clients-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.clients-records-per-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #2f2f38;
+  font-weight: 600;
+}
+
+.clients-records-per-page select {
+  border: 1px solid #ece9f0;
+  border-radius: 16px;
+  min-height: 44px;
+  min-width: 84px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2f38;
+  background: #fff;
+}
+
+.clients-pagination-apply,
+.clients-page-btn {
+  border: 1px solid #ece9f0;
+  background: #fff;
+  border-radius: 16px;
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2f38;
+  cursor: pointer;
+}
+
+.clients-page-btn--number {
+  min-width: 44px;
+  padding: 0;
+}
+
+.clients-page-btn--number.is-active {
+  border-color: #f0d5e6;
+  background: #fbe8f3;
+  color: #be5cae;
+}
+
+.clients-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.show-on-compact {
+  display: none;
+}
+
+.compact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compact-info strong {
+  font-size: 12px;
+  color: #2f2f38;
+}
+
+.compact-info span {
+  font-size: 11px;
+  color: #7f7d88;
 }
 
 .participant-cell {
@@ -1678,15 +1773,15 @@ body {
 
 @media (max-width: 1200px) {
   .clients-page__topbar h1 {
-    font-size: 30px;
+    font-size: 24px;
   }
 
   .clients-page__topbar p {
-    font-size: 20px;
+    font-size: 13px;
   }
 
   .clients-page__add-btn {
-    font-size: 20px;
+    font-size: 14px;
     padding: 10px 18px;
   }
 }
@@ -1723,17 +1818,17 @@ body {
   }
 
   .clients-page__topbar h1 {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .clients-page__topbar p {
-    font-size: 16px;
+    font-size: 12px;
   }
 
   .clients-page__add-btn {
     width: 100%;
     justify-content: center;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .clients-filter span {
@@ -1748,6 +1843,34 @@ body {
 
   .clients-export {
     width: 46px;
+  }
+
+  .clients-pagination-bar {
+    padding: 12px;
+  }
+
+  .clients-pagination-bar p {
+    font-size: 14px;
+  }
+
+  .clients-records-per-page {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .clients-pagination-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .hide-on-compact {
+    display: none;
+  }
+
+  .show-on-compact {
+    display: table-cell;
   }
 }
 
