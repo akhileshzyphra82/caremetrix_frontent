@@ -3716,6 +3716,24 @@ label {
   margin: 0;
   color: #4f485f;
   font-size: clamp(13px, 1.5vw, 16px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #b98be9;
+  flex: 0 0 16px;
+}
+
+.profile-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .profile-overview-card__completion {
@@ -3756,6 +3774,9 @@ label {
   margin: 0;
   color: #c44658;
   font-size: var(--font-size-title);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .profile-overview-card__alert p {
@@ -3773,6 +3794,8 @@ label {
   text-decoration: underline;
   cursor: pointer;
   padding: 0;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .profile-overview-card__details-grid {
@@ -3824,6 +3847,7 @@ label {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 700;
 }
 
 .profile-overview-card__summary-item h4 {
