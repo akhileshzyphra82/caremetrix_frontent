@@ -608,7 +608,7 @@ body {
 }
 
 .content {
-  padding: 26px 28px 40px;
+  padding: 26px 8px 40px;
 }
 
 .menu-panels {
@@ -1630,20 +1630,21 @@ body {
   border-radius: 12px;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 68vh;
+  /* max-height: 68vh; */
+  max-width: 960px;
 }
 
 .clients-table thead th {
   background: #eee6f5;
   color: #393746;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
   border-right: 1px solid #e7e0f0;
 }
 
 .clients-table tbody td {
-  font-size: 14px;
+  font-size: 12px;
   color: #3a3a3a;
   vertical-align: middle;
   border-right: 1px solid #ece9f0;
@@ -2889,7 +2890,7 @@ textarea.is-error {
 
 label {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 6px;
   font-size: 13px;
   color: var(--text);
