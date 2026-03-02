@@ -16,16 +16,10 @@ type ProfileField = {
 };
 
 type IconName =
-  | 'person'
-  | 'phone'
-  | 'location'
-  | 'id'
-  | 'guardian'
-  | 'calendar'
+  | 'datapoint'
   | 'medical'
   | 'pill'
   | 'user-outline'
-  | 'female'
   | 'warning';
 
 const tabs: ProfileTab[] = [
@@ -79,42 +73,43 @@ const fieldTemplate: ProfileField[] = [
 ];
 
 const typeIcon: Record<ProfileField['type'], IconName> = {
-  name: 'person',
-  contact: 'phone',
-  address: 'location',
-  identity: 'id',
-  guardian: 'guardian',
-  date: 'calendar'
+  name: 'datapoint',
+  contact: 'datapoint',
+  address: 'datapoint',
+  identity: 'datapoint',
+  guardian: 'datapoint',
+  date: 'datapoint'
 };
 
 const metaRows: { icon: IconName; label: string }[] = [
-  { icon: 'female', label: 'Female' },
-  { icon: 'location', label: 'Australia' },
-  { icon: 'guardian', label: 'Julie Stirling' },
-  { icon: 'id', label: '6548565651' },
-  { icon: 'calendar', label: '14/05/1973' },
-  { icon: 'phone', label: '+65845 484' }
+  { icon: 'datapoint', label: 'Female' },
+  { icon: 'datapoint', label: 'Australia' },
+  { icon: 'datapoint', label: 'Julie Stirling' },
+  { icon: 'datapoint', label: '6548565651' },
+  { icon: 'datapoint', label: '14/05/1973' },
+  { icon: 'datapoint', label: '+65845 484' }
 ];
 
 function ProfileIcon({ name }: { name: IconName }) {
   const paths: Record<IconName, string> = {
-    person: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
-    phone: 'M8.4 4h2.8l1.2 3.4-1.7 1.6a15 15 0 0 0 4.7 4.7l1.6-1.7L20 13.2V16c0 1.1-.9 2-2 2A14 14 0 0 1 4 6c0-1.1.9-2 2-2Z',
-    location: 'M12 21s6-5.3 6-10a6 6 0 1 0-12 0c0 4.7 6 10 6 10Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
-    id: 'M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6Zm4 3h8M8 13h5M8 17h3',
-    guardian: 'M12 3 5 6.5V11c0 4.4 2.8 8.4 7 9.7 4.2-1.3 7-5.3 7-9.7V6.5L12 3Zm0 5.4a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4Zm-3 8a3 3 0 1 1 6 0',
-    calendar: 'M7 3v3M17 3v3M4 8h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm2 7h3m2 0h3m-8 4h3',
+    datapoint: 'M5.5 18.5 10.4 13.6a2 2 0 0 1 2.8 0l2 2 3.3-3.4M12 11.6a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
     medical: 'M12 4v16M4 12h16',
     pill: 'M8 6a4 4 0 0 1 5.7 0l4.3 4.3a4 4 0 0 1-5.7 5.7L8 11.7A4 4 0 0 1 8 6Zm2.2 1.8 5.9 5.9',
     'user-outline': 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
-    female: 'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 8v10m-3 0h6m-3-3h3',
     warning: 'M12 4 4 20h16L12 4Zm0 5v5m0 3.5v.5'
   };
 
   return (
     <span className="profile-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d={paths[name]} />
+      <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <defs>
+          <linearGradient id="profileIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffb347" />
+            <stop offset="55%" stopColor="#d37cd4" />
+            <stop offset="100%" stopColor="#7a74ff" />
+          </linearGradient>
+        </defs>
+        <path d={paths[name]} stroke="url(#profileIconGradient)" />
       </svg>
     </span>
   );
