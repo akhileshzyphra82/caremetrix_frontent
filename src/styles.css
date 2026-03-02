@@ -192,6 +192,7 @@ body {
 
 .sidebar-parent.is-open {
   background: rgba(var(--white-rgb), 0.12);
+  margin-bottom: .5rem;
 }
 
 .sidebar-parent.is-open .sidebar-parent__chevron {
