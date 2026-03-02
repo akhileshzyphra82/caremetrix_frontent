@@ -3860,6 +3860,311 @@ label {
   font-weight: 500;
 }
 
+.medication-admin {
+  background: #f7f7f8;
+  border: 1px solid #e6e1eb;
+  border-radius: 14px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.medication-admin__profile-head {
+  background: #fff;
+  border: 1px solid #ebe6f0;
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1.1fr 1.3fr;
+  gap: 14px;
+}
+
+.medication-admin__participant {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.medication-admin__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.medication-admin__participant h2 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.medication-admin__participant p {
+  margin: 8px 0;
+  font-size: var(--font-size-content);
+  color: #686171;
+}
+
+.medication-admin__conditions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.medication-admin__conditions span {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #d8c7f0;
+  color: #6a43b2;
+  background: #f5f0fc;
+  font-size: 13px;
+}
+
+.medication-admin__notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.medication-admin__notes article {
+  border: 1px solid #f1bcc4;
+  background: #fff8f9;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.medication-admin__notes h3 {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #cc4a58;
+  font-size: 14px;
+}
+
+.medication-admin__notes p {
+  margin: 8px 0 0;
+  color: #524a5f;
+  font-size: var(--font-size-content);
+  line-height: 1.45;
+}
+
+.medication-admin__notes button {
+  border: none;
+  background: transparent;
+  color: #5e3bc4;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0;
+}
+
+.medication-admin__timing-tabs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  overflow-x: auto;
+  border: 1px solid #e4deeb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.medication-admin__timing-tab {
+  border: none;
+  border-right: 1px solid #ece7f2;
+  background: #fff;
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.medication-admin__timing-tab:last-child {
+  border-right: none;
+}
+
+.medication-admin__timing-tab strong {
+  display: block;
+  font-size: 34px;
+  line-height: 1;
+  color: #5e6672;
+}
+
+.medication-admin__timing-tab > span {
+  display: block;
+  margin-top: 6px;
+  color: #8a8494;
+  font-size: var(--font-size-content);
+}
+
+.medication-admin__timing-tab.is-active {
+  background: #efe9f7;
+  box-shadow: inset 0 -2px 0 #7f46cb;
+}
+
+.medication-admin__timing-badges {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.medication-admin__timing-badges small {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.medication-admin__timing-badges .is-success { background: #ddf4e5; color: #1e8f50; }
+.medication-admin__timing-badges .is-warn { background: #fce8bf; color: #ab7a08; }
+.medication-admin__timing-badges .is-muted { background: #eceef2; color: #6f7684; }
+.medication-admin__timing-badges .is-danger { background: #f9d9dd; color: #c63f53; }
+
+.medication-admin__schedule-note {
+  margin: 0;
+  border: 1px solid #3f68c3;
+  border-radius: 10px;
+  background: #e9f1ff;
+  color: #214da8;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.medication-admin__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.medication-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #ece7f2;
+  border-left-width: 4px;
+  overflow: hidden;
+}
+
+.medication-card.is-danger { border-left-color: #f05252; }
+.medication-card.is-warn { border-left-color: #f3b21b; }
+.medication-card.is-purple { border-left-color: #9f78d8; }
+
+.medication-card__head,
+.medication-card__dose-row,
+.medication-card__meta,
+.medication-card__chips,
+.medication-card__actions {
+  padding: 10px 12px;
+}
+
+.medication-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.medication-card__head h4 {
+  margin: 0;
+  font-size: var(--font-size-title-compact);
+}
+
+.medication-card__head p {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #81808c;
+}
+
+.medication-card__status {
+  align-self: flex-start;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.medication-card__status.is-overdue { background: #fbe1e5; color: #bc2f44; }
+.medication-card__status.is-due-now { background: #fce8bf; color: #9a6900; }
+.medication-card__status.is-scheduled { background: #ebedf2; color: #616978; }
+
+.medication-card__dose-row {
+  background: #f2ecfb;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.medication-card__dose-row strong {
+  font-size: 44px;
+  color: #6d2ac2;
+}
+
+.medication-card__dose-row p,
+.medication-card__dose-row small {
+  margin: 0;
+}
+
+.medication-card__dose-row > span {
+  font-size: 12px;
+  color: #8f8b9c;
+  border: 1px solid #ddd7e9;
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
+.medication-card__meta {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: #585264;
+}
+
+.medication-card__meta span {
+  color: #90909d;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.medication-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid #f0ebf6;
+}
+
+.medication-card__chips span {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #edf7f3;
+  border: 1px solid #c8eadb;
+  color: #30795d;
+}
+
+.medication-card__actions {
+  border-top: 1px solid #f0ebf6;
+  display: flex;
+  gap: 8px;
+}
+
+.medication-card__actions select {
+  flex: 1;
+  border: 1px solid #ccc4d7;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: var(--font-size-content);
+}
+
+.medication-card__actions button {
+  width: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #bfbfc3;
+  color: #fff;
+}
+
 
 @media (max-width: 1024px) {
   :root {
@@ -3899,6 +4204,14 @@ label {
   .profile-overview-card__details-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .medication-admin__profile-head {
+    grid-template-columns: 1fr;
+  }
+
+  .medication-admin__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -3919,5 +4232,14 @@ label {
   .profile-overview-card__details-grid,
   .profile-overview-card__summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .medication-admin__notes,
+  .medication-admin__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .medication-admin__participant {
+    align-items: flex-start;
   }
 }
