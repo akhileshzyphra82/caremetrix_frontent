@@ -216,18 +216,13 @@ export default function ClientsPage() {
 
   return (
     <section className="menu-panel active clients-page">
-      <div className="clients-breadcrumb" aria-label="Breadcrumb">
-        <span>Dashboard</span>
-        <span className="clients-breadcrumb__divider">›</span>
-        <span>Participant &amp; Support</span>
-        <span className="clients-breadcrumb__divider">›</span>
-        <strong>Clients</strong>
-      </div>
-
-      <div className="clients-page__topbar">
-        <div>
-          <h1>Participant List</h1>
-          <p>Personal, contact, and support coordination details.</p>
+      <div className="clients-page__header-row">
+        <div className="clients-breadcrumb" aria-label="Breadcrumb">
+          <span>Dashboard</span>
+          <span className="clients-breadcrumb__divider">›</span>
+          <span>Participant &amp; Support</span>
+          <span className="clients-breadcrumb__divider">›</span>
+          <strong>Clients</strong>
         </div>
 
         <button className="btn clients-page__add-btn" type="button">
@@ -235,71 +230,79 @@ export default function ClientsPage() {
         </button>
       </div>
 
-      <div className="clients-toolbar">
-        <label className="clients-search" aria-label="Search Clients">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M15.5 14h-.8l-.3-.3a6 6 0 10-.9.9l.3.3v.8l5 5 1.5-1.5-5-5zM10 15a5 5 0 110-10 5 5 0 010 10z" />
-          </svg>
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search Clients"
-          />
-        </label>
+      <div className="clients-page__card">
+        <div className="clients-page__topbar">
+          <div>
+            <h1>Participant List</h1>
+            <p>Personal, contact, and support coordination details.</p>
+          </div>
 
-        <div className="clients-toolbar__actions" ref={filterRef}>
-          <button className="clients-filter" type="button" onClick={() => setIsFilterOpen((current) => !current)}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
-            </svg>
-            <span>Filter</span>
-          </button>
+          <div className="clients-toolbar">
+            <label className="clients-search" aria-label="Search Clients">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.5 14h-.8l-.3-.3a6 6 0 10-.9.9l.3.3v.8l5 5 1.5-1.5-5-5zM10 15a5 5 0 110-10 5 5 0 010 10z" />
+              </svg>
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search Clients"
+              />
+            </label>
 
-          {isFilterOpen && (
-            <div className="clients-filter-panel" role="dialog" aria-label="Filter participants">
-              <div className="clients-filter-group">
-                <p>Status</p>
-                {(['All', 'Active', 'Inactive', 'Archive'] as Array<'All' | ClientStatus>).map((item) => (
-                  <label key={item}>
-                    <input type="checkbox" checked={statusFilters.includes(item)} onChange={() => handleStatusFilterChange(item)} />
-                    <span>{item}</span>
-                  </label>
-                ))}
-              </div>
+            <div className="clients-toolbar__actions" ref={filterRef}>
+              <button className="clients-filter" type="button" onClick={() => setIsFilterOpen((current) => !current)}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
+                </svg>
+                <span>Filter</span>
+              </button>
 
-              <div className="clients-filter-group">
-                <p>Gender</p>
-                {(['All', 'Female', 'Male', 'Other'] as Array<'All' | Client['gender']>).map((item) => (
-                  <label key={item}>
-                    <input type="checkbox" checked={genderFilters.includes(item)} onChange={() => handleGenderFilterChange(item)} />
-                    <span>{item}</span>
-                  </label>
-                ))}
-              </div>
+              {isFilterOpen && (
+                <div className="clients-filter-panel" role="dialog" aria-label="Filter participants">
+                  <div className="clients-filter-group">
+                    <p>Status</p>
+                    {(['All', 'Active', 'Inactive', 'Archive'] as Array<'All' | ClientStatus>).map((item) => (
+                      <label key={item}>
+                        <input type="checkbox" checked={statusFilters.includes(item)} onChange={() => handleStatusFilterChange(item)} />
+                        <span>{item}</span>
+                      </label>
+                    ))}
+                  </div>
 
-              <div className="clients-filter-group">
-                <p>Location</p>
-                <select value={locationFilter} onChange={(event) => setLocationFilter(event.target.value)}>
-                  <option>All Locations</option>
-                  {Array.from(new Set(clientsData.map((client) => client.culturalIdentity))).map((location) => (
-                    <option key={location}>{location}</option>
-                  ))}
-                </select>
-              </div>
+                  <div className="clients-filter-group">
+                    <p>Gender</p>
+                    {(['All', 'Female', 'Male', 'Other'] as Array<'All' | Client['gender']>).map((item) => (
+                      <label key={item}>
+                        <input type="checkbox" checked={genderFilters.includes(item)} onChange={() => handleGenderFilterChange(item)} />
+                        <span>{item}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="clients-filter-group">
+                    <p>Location</p>
+                    <select value={locationFilter} onChange={(event) => setLocationFilter(event.target.value)}>
+                      <option>All Locations</option>
+                      {Array.from(new Set(clientsData.map((client) => client.culturalIdentity))).map((location) => (
+                        <option key={location}>{location}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              <button className="clients-export" type="button" aria-label="Export list">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 2h12l4 4v16H4V2zm2 2v16h12V8h-4V4H6zm2 8h8v2H8v-2zm0 4h8v2H8v-2zm0-8h4v2H8V8z" />
+                </svg>
+              </button>
             </div>
-          )}
-
-          <button className="clients-export" type="button" aria-label="Export list">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 2h12l4 4v16H4V2zm2 2v16h12V8h-4V4H6zm2 8h8v2H8v-2zm0 4h8v2H8v-2zm0-8h4v2H8V8z" />
-            </svg>
-          </button>
+          </div>
         </div>
-      </div>
 
-      <div className="table-wrap clients-table-wrap">
-        <table className="data-table clients-table">
+        <div className="table-wrap clients-table-wrap">
+          <table className="data-table clients-table">
           <thead>
             <tr>
               <th>UID</th>
@@ -378,7 +381,8 @@ export default function ClientsPage() {
               </tr>
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </section>
   );
