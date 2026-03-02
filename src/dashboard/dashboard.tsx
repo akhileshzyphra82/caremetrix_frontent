@@ -3,20 +3,37 @@ import { fetchDummyApiResponse, type DashboardDetail, type DummyApiResponse } fr
 
 const fallbackBadgeClass = 'badge--gray';
 
-const statIcons = [
-  {
-    className: 'stat-card__icon--operations',
-    path: 'M4 5h16v3H4V5zm0 5h10v3H4v-3zm0 5h16v3H4v-3zm12-5h4v3h-4v-3z'
-  },
-  {
-    className: 'stat-card__icon--alerts',
-    path: 'M12 3l9 16H3L12 3zm0 5.5a1 1 0 00-1 1V13a1 1 0 002 0V9.5a1 1 0 00-1-1zm0 8a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z'
-  },
-  {
-    className: 'stat-card__icon--schedule',
-    path: 'M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm11 8H6v10h12V10zm-9 2h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2z'
+const defaultStatIcon = {
+  className: 'stat-card__icon--operations',
+  path: 'M4 5h16v3H4V5zm0 5h10v3H4v-3zm0 5h16v3H4v-3zm12-5h4v3h-4v-3z'
+} as const;
+
+function getStatIcon(label: string) {
+  const normalized = label.toLowerCase();
+
+  if (normalized.includes('shift') || normalized.includes('roster')) {
+    return {
+      className: 'stat-card__icon--schedule',
+      path: 'M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm11 8H6v10h12V10zm-9 2h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2z'
+    };
   }
-] as const;
+
+  if (normalized.includes('gap') || normalized.includes('incident') || normalized.includes('alert') || normalized.includes('escalation')) {
+    return {
+      className: 'stat-card__icon--alerts',
+      path: 'M12 3l9 16H3L12 3zm0 5.5a1 1 0 00-1 1V13a1 1 0 002 0V9.5a1 1 0 00-1-1zm0 8a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z'
+    };
+  }
+
+  if (normalized.includes('clock')) {
+    return {
+      className: 'stat-card__icon--operations',
+      path: 'M12 3a9 9 0 100 18 9 9 0 000-18zm1 4h-2v5.6l4.6 2.7 1-1.7-3.6-2.1V7z'
+    };
+  }
+
+  return defaultStatIcon;
+}
 
 function getStatusBadgeClass(status: string) {
   const normalized = status.toLowerCase();
@@ -77,22 +94,26 @@ export default function DashboardPage() {
       </div>
 
       <div className="stat-grid">
-        {operationalData.metrics.slice(0, 3).map((metric, index) => (
-          <article
-            key={metric.label}
-            className={`stat-card ${index === 0 ? 'stat-card--mint' : index === 1 ? 'stat-card--sky' : 'stat-card--lavender'}`}
-          >
-            <div className={`stat-card__icon ${statIcons[index]?.className ?? ''}`}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d={statIcons[index]?.path ?? statIcons[0].path} />
-              </svg>
-            </div>
-            <div>
-              <p>{metric.label}</p>
-              <h3>{metric.value}</h3>
-            </div>
-          </article>
-        ))}
+        {operationalData.metrics.slice(0, 3).map((metric, index) => {
+          const icon = getStatIcon(metric.label);
+
+          return (
+            <article
+              key={metric.label}
+              className={`stat-card ${index === 0 ? 'stat-card--mint' : index === 1 ? 'stat-card--sky' : 'stat-card--lavender'}`}
+            >
+              <div className={`stat-card__icon ${icon.className}`}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={icon.path} />
+                </svg>
+              </div>
+              <div>
+                <p>{metric.label}</p>
+                <h3>{metric.value}</h3>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       <div className="dashboard-layout">
