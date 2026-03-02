@@ -16,10 +16,15 @@ type ProfileField = {
 };
 
 type IconName =
-  | 'datapoint'
-  | 'medical'
+  | 'person'
+  | 'transgender'
+  | 'flag'
+  | 'family_restroom'
+  | 'call'
+  | 'cake'
+  | 'medical_services'
   | 'pill'
-  | 'user-outline'
+  | 'info'
   | 'warning';
 
 const tabs: ProfileTab[] = [
@@ -34,7 +39,7 @@ const tabs: ProfileTab[] = [
 
 const summaryCards = [
   {
-    icon: 'medical',
+    icon: 'medical_services',
     title: 'Diagnosis',
     value: 'The participant has Autism Spectrum Disorder (Level 2), anxiety, and mild mobility limitation.',
     full: 'The participant has Autism Spectrum Disorder (Level 2), anxiety, and mild mobility limitation. Support plans include low-stimulus transitions, visual prompts, and regular wellness check-ins with the care team.'
@@ -46,7 +51,7 @@ const summaryCards = [
     full: 'Medication may be prescribed to assist with anxiety management and emotional regulation. Current medication schedule is reviewed weekly with support staff and primary GP with adverse reaction monitoring.'
   },
   {
-    icon: 'user-outline',
+    icon: 'info',
     title: 'About the Client',
     value: 'Olivia is a friendly and engaging participant who benefits from structured routines and clear communication.',
     full: 'Olivia is a friendly and engaging participant who benefits from structured routines and clear communication. She enjoys creative activities, community programs, and one-on-one guided sessions with predictable daily planning.'
@@ -73,44 +78,35 @@ const fieldTemplate: ProfileField[] = [
 ];
 
 const typeIcon: Record<ProfileField['type'], IconName> = {
-  name: 'datapoint',
-  contact: 'datapoint',
-  address: 'datapoint',
-  identity: 'datapoint',
-  guardian: 'datapoint',
-  date: 'datapoint'
+  name: 'person',
+  contact: 'call',
+  address: 'flag',
+  identity: 'info',
+  guardian: 'family_restroom',
+  date: 'cake'
 };
 
-const metaRows: { icon: IconName; label: string }[] = [
-  { icon: 'datapoint', label: 'Female' },
-  { icon: 'datapoint', label: 'Australia' },
-  { icon: 'datapoint', label: 'Julie Stirling' },
-  { icon: 'datapoint', label: '6548565651' },
-  { icon: 'datapoint', label: '14/05/1973' },
-  { icon: 'datapoint', label: '+65845 484' }
+const metaRows: { type: 'gender' | 'country' | 'guardian' | 'contact' | 'dob'; label: string }[] = [
+  { type: 'gender', label: 'Female' },
+  { type: 'country', label: 'Australia' },
+  { type: 'guardian', label: 'Julie Stirling' },
+  { type: 'contact', label: '6548565651' },
+  { type: 'dob', label: '14/05/1973' },
+  { type: 'contact', label: '+65845 484' }
 ];
 
-function ProfileIcon({ name }: { name: IconName }) {
-  const paths: Record<IconName, string> = {
-    datapoint: 'M5.5 18.5 10.4 13.6a2 2 0 0 1 2.8 0l2 2 3.3-3.4M12 11.6a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
-    medical: 'M12 4v16M4 12h16',
-    pill: 'M8 6a4 4 0 0 1 5.7 0l4.3 4.3a4 4 0 0 1-5.7 5.7L8 11.7A4 4 0 0 1 8 6Zm2.2 1.8 5.9 5.9',
-    'user-outline': 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
-    warning: 'M12 4 4 20h16L12 4Zm0 5v5m0 3.5v.5'
-  };
+const metaTypeIcon: Record<(typeof metaRows)[number]['type'], IconName> = {
+  gender: 'transgender',
+  country: 'flag',
+  guardian: 'family_restroom',
+  contact: 'call',
+  dob: 'cake'
+};
 
+function ProfileIcon({ name }: { name: IconName }) {
   return (
     <span className="profile-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-        <defs>
-          <linearGradient id="profileIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ffb347" />
-            <stop offset="55%" stopColor="#d37cd4" />
-            <stop offset="100%" stopColor="#7a74ff" />
-          </linearGradient>
-        </defs>
-        <path d={paths[name]} stroke="url(#profileIconGradient)" />
-      </svg>
+      <span className="material-symbols-outlined">{name}</span>
     </span>
   );
 }
@@ -188,7 +184,7 @@ export default function ProfilePage() {
               <div className="profile-overview-card__quick-meta">
                 {metaRows.map((meta) => (
                   <p key={meta.label}>
-                    <ProfileIcon name={meta.icon} />
+                    <ProfileIcon name={metaTypeIcon[meta.type]} />
                     <span>{meta.label}</span>
                   </p>
                 ))}
