@@ -15,6 +15,19 @@ type ProfileField = {
   value: string;
 };
 
+type IconName =
+  | 'person'
+  | 'phone'
+  | 'location'
+  | 'id'
+  | 'guardian'
+  | 'calendar'
+  | 'medical'
+  | 'pill'
+  | 'user-outline'
+  | 'female'
+  | 'warning';
+
 const tabs: ProfileTab[] = [
   'Personal Info',
   'Compliance and Transition',
@@ -27,19 +40,19 @@ const tabs: ProfileTab[] = [
 
 const summaryCards = [
   {
-    icon: '🩺',
+    icon: 'medical',
     title: 'Diagnosis',
     value: 'The participant has Autism Spectrum Disorder (Level 2), anxiety, and mild mobility limitation.',
     full: 'The participant has Autism Spectrum Disorder (Level 2), anxiety, and mild mobility limitation. Support plans include low-stimulus transitions, visual prompts, and regular wellness check-ins with the care team.'
   },
   {
-    icon: '💊',
+    icon: 'pill',
     title: 'Medication',
     value: 'Medication may be prescribed to assist with anxiety management and emotional regulation.',
     full: 'Medication may be prescribed to assist with anxiety management and emotional regulation. Current medication schedule is reviewed weekly with support staff and primary GP with adverse reaction monitoring.'
   },
   {
-    icon: '👤',
+    icon: 'user-outline',
     title: 'About the Client',
     value: 'Olivia is a friendly and engaging participant who benefits from structured routines and clear communication.',
     full: 'Olivia is a friendly and engaging participant who benefits from structured routines and clear communication. She enjoys creative activities, community programs, and one-on-one guided sessions with predictable daily planning.'
@@ -65,14 +78,47 @@ const fieldTemplate: ProfileField[] = [
   { type: 'date', label: 'Current Plan Validity', value: '20/10/2025 - 20/10/2026' }
 ];
 
-const typeIcon: Record<ProfileField['type'], string> = {
-  name: '👤',
-  contact: '☎️',
-  address: '📍',
-  identity: '🪪',
-  guardian: '🧑‍⚖️',
-  date: '📅'
+const typeIcon: Record<ProfileField['type'], IconName> = {
+  name: 'person',
+  contact: 'phone',
+  address: 'location',
+  identity: 'id',
+  guardian: 'guardian',
+  date: 'calendar'
 };
+
+const metaRows: { icon: IconName; label: string }[] = [
+  { icon: 'female', label: 'Female' },
+  { icon: 'location', label: 'Australia' },
+  { icon: 'guardian', label: 'Julie Stirling' },
+  { icon: 'id', label: '6548565651' },
+  { icon: 'calendar', label: '14/05/1973' },
+  { icon: 'phone', label: '+65845 484' }
+];
+
+function ProfileIcon({ name }: { name: IconName }) {
+  const paths: Record<IconName, string> = {
+    person: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
+    phone: 'M8.4 4h2.8l1.2 3.4-1.7 1.6a15 15 0 0 0 4.7 4.7l1.6-1.7L20 13.2V16c0 1.1-.9 2-2 2A14 14 0 0 1 4 6c0-1.1.9-2 2-2Z',
+    location: 'M12 21s6-5.3 6-10a6 6 0 1 0-12 0c0 4.7 6 10 6 10Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
+    id: 'M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6Zm4 3h8M8 13h5M8 17h3',
+    guardian: 'M12 3 5 6.5V11c0 4.4 2.8 8.4 7 9.7 4.2-1.3 7-5.3 7-9.7V6.5L12 3Zm0 5.4a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4Zm-3 8a3 3 0 1 1 6 0',
+    calendar: 'M7 3v3M17 3v3M4 8h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm2 7h3m2 0h3m-8 4h3',
+    medical: 'M12 4v16M4 12h16',
+    pill: 'M8 6a4 4 0 0 1 5.7 0l4.3 4.3a4 4 0 0 1-5.7 5.7L8 11.7A4 4 0 0 1 8 6Zm2.2 1.8 5.9 5.9',
+    'user-outline': 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
+    female: 'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 8v10m-3 0h6m-3-3h3',
+    warning: 'M12 4 4 20h16L12 4Zm0 5v5m0 3.5v.5'
+  };
+
+  return (
+    <span className="profile-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d={paths[name]} />
+      </svg>
+    </span>
+  );
+}
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
@@ -145,12 +191,12 @@ export default function ProfilePage() {
               <h2>{participantName}</h2>
 
               <div className="profile-overview-card__quick-meta">
-                <p>♀ Female</p>
-                <p>📍 Australia</p>
-                <p>🧍 Julie Stirling</p>
-                <p>🆔 6548565651</p>
-                <p>🎂 14/05/1973</p>
-                <p>📞 +65845 484</p>
+                {metaRows.map((meta) => (
+                  <p key={meta.label}>
+                    <ProfileIcon name={meta.icon} />
+                    <span>{meta.label}</span>
+                  </p>
+                ))}
               </div>
 
               <div className="profile-overview-card__completion" aria-label="Profile completion 50 percent">
@@ -166,7 +212,10 @@ export default function ProfilePage() {
           </div>
 
           <aside className="profile-overview-card__alert" aria-label="Alert and allergy">
-            <h3>🚨 Alert &amp; Allergy</h3>
+            <h3>
+              <ProfileIcon name="warning" />
+              Alert &amp; Allergy
+            </h3>
             <p>
               Exposure to peanuts or peanut-containing products may result in rapid allergic reactions, which could include skin
               rashes, hives, swelling of the lips or throat, breathing difficulty, vomiting, or anaphylaxis.
@@ -181,7 +230,7 @@ export default function ProfilePage() {
           {profileFields.map((item) => (
             <div className="profile-overview-card__detail" key={item.label}>
               <p>
-                <span>{typeIcon[item.type]}</span>
+                <ProfileIcon name={typeIcon[item.type]} />
                 {item.label}
               </p>
               <h4>{item.value}</h4>
@@ -193,7 +242,7 @@ export default function ProfilePage() {
           {summaryCards.map((item) => (
             <article key={item.title} className="profile-overview-card__summary-item">
               <p>
-                <span>{item.icon}</span>
+                <ProfileIcon name={item.icon} />
                 {item.title}
               </p>
               <h4>
