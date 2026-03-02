@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type ProfileTab =
   | 'Personal Info'
@@ -10,7 +10,7 @@ type ProfileTab =
   | 'Medical & Allied Health Services';
 
 type ProfileField = {
-  icon: string;
+  type: 'name' | 'contact' | 'address' | 'identity' | 'guardian' | 'date';
   label: string;
   value: string;
 };
@@ -47,23 +47,32 @@ const summaryCards = [
 ] as const;
 
 const fieldTemplate: ProfileField[] = [
-  { icon: '🧑‍🤝‍🧑', label: 'First Name', value: 'Sallianne' },
-  { icon: '🧑‍🤝‍🧑', label: 'Last Name', value: 'Tucker' },
-  { icon: '🧑‍🤝‍🧑', label: 'Middle Name', value: '--' },
-  { icon: '🧑‍🤝‍🧑', label: 'Preferred Name', value: 'Anne' },
-  { icon: '🧍', label: 'Guardian / Decision Maker Name', value: 'Julie Stirling' },
-  { icon: '🧍', label: 'Guardian Relationship', value: 'Parent' },
-  { icon: '📞', label: 'Primary Contact Number', value: '+65845 484' },
-  { icon: '✉️', label: 'Email Address', value: 'juliestirling@gmail.com' },
-  { icon: '🪧', label: 'Street No & Name', value: 'Lot 3 115, Pacific HWY' },
-  { icon: '📍', label: 'Street Suburb', value: 'Kangy Angy' },
-  { icon: '📍', label: 'State', value: 'New South Wales' },
-  { icon: '📍', label: 'Post Code', value: '2258' },
-  { icon: '🪪', label: 'Medicare Number', value: '5478451554' },
-  { icon: '🆔', label: 'NDIS Number', value: '6454445588' },
-  { icon: '📅', label: 'Service Start Date', value: '20/10/2025' },
-  { icon: '🗓️', label: 'Current Plan Validity', value: '20/10/2025 - 20/10/2026' }
+  { type: 'name', label: 'First Name', value: 'Sallianne' },
+  { type: 'name', label: 'Last Name', value: 'Tucker' },
+  { type: 'name', label: 'Middle Name', value: '--' },
+  { type: 'name', label: 'Preferred Name', value: 'Anne' },
+  { type: 'guardian', label: 'Guardian / Decision Maker Name', value: 'Julie Stirling' },
+  { type: 'guardian', label: 'Guardian Relationship', value: 'Parent' },
+  { type: 'contact', label: 'Primary Contact Number', value: '+65845 484' },
+  { type: 'contact', label: 'Email Address', value: 'juliestirling@gmail.com' },
+  { type: 'address', label: 'Street No & Name', value: 'Lot 3 115, Pacific HWY' },
+  { type: 'address', label: 'Street Suburb', value: 'Kangy Angy' },
+  { type: 'address', label: 'State', value: 'New South Wales' },
+  { type: 'address', label: 'Post Code', value: '2258' },
+  { type: 'identity', label: 'Medicare Number', value: '5478451554' },
+  { type: 'identity', label: 'NDIS Number', value: '6454445588' },
+  { type: 'date', label: 'Service Start Date', value: '20/10/2025' },
+  { type: 'date', label: 'Current Plan Validity', value: '20/10/2025 - 20/10/2026' }
 ];
+
+const typeIcon: Record<ProfileField['type'], string> = {
+  name: '👤',
+  contact: '☎️',
+  address: '📍',
+  identity: '🪪',
+  guardian: '🧑‍⚖️',
+  date: '📅'
+};
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
@@ -71,6 +80,10 @@ export default function ProfilePage() {
 
   const params = new URLSearchParams(window.location.search);
   const participantName = params.get('name') || 'Sallianne Tucker';
+
+  useEffect(() => {
+    setActiveDetail(null);
+  }, [participantName, activeTab]);
 
   const profileFields = useMemo(() => {
     const [firstName = 'Sallianne', lastName = 'Tucker'] = participantName.split(' ');
@@ -168,7 +181,7 @@ export default function ProfilePage() {
           {profileFields.map((item) => (
             <div className="profile-overview-card__detail" key={item.label}>
               <p>
-                <span>{item.icon}</span>
+                <span>{typeIcon[item.type]}</span>
                 {item.label}
               </p>
               <h4>{item.value}</h4>

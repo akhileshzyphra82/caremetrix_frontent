@@ -50,7 +50,12 @@
   --radius-lg: 18px;
   --radius-md: 14px;
   --radius-sm: 10px;
+
+  --font-size-content: 12px;
+  --font-size-title: 16px;
+  --font-size-title-compact: 14px;
 }
+
 
 *,
 *::before,
@@ -61,6 +66,7 @@
 body {
   margin: 0;
   font-family: var(--font-base);
+  font-size: var(--font-size-content);
   background: var(--bg);
   color: var(--text);
 }
@@ -398,8 +404,10 @@ body {
 .menu-tabs {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 10px;
+  scrollbar-width: thin;
 }
 
 .module-tab,
@@ -407,11 +415,14 @@ body {
   border: 1px solid var(--border);
   background: var(--surface-alt);
   color: var(--muted);
+  font-size: var(--font-size-content);
   font-weight: 600;
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .module-tab.active,
@@ -1846,6 +1857,13 @@ body {
 
   .participant-cell__details small {
     white-space: normal;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  :root {
+    --font-size-title: var(--font-size-title-compact);
   }
 }
 
@@ -3625,18 +3643,23 @@ label {
 
 .profile-page-v2__tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 8px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
 }
 
 .profile-page-v2__tab {
   border: 1px solid #e9e0f4;
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: #f8f5fc;
   color: #4b4356;
-  font-size: 15px;
+  font-size: var(--font-size-content);
   cursor: pointer;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .profile-page-v2__tab.is-active {
@@ -3678,7 +3701,7 @@ label {
 
 .profile-overview-card__identity-content h2 {
   margin: 0;
-  font-size: clamp(24px, 3vw, 38px);
+  font-size: var(--font-size-title);
   color: #24212b;
 }
 
@@ -3732,14 +3755,14 @@ label {
 .profile-overview-card__alert h3 {
   margin: 0;
   color: #c44658;
-  font-size: 20px;
+  font-size: var(--font-size-title);
 }
 
 .profile-overview-card__alert p {
   margin: 10px 0 0;
   color: #5e3241;
   line-height: 1.5;
-  font-size: 15px;
+  font-size: var(--font-size-content);
 }
 
 .profile-overview-card__alert button,
@@ -3769,7 +3792,7 @@ label {
 .profile-overview-card__detail p {
   margin: 0;
   color: #8a7ba0;
-  font-size: 14px;
+  font-size: var(--font-size-content);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -3777,7 +3800,7 @@ label {
 
 .profile-overview-card__detail h4 {
   margin: 8px 0 0;
-  font-size: clamp(14px, 1.3vw, 20px);
+  font-size: var(--font-size-title-compact);
   color: #231f2a;
 }
 
@@ -3796,7 +3819,7 @@ label {
 
 .profile-overview-card__summary-item p {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-size-title);
   color: #6641a3;
   display: flex;
   align-items: center;
@@ -3805,10 +3828,17 @@ label {
 
 .profile-overview-card__summary-item h4 {
   margin: 8px 0 0;
-  font-size: 15px;
+  font-size: var(--font-size-content);
   color: #352f42;
   line-height: 1.45;
   font-weight: 500;
+}
+
+
+@media (max-width: 1024px) {
+  :root {
+    --font-size-title: var(--font-size-title-compact);
+  }
 }
 
 @media (max-width: 1200px) {
