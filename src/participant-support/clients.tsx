@@ -140,6 +140,9 @@ export default function ClientsPage() {
   const [statusFilters, setStatusFilters] = useState<Array<'All' | ClientStatus>>(['All']);
   const [genderFilters, setGenderFilters] = useState<Array<'All' | Client['gender']>>(['All']);
   const [locationFilter, setLocationFilter] = useState('All Locations');
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [recordsPerPageDraft, setRecordsPerPageDraft] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const filterRef = useRef<HTMLDivElement | null>(null);
   const actionMenuRef = useRef<HTMLDivElement | null>(null);
 
@@ -207,6 +210,40 @@ export default function ClientsPage() {
       return matchesSearch && matchesStatus && matchesGender && matchesLocation;
     });
   }, [searchTerm, statusFilters, genderFilters, locationFilter]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilters, genderFilters, locationFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredClients.length / recordsPerPage));
+
+  useEffect(() => {
+    setCurrentPage((prev) => Math.min(prev, totalPages));
+  }, [totalPages]);
+
+  const paginatedClients = useMemo(() => {
+    const startIndex = (currentPage - 1) * recordsPerPage;
+    return filteredClients.slice(startIndex, startIndex + recordsPerPage);
+  }, [currentPage, filteredClients, recordsPerPage]);
+
+  const visiblePageNumbers = useMemo(() => {
+    if (totalPages <= 3) {
+      return Array.from({ length: totalPages }, (_, index) => index + 1);
+    }
+
+    if (currentPage <= 2) {
+      return [1, 2, 3];
+    }
+
+    if (currentPage >= totalPages - 1) {
+      return [totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    return [currentPage - 1, currentPage, currentPage + 1];
+  }, [currentPage, totalPages]);
+
+  const startRecord = filteredClients.length === 0 ? 0 : (currentPage - 1) * recordsPerPage + 1;
+  const endRecord = Math.min(currentPage * recordsPerPage, filteredClients.length);
 
   const openClientProfile = (client: Client) => {
     const profilePath = `/participant-support/profile?uid=${encodeURIComponent(client.uid)}&name=${encodeURIComponent(client.name)}&ndis=${encodeURIComponent(client.ndisNo)}`;
@@ -302,22 +339,82 @@ export default function ClientsPage() {
         </div>
 
         <div className="table-wrap clients-table-wrap">
+          <div className="clients-pagination-bar" aria-label="Clients table pagination">
+            <p>
+              Showing {startRecord}-{endRecord} of {filteredClients.length} records
+            </p>
+
+            <div className="clients-pagination-controls">
+              <label className="clients-records-per-page" htmlFor="clients-records-per-page">
+                <span>Records per page</span>
+                <select
+                  id="clients-records-per-page"
+                  value={recordsPerPageDraft}
+                  onChange={(event) => setRecordsPerPageDraft(Number(event.target.value))}
+                >
+                  {[10, 20, 50].map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <button
+                className="clients-pagination-apply"
+                type="button"
+                onClick={() => {
+                  setRecordsPerPage(recordsPerPageDraft);
+                  setCurrentPage(1);
+                }}
+              >
+                Apply
+              </button>
+
+              <button className="clients-page-btn" type="button" disabled={currentPage === 1} onClick={() => setCurrentPage((page) => page - 1)}>
+                Prev
+              </button>
+
+              {visiblePageNumbers.map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  className={`clients-page-btn clients-page-btn--number ${pageNumber === currentPage ? 'is-active' : ''}`}
+                  type="button"
+                  onClick={() => setCurrentPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+
+              <button
+                className="clients-page-btn"
+                type="button"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((page) => page + 1)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
           <table className="data-table clients-table">
           <thead>
             <tr>
               <th>UID</th>
               <th>Participant Name</th>
-              <th>Gender</th>
-              <th>Date of Birth</th>
+              <th className="hide-on-compact">Gender</th>
+              <th className="hide-on-compact">Date of Birth</th>
+              <th className="show-on-compact">Personal Info</th>
               <th>Informal Decision Maker</th>
               <th>Cultural Identity</th>
-              <th>NDIS No</th>
+              <th className="hide-on-compact">NDIS No</th>
+              <th className="show-on-compact">Support Info</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredClients.map((client) => (
+            {paginatedClients.map((client) => (
               <tr key={client.uid}>
                 <td>{client.uid}</td>
                 <td>
@@ -326,11 +423,23 @@ export default function ClientsPage() {
                     <span>{client.name}</span>
                   </button>
                 </td>
-                <td>{client.gender}</td>
-                <td>{client.dateOfBirth}</td>
+                <td className="hide-on-compact">{client.gender}</td>
+                <td className="hide-on-compact">{client.dateOfBirth}</td>
+                <td className="show-on-compact">
+                  <div className="compact-info">
+                    <strong>{client.gender}</strong>
+                    <span>DOB: {client.dateOfBirth}</span>
+                  </div>
+                </td>
                 <td>{client.decisionMaker}</td>
                 <td>{client.culturalIdentity}</td>
-                <td>{client.ndisNo}</td>
+                <td className="hide-on-compact">{client.ndisNo}</td>
+                <td className="show-on-compact">
+                  <div className="compact-info">
+                    <strong>{client.culturalIdentity}</strong>
+                    <span>NDIS: {client.ndisNo}</span>
+                  </div>
+                </td>
                 <td>
                   <span className={`badge ${getStatusClass(client.status)}`}>{client.status}</span>
                 </td>
@@ -375,7 +484,7 @@ export default function ClientsPage() {
             ))}
             {filteredClients.length === 0 && (
               <tr>
-                <td colSpan={9} className="clients-empty-state">
+                <td colSpan={11} className="clients-empty-state">
                   No clients found for the selected filter.
                 </td>
               </tr>
