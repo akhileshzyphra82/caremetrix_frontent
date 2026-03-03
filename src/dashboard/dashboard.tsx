@@ -94,7 +94,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="stat-grid">
-        {operationalData.metrics.slice(0, 3).map((metric, index) => {
+        {operationalData.metrics.slice(0, 4).map((metric, index) => {
           const icon = getStatIcon(metric.label);
 
           return (
