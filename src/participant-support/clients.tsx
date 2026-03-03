@@ -135,6 +135,7 @@ function getStatusClass(status: ClientStatus) {
 
 export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isActionMenuOpenFor, setIsActionMenuOpenFor] = useState<string | null>(null);
   const [statusFilters, setStatusFilters] = useState<Array<'All' | ClientStatus>>(['All']);
@@ -295,6 +296,24 @@ export default function ClientsPage() {
                 <span>Filter</span>
               </button>
 
+              <button
+                className="clients-view-toggle"
+                type="button"
+                aria-label={viewMode === 'list' ? 'Switch to grid view' : 'Switch to list view'}
+                title={viewMode === 'list' ? 'Grid View' : 'List View'}
+                onClick={() => setViewMode((mode) => (mode === 'list' ? 'grid' : 'list'))}
+              >
+                {viewMode === 'list' ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" />
+                  </svg>
+                )}
+              </button>
+
               {isFilterOpen && (
                 <div className="clients-filter-panel" role="dialog" aria-label="Filter participants">
                   <div className="clients-filter-group">
@@ -338,7 +357,7 @@ export default function ClientsPage() {
           </div>
         </div>
 
-        <div className="table-wrap clients-table-wrap">
+        <div className={`table-wrap clients-table-wrap ${viewMode === 'grid' ? 'is-grid-view' : ''}`}>
           <div className="clients-pagination-bar" aria-label="Clients table pagination">
             <p>
               Showing {startRecord}-{endRecord} of {filteredClients.length} records
@@ -397,110 +416,194 @@ export default function ClientsPage() {
             </div>
           </div>
 
-          <table className="data-table clients-table">
-          <thead>
-            <tr>
-              <th>S.No.</th>
-              <th>Participant Name</th>
-              <th className="show-on-compact">Personal Info</th>
-              <th>Informal Decision Maker</th>
-              <th>Cultural Identity</th>
-              <th className="hide-on-compact">NDIS No</th>
-              <th className="show-on-compact">Support Info</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedClients.map((client, index) => {
-              const serialNumber = startRecord + index;
+          {viewMode === 'list' ? (
+            <table className="data-table clients-table">
+              <thead>
+                <tr>
+                  <th>S.No.</th>
+                  <th>Participant Name</th>
+                  <th className="show-on-compact">Personal Info</th>
+                  <th>Informal Decision Maker</th>
+                  <th>Cultural Identity</th>
+                  <th className="hide-on-compact">NDIS No</th>
+                  <th className="show-on-compact">Support Info</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedClients.map((client, index) => {
+                  const serialNumber = startRecord + index;
 
-              return (
-              <tr key={client.uid}>
-                <td>{serialNumber}</td>
-                <td>
-                  <button className="participant-cell participant-cell--link" type="button" onClick={() => openClientProfile(client)}>
-                    <img src={client.avatar} alt={client.name} />
-                    <span className="participant-cell__details">
-                      <strong>{client.name}</strong>
-                       <small> <span>DOB: {client.dateOfBirth}</span></small>
-                      <small>
-                      UID : {client.uid} &nbsp;|&nbsp; Gender: {client.gender}
-                     
-                      </small>
-                      
-                    </span>
-                  </button>
-                </td>
-               
+                  return (
+                    <tr key={client.uid}>
+                      <td>{serialNumber}</td>
+                      <td>
+                        <button className="participant-cell participant-cell--link" type="button" onClick={() => openClientProfile(client)}>
+                          <img src={client.avatar} alt={client.name} />
+                          <span className="participant-cell__details">
+                            <strong>{client.name}</strong>
+                            <small>
+                              <span>DOB: {client.dateOfBirth}</span>
+                            </small>
+                            <small>UID : {client.uid} &nbsp;|&nbsp; Gender: {client.gender}</small>
+                          </span>
+                        </button>
+                      </td>
 
-                <td className="show-on-compact">
-                  <div className="compact-info">
-                    <strong>{client.gender}</strong>
-                    <span>DOB: {client.dateOfBirth}</span>
-                  </div>
-                </td>
-                <td>{client.decisionMaker}</td>
-                <td>{client.culturalIdentity}</td>
-                <td className="hide-on-compact">{client.ndisNo}</td>
-                <td className="show-on-compact">
-                  <div className="compact-info">
-                    <strong>{client.culturalIdentity}</strong>
-                    <span>NDIS: {client.ndisNo}</span>
-                  </div>
-                </td>
-                <td>
-                  <span className={`badge ${getStatusClass(client.status)}`}>{client.status}</span>
-                </td>
-                <td>
-                  <div className="clients-row-action-wrap" ref={isActionMenuOpenFor === client.uid ? actionMenuRef : undefined}>
-                    <button
-                      className="clients-row-action"
-                      type="button"
-                      aria-label={`Actions for ${client.name}`}
-                      onClick={() => setIsActionMenuOpenFor((current) => (current === client.uid ? null : client.uid))}
-                    >
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </button>
+                      <td className="show-on-compact">
+                        <div className="compact-info">
+                          <strong>{client.gender}</strong>
+                          <span>DOB: {client.dateOfBirth}</span>
+                        </div>
+                      </td>
+                      <td>{client.decisionMaker}</td>
+                      <td>{client.culturalIdentity}</td>
+                      <td className="hide-on-compact">{client.ndisNo}</td>
+                      <td className="show-on-compact">
+                        <div className="compact-info">
+                          <strong>{client.culturalIdentity}</strong>
+                          <span>NDIS: {client.ndisNo}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`badge ${getStatusClass(client.status)}`}>{client.status}</span>
+                      </td>
+                      <td>
+                        <div className="clients-row-action-wrap" ref={isActionMenuOpenFor === client.uid ? actionMenuRef : undefined}>
+                          <button
+                            className="clients-row-action"
+                            type="button"
+                            aria-label={`Actions for ${client.name}`}
+                            onClick={() => setIsActionMenuOpenFor((current) => (current === client.uid ? null : client.uid))}
+                          >
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                          </button>
 
-                    {isActionMenuOpenFor === client.uid && (
-                      <div className="clients-row-action-menu">
-                        <button type="button">
-                          <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M3 17.3V21h3.8L18 9.8l-3.8-3.8L3 17.3zm18.7-11.1a1 1 0 000-1.4L19.1 2.3a1 1 0 00-1.4 0l-2 2 3.8 3.8 2.2-2.2z" />
-                          </svg>
-                          Edit
+                          {isActionMenuOpenFor === client.uid && (
+                            <div className="clients-row-action-menu">
+                              <button type="button">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                  <path d="M3 17.3V21h3.8L18 9.8l-3.8-3.8L3 17.3zm18.7-11.1a1 1 0 000-1.4L19.1 2.3a1 1 0 00-1.4 0l-2 2 3.8 3.8 2.2-2.2z" />
+                                </svg>
+                                Edit
+                              </button>
+                              <button type="button">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                  <path d="M6 7h12l-1 14H7L6 7zm3-4h6l1 2h4v2H4V5h4l1-2z" />
+                                </svg>
+                                Delete
+                              </button>
+                              <button type="button">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                  <path d="M6 9V3h12v6H6zm12 2h2v8H4v-8h2v6h12v-6zm-3 2H9v2h6v-2z" />
+                                </svg>
+                                Print
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filteredClients.length === 0 && (
+                  <tr>
+                    <td colSpan={11} className="clients-empty-state">
+                      No clients found for the selected filter.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <div className="clients-grid">
+              {paginatedClients.map((client, index) => {
+                const serialNumber = startRecord + index;
+                return (
+                  <article key={client.uid} className="clients-user-card">
+                    <div className="clients-user-card__header">
+                      <span className="clients-user-card__index">#{serialNumber}</span>
+                      <div className="clients-row-action-wrap" ref={isActionMenuOpenFor === client.uid ? actionMenuRef : undefined}>
+                        <button
+                          className="clients-row-action"
+                          type="button"
+                          aria-label={`Actions for ${client.name}`}
+                          onClick={() => setIsActionMenuOpenFor((current) => (current === client.uid ? null : client.uid))}
+                        >
+                          <span></span>
+                          <span></span>
+                          <span></span>
                         </button>
-                        <button type="button">
-                          <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M6 7h12l-1 14H7L6 7zm3-4h6l1 2h4v2H4V5h4l1-2z" />
-                          </svg>
-                          Delete
-                        </button>
-                        <button type="button">
-                          <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M6 9V3h12v6H6zm12 2h2v8H4v-8h2v6h12v-6zm-3 2H9v2h6v-2z" />
-                          </svg>
-                          Print
-                        </button>
+
+                        {isActionMenuOpenFor === client.uid && (
+                          <div className="clients-row-action-menu">
+                            <button type="button">
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 17.3V21h3.8L18 9.8l-3.8-3.8L3 17.3zm18.7-11.1a1 1 0 000-1.4L19.1 2.3a1 1 0 00-1.4 0l-2 2 3.8 3.8 2.2-2.2z" />
+                              </svg>
+                              Edit
+                            </button>
+                            <button type="button">
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 7h12l-1 14H7L6 7zm3-4h6l1 2h4v2H4V5h4l1-2z" />
+                              </svg>
+                              Delete
+                            </button>
+                            <button type="button">
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 9V3h12v6H6zm12 2h2v8H4v-8h2v6h12v-6zm-3 2H9v2h6v-2z" />
+                              </svg>
+                              Print
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-              );
-            })}
-            {filteredClients.length === 0 && (
-              <tr>
-                <td colSpan={11} className="clients-empty-state">
-                  No clients found for the selected filter.
-                </td>
-              </tr>
-            )}
-          </tbody>
-          </table>
+                    </div>
+
+                    <div className="clients-user-card__title">
+                      <img src={client.avatar} alt={client.name} />
+                      <button className="clients-user-card__name" type="button" onClick={() => openClientProfile(client)}>
+                        {client.name}
+                      </button>
+                    </div>
+
+                    <div className="clients-user-card__details">
+                      <p>
+                        <strong>Name :</strong> <span>{client.name}</span>
+                      </p>
+                      <p>
+                        <strong>UID :</strong> <span>{client.uid}</span>
+                      </p>
+                      <p>
+                        <strong>DOB :</strong> <span>{client.dateOfBirth}</span>
+                      </p>
+                      <p>
+                        <strong>Gender :</strong> <span>{client.gender}</span>
+                      </p>
+                      <p>
+                        <strong>Informal Decision Maker :</strong> <span>{client.decisionMaker}</span>
+                      </p>
+                      <p>
+                        <strong>Cultural Identity :</strong> <span>{client.culturalIdentity}</span>
+                      </p>
+                      <p>
+                        <strong>NDIS No :</strong> <span>{client.ndisNo}</span>
+                      </p>
+                      <p>
+                        <strong>Status :</strong>{' '}
+                        <span className={`badge ${getStatusClass(client.status)}`}>{client.status}</span>
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
+
+              {filteredClients.length === 0 && <p className="clients-empty-state clients-empty-state--grid">No clients found for the selected filter.</p>}
+            </div>
+          )}
         </div>
       </div>
     </section>

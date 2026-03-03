@@ -91,6 +91,38 @@ type QuickAction = {
   tone: 'default' | 'danger';
 };
 
+type ComplianceTypeDocument = {
+  id: string;
+  title: string;
+  uploadedDate: string;
+  uploadedBy: string;
+};
+
+type DocumentModalState = {
+  categoryId: string;
+  typeName: string | null;
+};
+
+type NewDocumentForm = {
+  typeName: string;
+  documentName: string;
+  uploadedBy: string;
+  uploadDate: string;
+  expiryDate: string;
+  fileName: string;
+};
+
+type ChartGroup = 'Core' | 'Medication' | 'Nutrition' | 'Continence';
+
+type ChartOption = {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  group: ChartGroup;
+  featured?: boolean;
+};
+
 const tabs: ProfileTab[] = [
   'Personal Info',
   'Compliance and Transition',
@@ -568,19 +600,25 @@ const complianceQuickActions: QuickAction[] = [
   { id: 'q1', icon: '\u2B06\uFE0F', label: 'Upload Document', tone: 'default' },
   { id: 'q2', icon: '\u{1F501}', label: 'Renew Expired', tone: 'danger' },
   { id: 'q3', icon: '\u{1F514}', label: 'Create Reminder', tone: 'default' },
-  { id: 'q4', icon: '\u{1F4CA}', label: 'NDIS Chart - 0/90', tone: 'default' }
+  { id: 'q4', icon: '\u{1F4CA}', label: 'Add/View Chart', tone: 'default' }
 ];
 
-const ndisChartOptions = [
-  'Support Hours by Month',
-  'Funding Utilization',
-  'Incident Trend',
-  'Medication Compliance',
-  'Roster Coverage',
-  'Goal Achievement',
-  'Participant Satisfaction',
-  'Claim Success Rate'
-] as const;
+const ndisChartOptions: ChartOption[] = [
+  { id: 'core-vitals', title: 'Vital Signs Chart', subtitle: 'BP, Pulse, Temp, SpO2', icon: '\u{1FA7A}', group: 'Core', featured: true },
+  { id: 'core-bgl', title: 'Blood Glucose Level (BGL)', subtitle: 'Diabetes blood sugar monitoring', icon: '\u{1FA78}', group: 'Core', featured: true },
+  { id: 'core-weight', title: 'Weight Monitoring Chart', subtitle: 'Weekly body weight record', icon: '\u2696\uFE0F', group: 'Core' },
+  { id: 'core-pain', title: 'Pain Assessment Chart', subtitle: 'Daily pain level assessments', icon: '\u{1FA79}', group: 'Core' },
+  { id: 'core-oxygen', title: 'Oxygen Therapy Chart', subtitle: 'O2 delivery and SpO2 monitoring', icon: '\u{1FAC1}', group: 'Core' },
+  { id: 'core-neuro', title: 'Neurological Observation Chart', subtitle: 'GCS and neuro obs tracking', icon: '\u{1F9E0}', group: 'Core' },
+  { id: 'core-seizure', title: 'Seizure Monitoring Chart', subtitle: 'Epilepsy and seizure event log', icon: '\u26A1', group: 'Core' },
+  { id: 'core-menstrual', title: 'Menstrual Health Chart', subtitle: 'Menstrual cycle tracking', icon: '\u{1FA7A}', group: 'Core' },
+  { id: 'med-mar', title: 'Medication Administration Record', subtitle: 'MAR daily med admin tracking', icon: '\u{1F4CB}', group: 'Medication', featured: true },
+  { id: 'med-prn', title: 'PRN Medication Chart', subtitle: 'As-needed medications record', icon: '\u23F1', group: 'Medication' },
+  { id: 'nutri-intake', title: 'Food Intake Chart', subtitle: 'Meal and appetite tracking', icon: '\u{1F37D}\uFE0F', group: 'Nutrition' },
+  { id: 'nutri-fluid', title: 'Fluid Balance Chart', subtitle: 'Hydration intake/output', icon: '\u{1F4A7}', group: 'Nutrition' },
+  { id: 'cont-bowel', title: 'Bowel Chart', subtitle: 'Bowel movement monitoring', icon: '\u{1F9FB}', group: 'Continence' },
+  { id: 'cont-bladder', title: 'Bladder Chart', subtitle: 'Urinary continence record', icon: '\u{1F6BD}', group: 'Continence' }
+];
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('Medication Administration');
@@ -588,9 +626,34 @@ export default function ProfilePage() {
   const [activeDetail, setActiveDetail] = useState<{ title: string; content: string } | null>(null);
   const [complianceCategories, setComplianceCategories] = useState<ComplianceCategory[]>(complianceCategoriesSeed);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-  const [categoryModalId, setCategoryModalId] = useState<string | null>(null);
+  const [documentModalState, setDocumentModalState] = useState<DocumentModalState | null>(null);
+  const [addDocumentCategoryId, setAddDocumentCategoryId] = useState<string | null>(null);
+  const [newDocumentForm, setNewDocumentForm] = useState<NewDocumentForm>({
+    typeName: '',
+    documentName: '',
+    uploadedBy: '',
+    uploadDate: '',
+    expiryDate: '',
+    fileName: ''
+  });
+  const [categoryTypeDocuments, setCategoryTypeDocuments] = useState<Record<string, Record<string, ComplianceTypeDocument[]>>>(() => {
+    const mapping: Record<string, Record<string, ComplianceTypeDocument[]>> = {};
+    complianceCategoriesSeed.forEach((category) => {
+      mapping[category.id] = {};
+      category.requiredTypes.forEach((typeName, index) => {
+        const seeded = category.documents.filter(
+          (document, docIndex) =>
+            document.title.toLowerCase().includes(typeName.split(' ')[0].toLowerCase()) || docIndex % category.requiredTypes.length === index
+        );
+        mapping[category.id][typeName] = seeded;
+      });
+    });
+    return mapping;
+  });
   const [chartModalOpen, setChartModalOpen] = useState(false);
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
+  const [chartSearchTerm, setChartSearchTerm] = useState('');
+  const [chartActiveGroup, setChartActiveGroup] = useState<'All' | ChartGroup>('All');
 
   const params = new URLSearchParams(window.location.search);
   const participantName = params.get('name') || 'Sallianne Tucker';
@@ -637,46 +700,129 @@ export default function ProfilePage() {
 
   const allGivenInSlot = medicationCards.length > 0 && slotStatusCounts.given === medicationCards.length;
   const progressPercentage = dayStatusSummary.total === 0 ? 0 : Math.round((dayStatusSummary.given / dayStatusSummary.total) * 100);
-  const activeCategory = complianceCategories.find((item) => item.id === categoryModalId) || null;
+  const activeCategory = documentModalState
+    ? complianceCategories.find((item) => item.id === documentModalState.categoryId) || null
+    : null;
+  const activeCategoryForAdd = addDocumentCategoryId
+    ? complianceCategories.find((item) => item.id === addDocumentCategoryId) || null
+    : null;
   const personalInfoPrimaryMeta = [metaRows[0], metaRows[2], metaRows[4]];
   const personalInfoSecondaryMeta = [metaRows[1], metaRows[3], metaRows[5]];
 
-  const resolvedQuickActions = useMemo(
-    () =>
-      complianceQuickActions.map((item) =>
-        item.id === 'q4' ? { ...item, label: `NDIS Chart - ${selectedCharts.length}/90` } : item
-      ),
-    [selectedCharts.length]
+  const resolvedQuickActions = complianceQuickActions;
+
+  const modalDocuments = useMemo(() => {
+    if (!documentModalState || !activeCategory) return [] as Array<ComplianceTypeDocument & { typeName: string }>;
+
+    const docMap = categoryTypeDocuments[documentModalState.categoryId] || {};
+    if (!documentModalState.typeName) {
+      return Object.entries(docMap).flatMap(([typeName, docs]) => docs.map((item) => ({ ...item, typeName })));
+    }
+    return (docMap[documentModalState.typeName] || []).map((item) => ({ ...item, typeName: documentModalState.typeName as string }));
+  }, [activeCategory, categoryTypeDocuments, documentModalState]);
+
+  const chartGroupCounts = useMemo(
+    () => ({
+      All: ndisChartOptions.length,
+      Core: ndisChartOptions.filter((item) => item.group === 'Core').length,
+      Medication: ndisChartOptions.filter((item) => item.group === 'Medication').length,
+      Nutrition: ndisChartOptions.filter((item) => item.group === 'Nutrition').length,
+      Continence: ndisChartOptions.filter((item) => item.group === 'Continence').length
+    }),
+    []
+  );
+
+  const visibleCharts = useMemo(() => {
+    const normalized = chartSearchTerm.toLowerCase().trim();
+    return ndisChartOptions.filter((item) => {
+      const byGroup = chartActiveGroup === 'All' || item.group === chartActiveGroup;
+      const bySearch = normalized.length === 0 || `${item.title} ${item.subtitle}`.toLowerCase().includes(normalized);
+      return byGroup && bySearch;
+    });
+  }, [chartActiveGroup, chartSearchTerm]);
+
+  const groupedCharts = useMemo(
+    () => ({
+      Core: visibleCharts.filter((item) => item.group === 'Core'),
+      Medication: visibleCharts.filter((item) => item.group === 'Medication'),
+      Nutrition: visibleCharts.filter((item) => item.group === 'Nutrition'),
+      Continence: visibleCharts.filter((item) => item.group === 'Continence')
+    }),
+    [visibleCharts]
   );
 
   const toggleCategoryExpanded = (categoryId: string) => {
     setExpandedCategories((current) => ({ ...current, [categoryId]: !current[categoryId] }));
   };
 
-  const removeRequiredType = (categoryId: string, typeName: string) => {
-    setComplianceCategories((current) =>
-      current.map((category) =>
-        category.id === categoryId ? { ...category, requiredTypes: category.requiredTypes.filter((item) => item !== typeName) } : category
-      )
-    );
+  const openCategoryDocuments = (categoryId: string) => {
+    setDocumentModalState({ categoryId, typeName: null });
   };
 
-  const openTypeDocument = (categoryTitle: string, typeName: string) => {
-    const path = `/participant-support/document-view?category=${encodeURIComponent(categoryTitle)}&type=${encodeURIComponent(typeName)}`;
-    window.open(path, '_blank');
+  const openTypeDocuments = (categoryId: string, typeName: string) => {
+    setDocumentModalState({ categoryId, typeName });
   };
 
-  const removeCategoryDocument = (categoryId: string, documentId: string) => {
-    setComplianceCategories((current) =>
-      current.map((category) =>
-        category.id === categoryId ? { ...category, documents: category.documents.filter((document) => document.id !== documentId) } : category
-      )
-    );
+  const openAddDocumentModal = (categoryId: string) => {
+    const category = complianceCategories.find((item) => item.id === categoryId);
+    setAddDocumentCategoryId(categoryId);
+    setNewDocumentForm({
+      typeName: category?.requiredTypes[0] ?? '',
+      documentName: '',
+      uploadedBy: '',
+      uploadDate: '',
+      expiryDate: '',
+      fileName: ''
+    });
   };
 
-  const toggleChartSelection = (chartName: string) => {
+  const clearAddDocumentForm = () => {
+    if (!activeCategoryForAdd) return;
+    setNewDocumentForm({
+      typeName: activeCategoryForAdd.requiredTypes[0] ?? '',
+      documentName: '',
+      uploadedBy: '',
+      uploadDate: '',
+      expiryDate: '',
+      fileName: ''
+    });
+  };
+
+  const addDocumentToCategory = () => {
+    if (!addDocumentCategoryId || !newDocumentForm.typeName || !newDocumentForm.documentName || !newDocumentForm.uploadedBy || !newDocumentForm.uploadDate) {
+      return;
+    }
+
+    const nextDocument: ComplianceTypeDocument = {
+      id: `${addDocumentCategoryId}-${Date.now()}`,
+      title: newDocumentForm.documentName,
+      uploadedBy: newDocumentForm.uploadedBy,
+      uploadedDate: newDocumentForm.uploadDate
+    };
+
+    setCategoryTypeDocuments((current) => ({
+      ...current,
+      [addDocumentCategoryId]: {
+        ...(current[addDocumentCategoryId] || {}),
+        [newDocumentForm.typeName]: [...(current[addDocumentCategoryId]?.[newDocumentForm.typeName] || []), nextDocument]
+      }
+    }));
+    setAddDocumentCategoryId(null);
+  };
+
+  const removeModalDocument = (categoryId: string, typeName: string, documentId: string) => {
+    setCategoryTypeDocuments((current) => ({
+      ...current,
+      [categoryId]: {
+        ...(current[categoryId] || {}),
+        [typeName]: (current[categoryId]?.[typeName] || []).filter((item) => item.id !== documentId)
+      }
+    }));
+  };
+
+  const toggleChartSelection = (chartId: string) => {
     setSelectedCharts((current) =>
-      current.includes(chartName) ? current.filter((item) => item !== chartName) : [...current, chartName]
+      current.includes(chartId) ? current.filter((item) => item !== chartId) : [...current, chartId]
     );
   };
 
@@ -980,7 +1126,7 @@ export default function ProfilePage() {
                           {item.icon}
                         </span>
 
-                        <button type="button" className="compliance-category-row__title" onClick={() => setCategoryModalId(item.id)}>
+                        <button type="button" className="compliance-category-row__title" onClick={() => openCategoryDocuments(item.id)}>
                           <h4>{item.title}</h4>
                         </button>
 
@@ -1007,22 +1153,26 @@ export default function ProfilePage() {
                           aria-label={`Toggle required types for ${item.title}`}
                           onClick={() => toggleCategoryExpanded(item.id)}
                         >
-                          <span>▾</span>
+                          <span>&#8964;</span>
                         </button>
                       </div>
 
                       {isExpanded && (
                         <div className="compliance-category-row__types">
                           {item.requiredTypes.map((typeName) => (
-                            <div key={typeName} className="compliance-type-chip">
-                              <button type="button" title={`Open ${typeName}`} onClick={() => openTypeDocument(item.title, typeName)}>
+                            <div key={typeName} className="compliance-doc-type-row">
+                              <p>
+                                <span aria-hidden="true">•</span>
                                 {typeName}
-                              </button>
-                              <button type="button" aria-label={`Delete ${typeName}`} onClick={() => removeRequiredType(item.id, typeName)}>
-                                ×
+                              </p>
+                              <button type="button" onClick={() => openTypeDocuments(item.id, typeName)}>
+                                View documents
                               </button>
                             </div>
                           ))}
+                          <button type="button" className="compliance-category-row__add-document" onClick={() => openAddDocumentModal(item.id)}>
+                            + Add New Document
+                          </button>
                         </div>
                       )}
                     </article>
@@ -1258,12 +1408,15 @@ export default function ProfilePage() {
 
       {activeCategory ? (
         <div className="compliance-modal" role="dialog" aria-modal="true" aria-labelledby="compliance-documents-title">
-          <div className="compliance-modal__backdrop" onClick={() => setCategoryModalId(null)} aria-hidden="true" />
+          <div className="compliance-modal__backdrop" onClick={() => setDocumentModalState(null)} aria-hidden="true" />
           <div className="compliance-modal__dialog">
-            <button type="button" className="compliance-modal__close" aria-label="Close documents" onClick={() => setCategoryModalId(null)}>
+            <button type="button" className="compliance-modal__close" aria-label="Close documents" onClick={() => setDocumentModalState(null)}>
               ×
             </button>
-            <h3 id="compliance-documents-title">{activeCategory.title} Documents</h3>
+            <h3 id="compliance-documents-title">
+              {activeCategory.title}
+              {documentModalState?.typeName ? ` - ${documentModalState.typeName}` : ' - All Documents'}
+            </h3>
 
             <div className="compliance-modal__table-wrap">
               <table className="compliance-modal__table">
@@ -1271,31 +1424,129 @@ export default function ProfilePage() {
                   <tr>
                     <th>S.No.</th>
                     <th>Title</th>
+                    <th>Uploaded By</th>
                     <th>Uploaded Date</th>
-                    <th>By</th>
                     <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activeCategory.documents.map((document, index) => (
+                  {modalDocuments.map((document, index) => (
                     <tr key={document.id}>
                       <td>{index + 1}</td>
                       <td>{document.title}</td>
-                      <td>{document.uploadedDate}</td>
                       <td>{document.uploadedBy}</td>
+                      <td>{document.uploadedDate}</td>
                       <td>
                         <button
                           type="button"
                           className="compliance-modal__delete"
-                          onClick={() => removeCategoryDocument(activeCategory.id, document.id)}
+                          onClick={() => removeModalDocument(activeCategory.id, document.typeName, document.id)}
                         >
                           Delete
                         </button>
                       </td>
                     </tr>
                   ))}
+                  {modalDocuments.length === 0 ? (
+                    <tr>
+                      <td colSpan={5}>No documents uploaded for this selection.</td>
+                    </tr>
+                  ) : null}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {activeCategoryForAdd ? (
+        <div className="compliance-modal" role="dialog" aria-modal="true" aria-labelledby="compliance-add-document-title">
+          <div className="compliance-modal__backdrop" onClick={() => setAddDocumentCategoryId(null)} aria-hidden="true" />
+          <div className="compliance-modal__dialog compliance-modal__dialog--form">
+            <button type="button" className="compliance-modal__close" aria-label="Close add document" onClick={() => setAddDocumentCategoryId(null)}>
+              x
+            </button>
+            <h3 id="compliance-add-document-title">Add New Document</h3>
+
+            <div className="compliance-form-grid">
+              <label>
+                <span>Document Name</span>
+                <input
+                  type="text"
+                  placeholder="Document name"
+                  value={newDocumentForm.documentName}
+                  onChange={(event) => setNewDocumentForm((current) => ({ ...current, documentName: event.target.value }))}
+                />
+              </label>
+              <label>
+                <span>Uploaded By</span>
+                <select
+                  value={newDocumentForm.uploadedBy}
+                  onChange={(event) => setNewDocumentForm((current) => ({ ...current, uploadedBy: event.target.value }))}
+                >
+                  <option value="">- Staff Name -</option>
+                  <option>Sarah Johnson</option>
+                  <option>Ava Collins</option>
+                  <option>Daniel Lee</option>
+                </select>
+              </label>
+              <label>
+                <span>Upload Date</span>
+                <input
+                  type="date"
+                  value={newDocumentForm.uploadDate}
+                  onChange={(event) => setNewDocumentForm((current) => ({ ...current, uploadDate: event.target.value }))}
+                />
+              </label>
+              <label>
+                <span>Expiry Date</span>
+                <input
+                  type="date"
+                  value={newDocumentForm.expiryDate}
+                  onChange={(event) => setNewDocumentForm((current) => ({ ...current, expiryDate: event.target.value }))}
+                />
+              </label>
+              <label>
+                <span>Document Type</span>
+                <select
+                  value={newDocumentForm.typeName}
+                  onChange={(event) => setNewDocumentForm((current) => ({ ...current, typeName: event.target.value }))}
+                >
+                  {activeCategoryForAdd.requiredTypes.map((typeName) => (
+                    <option key={typeName} value={typeName}>
+                      {typeName}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <label className="compliance-upload-field">
+              <span>File Upload</span>
+              <input
+                type="file"
+                onChange={(event) =>
+                  setNewDocumentForm((current) => ({
+                    ...current,
+                    fileName: event.target.files?.[0]?.name ?? ''
+                  }))
+                }
+              />
+              <p>{newDocumentForm.fileName || 'Click to upload or drag and drop'}</p>
+            </label>
+
+            <div className="compliance-modal__actions compliance-modal__actions--between">
+              <button type="button" className="compliance-action-btn is-muted" disabled>
+                Previous
+              </button>
+              <div className="compliance-modal__actions-right">
+                <button type="button" className="compliance-action-btn is-muted" onClick={clearAddDocumentForm}>
+                  Clear
+                </button>
+                <button type="button" className="compliance-action-btn is-success" onClick={addDocumentToCategory}>
+                  Add Document
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1308,24 +1559,95 @@ export default function ProfilePage() {
             <button type="button" className="compliance-modal__close" aria-label="Close chart selection" onClick={() => setChartModalOpen(false)}>
               ×
             </button>
-            <h3 id="ndis-chart-title">NDIS Charts Selection</h3>
+            <h3 id="ndis-chart-title">Participant Charts</h3>
 
-            <div className="compliance-chart-list">
-              {ndisChartOptions.map((chartName) => (
-                <label key={chartName} className="compliance-chart-item">
-                  <input type="checkbox" checked={selectedCharts.includes(chartName)} onChange={() => toggleChartSelection(chartName)} />
-                  <span>{chartName}</span>
-                </label>
+            <div className="compliance-chart-search">
+              <input
+                type="search"
+                placeholder="Search charts (e.g. bowel, diet, sleep, allergy...)"
+                value={chartSearchTerm}
+                onChange={(event) => setChartSearchTerm(event.target.value)}
+              />
+            </div>
+
+            <div className="compliance-chart-filters">
+              {(['All', 'Core', 'Medication', 'Nutrition', 'Continence'] as const).map((group) => (
+                <button
+                  key={group}
+                  type="button"
+                  className={chartActiveGroup === group ? 'is-active' : ''}
+                  onClick={() => setChartActiveGroup(group)}
+                >
+                  {group}
+                  <strong>{chartGroupCounts[group]}</strong>
+                </button>
               ))}
             </div>
 
-            <div className="compliance-modal__actions">
-              <button type="button" className="compliance-action-btn is-muted" onClick={() => setChartModalOpen(false)}>
-                Cancel
+            <div className="compliance-chart-selected">
+              <span>{selectedCharts.length} selected</span>
+              <small>of {ndisChartOptions.length} charts</small>
+              <div>
+                {selectedCharts.slice(0, 3).map((chartId) => {
+                  const chart = ndisChartOptions.find((item) => item.id === chartId);
+                  if (!chart) return null;
+                  return (
+                    <button key={chart.id} type="button" onClick={() => toggleChartSelection(chart.id)}>
+                      {chart.title} x
+                    </button>
+                  );
+                })}
+              </div>
+              <button type="button" className="compliance-chart-selected__clear" onClick={() => setSelectedCharts([])}>
+                Clear all
               </button>
-              <button type="button" className="compliance-action-btn is-success" onClick={() => setChartModalOpen(false)}>
-                Save Charts
-              </button>
+            </div>
+
+            <div className="compliance-chart-list">
+              {(Object.keys(groupedCharts) as Array<keyof typeof groupedCharts>).map((groupName) => {
+                const items = groupedCharts[groupName];
+                if (items.length === 0) return null;
+
+                return (
+                  <section key={groupName} className="compliance-chart-group">
+                    <header>
+                      <h4>{groupName === 'Core' ? 'Core Clinical & Health Monitoring' : `${groupName} Management`}</h4>
+                      <span>{items.length}</span>
+                    </header>
+                    <div className="compliance-chart-grid">
+                      {items.map((chart) => (
+                        <label key={chart.id} className="compliance-chart-item">
+                          <input
+                            type="checkbox"
+                            checked={selectedCharts.includes(chart.id)}
+                            onChange={() => toggleChartSelection(chart.id)}
+                          />
+                          <span className="compliance-chart-item__icon" aria-hidden="true">
+                            {chart.icon}
+                          </span>
+                          <span className="compliance-chart-item__content">
+                            <strong>{chart.title}</strong>
+                            <small>{chart.subtitle}</small>
+                          </span>
+                          {chart.featured ? <em aria-hidden="true">★</em> : null}
+                        </label>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+
+            <div className="compliance-modal__actions compliance-modal__actions--between">
+              <p>{selectedCharts.length} charts selected - click Add Selected to confirm</p>
+              <div className="compliance-modal__actions-right">
+                <button type="button" className="compliance-action-btn is-muted" onClick={() => setSelectedCharts([])}>
+                  Clear
+                </button>
+                <button type="button" className="compliance-action-btn is-success" onClick={() => setChartModalOpen(false)}>
+                  Add {selectedCharts.length || ''} Charts
+                </button>
+              </div>
             </div>
           </div>
         </div>
