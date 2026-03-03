@@ -1714,7 +1714,7 @@ body {
 .clients-grid {
   padding: 18px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -1722,7 +1722,7 @@ body {
   border: 1px solid #e6e7ef;
   border-radius: 30px;
   background: #f8f9fd;
-  padding: 22px 26px 20px;
+  padding: 20px 22px 18px;
   display: grid;
   gap: 16px;
   box-shadow: 0 10px 22px rgba(85, 96, 139, 0.08);
@@ -1748,8 +1748,8 @@ body {
 
 .clients-user-card__avatar-wrap {
   --avatar-accent: #4c8cef;
-  width: 138px;
-  height: 138px;
+  width: 128px;
+  height: 128px;
   border-radius: 999px;
   border: 3px solid var(--avatar-accent);
   padding: 7px;
@@ -1789,7 +1789,7 @@ body {
   background: transparent;
   padding: 0;
   color: #242a53;
-  font-size: clamp(28px, 1.6vw, 36px);
+  font-size: clamp(24px, 1.35vw, 30px);
   font-weight: 700;
   line-height: 1.05;
   cursor: pointer;
@@ -1805,7 +1805,7 @@ body {
   border-radius: 999px;
   background: #edf0fa;
   color: #818ab8;
-  font-size: clamp(20px, 1vw, 24px);
+  font-size: clamp(14px, 0.85vw, 18px);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1844,7 +1844,7 @@ body {
 }
 
 .clients-user-card__details p strong {
-  font-size: clamp(18px, 0.95vw, 22px);
+  font-size: clamp(13px, 0.7vw, 16px);
   color: #a5afd1;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1853,7 +1853,7 @@ body {
 
 .clients-user-card__details p span {
   min-width: 0;
-  font-size: clamp(24px, 1.05vw, 28px);
+  font-size: clamp(18px, 0.95vw, 24px);
   color: #3b4780;
   font-weight: 500;
   text-align: right;
@@ -1883,7 +1883,7 @@ body {
   align-items: center;
   gap: 10px;
   color: #8a95c3;
-  font-size: clamp(22px, 1vw, 26px);
+  font-size: clamp(15px, 0.85vw, 20px);
   font-weight: 600;
 }
 
@@ -1893,7 +1893,7 @@ body {
 }
 
 .clients-user-card__footer .badge {
-  font-size: clamp(18px, 0.9vw, 22px);
+  font-size: clamp(13px, 0.7vw, 16px);
   font-weight: 700;
   padding: 8px 22px;
   border-radius: 999px;
