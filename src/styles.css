@@ -1720,11 +1720,11 @@ body {
 
 .clients-user-card {
   border: 1px solid #e6e7ef;
-  border-radius: 30px;
+  border-radius: 20px;
   background: #f8f9fd;
-  padding: 20px 22px 18px;
+  padding: clamp(12px, 2vw, 16px);
   display: grid;
-  gap: 16px;
+  gap: 10px;
   box-shadow: 0 10px 22px rgba(85, 96, 139, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1743,16 +1743,17 @@ body {
   display: grid;
   justify-items: center;
   text-align: center;
-  gap: 10px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .clients-user-card__avatar-wrap {
   --avatar-accent: #4c8cef;
-  width: 128px;
-  height: 128px;
+  width: 38px;
+  height: 38px;
   border-radius: 999px;
-  border: 3px solid var(--avatar-accent);
-  padding: 7px;
+  border: 2px solid var(--avatar-accent);
+  padding: 2px;
   position: relative;
 }
 
@@ -1766,12 +1767,12 @@ body {
 
 .clients-user-card__avatar-status {
   position: absolute;
-  right: 8px;
-  bottom: 8px;
-  width: 19px;
-  height: 19px;
+  right: -1px;
+  bottom: -1px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
-  border: 3px solid #f8f9fd;
+  border: 1.5px solid #f8f9fd;
   background: #c8cddd;
 }
 
@@ -1789,10 +1790,12 @@ body {
   background: transparent;
   padding: 0;
   color: #242a53;
-  font-size: clamp(24px, 1.35vw, 30px);
+  font-size: 14px;
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.25;
   cursor: pointer;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .clients-user-card__name:hover {
@@ -1801,50 +1804,50 @@ body {
 
 .clients-user-card__uid {
   margin: 0;
-  padding: 6px 18px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: #edf0fa;
   color: #818ab8;
-  font-size: clamp(14px, 0.85vw, 18px);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .clients-user-card__details {
   border-top: 1px solid #e4e8f4;
   border-bottom: 1px solid #e4e8f4;
-  padding: 20px 0;
+  padding: 10px 0;
   display: grid;
-  gap: 14px;
+  gap: 8px;
 }
 
 .clients-user-card .clients-row-action {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   border: none;
   border-radius: 999px;
   background: transparent;
   padding: 0;
-  gap: 4px;
+  gap: 2px;
 }
 
 .clients-user-card .clients-row-action span {
-  width: 6px;
-  height: 6px;
+  width: 3px;
+  height: 3px;
   background: #b4bad4;
 }
 
 .clients-user-card__details p {
   margin: 0;
   display: grid;
-  grid-template-columns: minmax(140px, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(70px, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: 14px;
+  gap: 8px;
 }
 
 .clients-user-card__details p strong {
-  font-size: clamp(13px, 0.7vw, 16px);
+  font-size: 12px;
   color: #a5afd1;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1853,7 +1856,7 @@ body {
 
 .clients-user-card__details p span {
   min-width: 0;
-  font-size: clamp(18px, 0.95vw, 24px);
+  font-size: 12px;
   color: #3b4780;
   font-weight: 500;
   text-align: right;
@@ -1864,7 +1867,7 @@ body {
   justify-self: end;
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 4px 10px;
   border-radius: 12px;
   background: #edf0fa;
   color: #5f70ae;
@@ -1883,7 +1886,7 @@ body {
   align-items: center;
   gap: 10px;
   color: #8a95c3;
-  font-size: clamp(15px, 0.85vw, 20px);
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1893,9 +1896,9 @@ body {
 }
 
 .clients-user-card__footer .badge {
-  font-size: clamp(13px, 0.7vw, 16px);
+  font-size: 12px;
   font-weight: 700;
-  padding: 8px 22px;
+  padding: 6px 12px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -2147,26 +2150,12 @@ body {
     gap: 14px;
   }
 
-  .clients-user-card {
-    border-radius: 24px;
-    padding: 18px;
-  }
-
-  .clients-user-card__avatar-wrap {
-    width: 110px;
-    height: 110px;
-  }
-
-  .clients-user-card__name {
-    font-size: 28px;
-  }
-
   .clients-user-card__uid,
   .clients-user-card__details p strong,
   .clients-user-card__details p span,
   .clients-user-card__footer p,
   .clients-user-card__footer .badge {
-    font-size: 16px;
+    font-size: 12px;
   }
 }
 
@@ -2235,13 +2224,8 @@ body {
     gap: 10px;
   }
 
-  .clients-user-card {
-    border-radius: 20px;
-    padding: 16px;
-  }
-
   .clients-user-card__name {
-    font-size: 24px;
+    font-size: 13px;
   }
 
   .clients-user-card__details {
@@ -2265,7 +2249,7 @@ body {
   .clients-user-card__details p span,
   .clients-user-card__footer p,
   .clients-user-card__footer .badge {
-    font-size: 14px;
+    font-size: 11px;
   }
 
   .clients-user-card__footer {
