@@ -1699,130 +1699,194 @@ body {
 }
 
 .clients-grid {
-  padding: 16px;
+  padding: 18px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
 }
 
 .clients-user-card {
-  border: 1px solid #ebe8f3;
-  border-radius: 14px;
-  background: #ffffff;
-  padding: 14px;
+  border: 1px solid #e6e7ef;
+  border-radius: 30px;
+  background: #f8f9fd;
+  padding: 22px 26px 20px;
   display: grid;
-  gap: 10px;
-  box-shadow: 0 6px 16px rgba(30, 24, 48, 0.06);
-  position: relative;
+  gap: 16px;
+  box-shadow: 0 10px 22px rgba(85, 96, 139, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .clients-user-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(30, 24, 48, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(79, 89, 129, 0.14);
 }
 
 .clients-user-card__header {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.clients-user-card__index {
-  font-size: 11px;
-  font-weight: 600;
-  color: #7d7890;
-  position: absolute;
-  left: 0;
-  top: 0;
 }
 
 .clients-user-card__title {
-  display: flex;
-  align-items: center;
+  display: grid;
+  justify-items: center;
+  text-align: center;
   gap: 10px;
-  min-width: 0;
-  padding-top: 2px;
+}
+
+.clients-user-card__avatar-wrap {
+  --avatar-accent: #4c8cef;
+  width: 138px;
+  height: 138px;
+  border-radius: 999px;
+  border: 3px solid var(--avatar-accent);
+  padding: 7px;
+  position: relative;
 }
 
 .clients-user-card__title img {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
   object-fit: cover;
-  border: 1px solid #ece7f5;
+  border: 2px solid #ffffff;
+}
+
+.clients-user-card__avatar-status {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 19px;
+  height: 19px;
+  border-radius: 999px;
+  border: 3px solid #f8f9fd;
+  background: #c8cddd;
+}
+
+.clients-user-card__avatar-status--active {
+  background: #34cf8b;
+}
+
+.clients-user-card__avatar-status--inactive,
+.clients-user-card__avatar-status--archive {
+  background: #c8cddd;
 }
 
 .clients-user-card__name {
   border: none;
   background: transparent;
   padding: 0;
-  color: #2f2b3e;
-  font-size: 13px;
+  color: #242a53;
+  font-size: clamp(28px, 1.6vw, 36px);
   font-weight: 700;
+  line-height: 1.05;
   cursor: pointer;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .clients-user-card__name:hover {
-  color: var(--accent-1);
+  color: #3f5fc4;
+}
+
+.clients-user-card__uid {
+  margin: 0;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: #edf0fa;
+  color: #818ab8;
+  font-size: clamp(20px, 1vw, 24px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .clients-user-card__details {
+  border-top: 1px solid #e4e8f4;
+  border-bottom: 1px solid #e4e8f4;
+  padding: 20px 0;
   display: grid;
-  gap: 6px;
+  gap: 14px;
 }
 
 .clients-user-card .clients-row-action {
-  width: 22px;
-  height: 22px;
-  border: 1px solid #e7e2f0;
-  border-radius: 6px;
-  background: #ffffff;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
   padding: 0;
-  gap: 2px;
+  gap: 4px;
 }
 
 .clients-user-card .clients-row-action span {
-  width: 3px;
-  height: 3px;
-  background: #8c84a3;
+  width: 6px;
+  height: 6px;
+  background: #b4bad4;
 }
 
 .clients-user-card__details p {
   margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-  font-size: 11.5px;
-  color: #474355;
-  line-height: 1.35;
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
 }
 
 .clients-user-card__details p strong {
-  font-size: 11px;
-  color: #6b6680;
-  font-weight: 600;
-  min-width: 128px;
-  flex-shrink: 0;
+  font-size: clamp(18px, 0.95vw, 22px);
+  color: #a5afd1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .clients-user-card__details p span {
   min-width: 0;
-  word-break: break-word;
+  font-size: clamp(24px, 1.05vw, 28px);
+  color: #3b4780;
+  font-weight: 500;
+  text-align: right;
+  line-height: 1.2;
 }
 
-.clients-user-card__details .badge {
-  font-size: 10.5px;
-  padding: 3px 8px;
+.clients-user-card__pill {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 12px;
+  background: #edf0fa;
+  color: #5f70ae;
+}
+
+.clients-user-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.clients-user-card__footer p {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #8a95c3;
+  font-size: clamp(22px, 1vw, 26px);
+  font-weight: 600;
+}
+
+.clients-user-card__footer p strong {
+  color: #6677b2;
+  font-weight: 700;
+}
+
+.clients-user-card__footer .badge {
+  font-size: clamp(18px, 0.9vw, 22px);
+  font-weight: 700;
+  padding: 8px 22px;
   border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
-
 .clients-empty-state--grid {
   border: 1px dashed #e0d8e9;
   border-radius: 12px;
@@ -2067,6 +2131,29 @@ body {
 
   .clients-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .clients-user-card {
+    border-radius: 24px;
+    padding: 18px;
+  }
+
+  .clients-user-card__avatar-wrap {
+    width: 110px;
+    height: 110px;
+  }
+
+  .clients-user-card__name {
+    font-size: 28px;
+  }
+
+  .clients-user-card__uid,
+  .clients-user-card__details p strong,
+  .clients-user-card__details p span,
+  .clients-user-card__footer p,
+  .clients-user-card__footer .badge {
+    font-size: 16px;
   }
 }
 
@@ -2133,6 +2220,43 @@ body {
     grid-template-columns: 1fr;
     padding: 12px;
     gap: 10px;
+  }
+
+  .clients-user-card {
+    border-radius: 20px;
+    padding: 16px;
+  }
+
+  .clients-user-card__name {
+    font-size: 24px;
+  }
+
+  .clients-user-card__details {
+    gap: 10px;
+    padding: 14px 0;
+  }
+
+  .clients-user-card__details p {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .clients-user-card__details p span,
+  .clients-user-card__pill {
+    text-align: left;
+    justify-self: start;
+  }
+
+  .clients-user-card__uid,
+  .clients-user-card__details p strong,
+  .clients-user-card__details p span,
+  .clients-user-card__footer p,
+  .clients-user-card__footer .badge {
+    font-size: 14px;
+  }
+
+  .clients-user-card__footer {
+    flex-wrap: wrap;
   }
 }
 
