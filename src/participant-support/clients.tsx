@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 
 type ClientStatus = 'Active' | 'Inactive' | 'Archive';
 
@@ -131,6 +131,36 @@ function getStatusClass(status: ClientStatus) {
   if (status === 'Active') return 'badge--teal';
   if (status === 'Archive') return 'badge--archive';
   return 'badge--gray';
+}
+
+const cardAccentPalette = ['#34cf8b', '#4c8cef', '#e39a43', '#7d7cf5'];
+
+const countryCodeByIdentity: Record<string, string> = {
+  Australia: 'AU',
+  USA: 'US',
+  Canada: 'CA',
+  UK: 'UK',
+  'New Zealand': 'NZ',
+  Mexico: 'MX',
+  Spain: 'ES'
+};
+
+function formatDateForGrid(value: string) {
+  const [day, month, year] = value.split('/');
+  if (!day || !month || !year) return value;
+
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+}
+
+function formatNdisForGrid(value: string) {
+  return value.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
 }
 
 export default function ClientsPage() {
@@ -521,11 +551,11 @@ export default function ClientsPage() {
           ) : (
             <div className="clients-grid">
               {paginatedClients.map((client, index) => {
-                const serialNumber = startRecord + index;
+                const accentColor = cardAccentPalette[index % cardAccentPalette.length];
+                const countryCode = countryCodeByIdentity[client.culturalIdentity] ?? client.culturalIdentity.slice(0, 2).toUpperCase();
                 return (
                   <article key={client.uid} className="clients-user-card">
                     <div className="clients-user-card__header">
-                      <span className="clients-user-card__index">#{serialNumber}</span>
                       <div className="clients-row-action-wrap" ref={isActionMenuOpenFor === client.uid ? actionMenuRef : undefined}>
                         <button
                           className="clients-row-action"
@@ -564,38 +594,41 @@ export default function ClientsPage() {
                     </div>
 
                     <div className="clients-user-card__title">
-                      <img src={client.avatar} alt={client.name} />
+                      <div className="clients-user-card__avatar-wrap" style={{ '--avatar-accent': accentColor } as CSSProperties}>
+                        <img src={client.avatar} alt={client.name} />
+                        <span className={`clients-user-card__avatar-status clients-user-card__avatar-status--${client.status.toLowerCase()}`} />
+                      </div>
                       <button className="clients-user-card__name" type="button" onClick={() => openClientProfile(client)}>
                         {client.name}
                       </button>
+                      <p className="clients-user-card__uid">UID · {client.uid}</p>
                     </div>
 
                     <div className="clients-user-card__details">
                       <p>
-                        <strong>Name :</strong> <span>{client.name}</span>
+                        <strong>DOB</strong>
+                        <span>{formatDateForGrid(client.dateOfBirth)}</span>
                       </p>
                       <p>
-                        <strong>UID :</strong> <span>{client.uid}</span>
+                        <strong>Gender</strong>
+                        <span>{client.gender}</span>
                       </p>
                       <p>
-                        <strong>DOB :</strong> <span>{client.dateOfBirth}</span>
+                        <strong>Decision Maker</strong>
+                        <span>{client.decisionMaker}</span>
                       </p>
                       <p>
-                        <strong>Gender :</strong> <span>{client.gender}</span>
+                        <strong>NDIS</strong>
+                        <span className="clients-user-card__pill">{formatNdisForGrid(client.ndisNo)}</span>
                       </p>
+                    </div>
+
+                    <div className="clients-user-card__footer">
                       <p>
-                        <strong>Informal Decision Maker :</strong> <span>{client.decisionMaker}</span>
+                        <strong>{countryCode}</strong>
+                        <span>{client.culturalIdentity}</span>
                       </p>
-                      <p>
-                        <strong>Cultural Identity :</strong> <span>{client.culturalIdentity}</span>
-                      </p>
-                      <p>
-                        <strong>NDIS No :</strong> <span>{client.ndisNo}</span>
-                      </p>
-                      <p>
-                        <strong>Status :</strong>{' '}
-                        <span className={`badge ${getStatusClass(client.status)}`}>{client.status}</span>
-                      </p>
+                      <span className={`badge ${getStatusClass(client.status)}`}>{client.status.toUpperCase()}</span>
                     </div>
                   </article>
                 );
