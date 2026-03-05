@@ -3997,27 +3997,46 @@ label {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 8px;
-  padding-bottom: 4px;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+  background: #f2f2f7;
+  border: 1px solid #e4e5ee;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 4px 10px rgba(58, 42, 89, 0.08);
   scrollbar-width: thin;
 }
 
 .profile-page-v2__tab {
-  border: 1px solid #e9e0f4;
-  border-radius: 10px;
-  padding: 8px 12px;
-  background: #f8f5fc;
-  color: #4b4356;
+  border: 1px solid #dfe1eb;
+  border-radius: 11px;
+  padding: 9px 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #f2f3f8 100%);
+  color: #424654;
   font-size: var(--font-size-content);
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   flex: 0 0 auto;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  box-shadow: 0 1px 2px rgba(22, 20, 40, 0.05);
+}
+
+.profile-page-v2__tab:hover {
+  transform: translateY(-1px);
+  border-color: #d2d6e4;
+  box-shadow: 0 4px 10px rgba(30, 31, 63, 0.12);
 }
 
 .profile-page-v2__tab.is-active {
   background: linear-gradient(120deg, #f6b55c 0%, #8378ff 100%);
   color: #fff;
   border-color: transparent;
+  box-shadow: 0 8px 16px rgba(106, 88, 191, 0.35);
+}
+
+.profile-page-v2__tab:focus-visible {
+  outline: 2px solid rgba(113, 120, 255, 0.45);
+  outline-offset: 2px;
 }
 
 .personal-info-page {
