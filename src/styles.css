@@ -1749,8 +1749,8 @@ body {
 
 .clients-user-card__avatar-wrap {
   --avatar-accent: #4c8cef;
-  width: 38px;
-  height: 38px;
+  width: 78px;
+  height: 78px;
   border-radius: 999px;
   border: 2px solid var(--avatar-accent);
   padding: 2px;
@@ -1808,7 +1808,7 @@ body {
   border-radius: 999px;
   background: #edf0fa;
   color: #818ab8;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1847,7 +1847,7 @@ body {
 }
 
 .clients-user-card__details p strong {
-  font-size: 12px;
+  font-size: 10px;
   color: #a5afd1;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1856,7 +1856,7 @@ body {
 
 .clients-user-card__details p span {
   min-width: 0;
-  font-size: 12px;
+  font-size: 10px;
   color: #3b4780;
   font-weight: 500;
   text-align: right;
@@ -1886,7 +1886,7 @@ body {
   align-items: center;
   gap: 10px;
   color: #8a95c3;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
 }
 
@@ -1896,7 +1896,7 @@ body {
 }
 
 .clients-user-card__footer .badge {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 999px;
