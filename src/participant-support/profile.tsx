@@ -621,7 +621,7 @@ const ndisChartOptions: ChartOption[] = [
 ];
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<ProfileTab>('Medication Administration');
+  const [activeTab, setActiveTab] = useState<ProfileTab>('Personal Info');
   const [activeMedicationTime, setActiveMedicationTime] = useState('06:00');
   const [activeDetail, setActiveDetail] = useState<{ title: string; content: string } | null>(null);
   const [complianceCategories, setComplianceCategories] = useState<ComplianceCategory[]>(complianceCategoriesSeed);
