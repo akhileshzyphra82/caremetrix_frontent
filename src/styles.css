@@ -6323,6 +6323,18 @@ label {
 
 .org-structure-table {
   min-width: 1080px;
+  table-layout: auto;
+}
+
+.org-structure-table .org-col-compact {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.org-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .org-name-cell {

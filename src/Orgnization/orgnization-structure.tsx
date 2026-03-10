@@ -211,13 +211,12 @@ export default function OrgnizationStructurePage() {
             <table className="data-table clients-table org-structure-table">
               <thead>
                 <tr>
-                  <th>S.No.</th>
+                  <th className="org-col-compact">S.No.</th>
                   <th>Organization</th>
-                  <th>Location</th>
-                  <th>Staff</th>
-                  <th>Client</th>
-                  <th>Action</th>
-                  <th></th>
+                  <th className="org-col-compact">Locations</th>
+                  <th className="org-col-compact">Staff</th>
+                  <th className="org-col-compact">Client</th>
+                  <th className="org-col-compact">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -228,7 +227,7 @@ export default function OrgnizationStructurePage() {
                   return (
                     <Fragment key={organization.id}>
                       <tr>
-                        <td>{(safeCurrentPage - 1) * PAGE_SIZE + index + 1}</td>
+                        <td className="org-col-compact">{(safeCurrentPage - 1) * PAGE_SIZE + index + 1}</td>
                         <td>
                           <div className="org-name-cell">
                             <img src={organization.logo} alt={organization.name} />
@@ -238,29 +237,34 @@ export default function OrgnizationStructurePage() {
                             </div>
                           </div>
                         </td>
-                        <td>{organization.location}</td>
-                        <td>{staffCount}</td>
-                        <td>{clientCount}</td>
-                        <td>
-                          <details className="org-kebab-menu">
-                            <summary aria-label="Row actions"><span /><span /><span /></summary>
-                            <div>
-                              <button type="button">Edit</button>
-                              <button type="button">Delete</button>
-                              <button type="button">Add new location</button>
-                            </div>
-                          </details>
-                        </td>
-                        <td>
-                          <button className="icon-btn org-toggle-btn" type="button" onClick={() => setExpandedRows((prev) => ({ ...prev, [organization.id]: !isExpanded }))} aria-label="Toggle locations">
-                            {isExpanded ? '▾' : '▸'}
-                          </button>
+                        <td className="org-col-compact">{organization.locations.length}</td>
+                        <td className="org-col-compact">{staffCount}</td>
+                        <td className="org-col-compact">{clientCount}</td>
+                        <td className="org-col-compact">
+                          <div className="org-row-actions">
+                            <details className="org-kebab-menu">
+                              <summary aria-label="Row actions"><span /><span /><span /></summary>
+                              <div>
+                                <button type="button">Edit</button>
+                                <button type="button">Delete</button>
+                                <button type="button">Add new location</button>
+                              </div>
+                            </details>
+                            <button
+                              className="icon-btn org-toggle-btn"
+                              type="button"
+                              onClick={() => setExpandedRows((prev) => ({ ...prev, [organization.id]: !isExpanded }))}
+                              aria-label="Toggle locations"
+                            >
+                              {isExpanded ? '▾' : '▸'}
+                            </button>
+                          </div>
                         </td>
                       </tr>
 
                       {isExpanded ? (
                         <tr>
-                          <td colSpan={7}>
+                          <td colSpan={6}>
                             <div className="org-location-box">
                               <table className="data-table org-subtable">
                                 <thead>
