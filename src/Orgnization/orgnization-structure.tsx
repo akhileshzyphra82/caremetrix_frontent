@@ -135,15 +135,21 @@ export default function OrgnizationStructurePage() {
               Filter: {filter}
             </button>
 
-            <button className={`clients-view-toggle ${viewMode === 'grid' ? 'is-active' : ''}`} type="button" onClick={() => setViewMode('grid')} aria-label="Grid view">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
-              </svg>
-            </button>
-            <button className={`clients-view-toggle ${viewMode === 'list' ? 'is-active' : ''}`} type="button" onClick={() => setViewMode('list')} aria-label="List view">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" />
-              </svg>
+            <button
+              className="clients-view-toggle is-active"
+              type="button"
+              onClick={() => setViewMode((prev) => (prev === 'list' ? 'grid' : 'list'))}
+              aria-label={`Switch to ${viewMode === 'list' ? 'grid' : 'list'} view`}
+            >
+              {viewMode === 'list' ? (
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" />
+                </svg>
+              )}
             </button>
 
             <button className="clients-export" type="button" aria-label="Export data">
@@ -155,10 +161,30 @@ export default function OrgnizationStructurePage() {
         </div>
 
         <div className="org-stat-grid">
-          <div className="stat-card stat-card--mint"><p>Organization</p><h3>{totals.organizationCount}</h3></div>
-          <div className="stat-card stat-card--sky"><p>Location</p><h3>{totals.locationCount}</h3></div>
-          <div className="stat-card stat-card--lavender"><p>Staff</p><h3>{totals.staffCount}</h3></div>
-          <div className="stat-card"><p>Client</p><h3>{totals.clientCount}</h3></div>
+          <div className="stat-card org-stat-card stat-card--mint">
+            <span className="stat-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-7H9v7H5a1 1 0 01-1-1v-9.5z" /></svg>
+            </span>
+            <div><h3>{totals.organizationCount}</h3><p>Organizations</p></div>
+          </div>
+          <div className="stat-card org-stat-card stat-card--sky">
+            <span className="stat-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 00-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 00-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z" /></svg>
+            </span>
+            <div><h3>{totals.locationCount}</h3><p>Locations</p></div>
+          </div>
+          <div className="stat-card org-stat-card stat-card--lavender">
+            <span className="stat-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M16 11a4 4 0 10-4-4 4 4 0 004 4zm-8 0a3 3 0 10-3-3 3 3 0 003 3zm0 2c-2.67 0-8 1.34-8 4v3h10v-3c0-.89.36-1.72 1-2.39A13.7 13.7 0 008 13zm8 0c-.29 0-.62.02-.97.05A5.45 5.45 0 0118 17v3h6v-3c0-2.66-5.33-4-8-4z" /></svg>
+            </span>
+            <div><h3>{totals.staffCount}</h3><p>Staff Members</p></div>
+          </div>
+          <div className="stat-card org-stat-card">
+            <span className="stat-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 10-5-5 5 5 0 005 5zm0 2c-4.42 0-8 2.24-8 5v2h16v-2c0-2.76-3.58-5-8-5z" /></svg>
+            </span>
+            <div><h3>{totals.clientCount}</h3><p>Total Clients</p></div>
+          </div>
         </div>
 
         <div className="clients-pagination-bar">
@@ -187,7 +213,6 @@ export default function OrgnizationStructurePage() {
                 <tr>
                   <th>S.No.</th>
                   <th>Organization</th>
-                  <th>Owner</th>
                   <th>Location</th>
                   <th>Staff</th>
                   <th>Client</th>
@@ -209,11 +234,10 @@ export default function OrgnizationStructurePage() {
                             <img src={organization.logo} alt={organization.name} />
                             <div>
                               <strong>{organization.name}</strong>
-                              <small>{organization.id}</small>
+                              <small>{organization.id} · Owner: {organization.owner}</small>
                             </div>
                           </div>
                         </td>
-                        <td>{organization.owner}</td>
                         <td>{organization.location}</td>
                         <td>{staffCount}</td>
                         <td>{clientCount}</td>
@@ -236,7 +260,7 @@ export default function OrgnizationStructurePage() {
 
                       {isExpanded ? (
                         <tr>
-                          <td colSpan={8}>
+                          <td colSpan={7}>
                             <div className="org-location-box">
                               <table className="data-table org-subtable">
                                 <thead>
@@ -291,10 +315,9 @@ export default function OrgnizationStructurePage() {
                     <img src={organization.logo} alt={organization.name} />
                     <div>
                       <strong>{organization.name}</strong>
-                      <small>{organization.location}</small>
+                      <small>{organization.location} · Owner: {organization.owner}</small>
                     </div>
                   </div>
-                  <p>Owner: <strong>{organization.owner}</strong></p>
                   <p>Staff: <strong>{staffCount}</strong></p>
                   <p>Client: <strong>{clientCount}</strong></p>
                   <p>Locations: <strong>{organization.locations.length}</strong></p>
