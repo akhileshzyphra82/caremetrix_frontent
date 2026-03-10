@@ -126,34 +126,47 @@ export default function ModulesListPage() {
 
   return (
     <section className="menu-panel active clients-page modules-list-page">
+      <div className="clients-page__header-row">
+        <div className="clients-breadcrumb" aria-label="Breadcrumb">
+          <span>Dashboard</span>
+          <span className="clients-breadcrumb__divider">›</span>
+          <span>Organization</span>
+          <span className="clients-breadcrumb__divider">›</span>
+          <strong>Modules List</strong>
+        </div>
+
+        <button className="btn clients-page__add-btn" type="button" onClick={() => setShowModuleModal(true)}>
+          <span aria-hidden="true">＋</span> Add Module
+        </button>
+      </div>
+
       <div className="clients-page__card modules-card">
         <div className="clients-page__topbar modules-topbar">
           <div>
             <h1>Modules List</h1>
-            <p>Super admin can add, edit, delete and view modules with nested menus and priority.</p>
+            <p>Manage modules and nested menus using the shared organization table style.</p>
           </div>
           <div className="modules-topbar__actions">
             <label className="clients-search modules-search">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.8l-.3-.3a6 6 0 10-.9.9l.3.3v.8l5 5 1.5-1.5-5-5zM10 15a5 5 0 110-10 5 5 0 010 10z" /></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.5 14h-.8l-.3-.3a6 6 0 10-.9.9l.3.3v.8l5 5 1.5-1.5-5-5zM10 15a5 5 0 110-10 5 5 0 010 10z" />
+              </svg>
               <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search module or menu" />
             </label>
-            <button className="clients-page__add-btn modules-add-btn" type="button" onClick={() => setShowModuleModal(true)}>+ Add Module</button>
+            <button className="clients-filter" type="button" onClick={() => setShowMenuModal(true)}>
+              <span>+ Add Menu</span>
+            </button>
           </div>
         </div>
 
-        <div className="modules-table-wrap">
-          <div className="modules-table-head">
-            <p>Showing 1–{visibleRows.length} of {visibleRows.length} records</p>
-            <div className="modules-table-head__controls">
-              <span>Records per page</span>
-              <select className="org-select" defaultValue="10" aria-label="Records per page"><option value="10">10</option></select>
-              <button type="button" className="modules-page-btn" disabled>Prev</button>
-              <span className="modules-page-current">1</span>
-              <button type="button" className="modules-page-btn" disabled>Next</button>
-            </div>
+        <div className="table-wrap clients-table-wrap modules-table-wrap">
+          <div className="clients-pagination-bar" aria-label="Modules table info">
+            <p>
+              Showing 1-{visibleRows.length} of {visibleRows.length} records
+            </p>
           </div>
 
-          <table className="modules-table">
+          <table className="data-table clients-table modules-table">
             <thead>
               <tr>
                 <th>S.No.</th>
@@ -173,11 +186,15 @@ export default function ModulesListPage() {
                       <td>{moduleIndex + 1}</td>
                       <td>
                         <div className="module-name-cell">
-                          <span className="module-icon" aria-hidden="true">{row.icon}</span>
+                          <span className="module-icon" aria-hidden="true">
+                            {row.icon}
+                          </span>
                           <strong>{row.name}</strong>
                         </div>
                       </td>
-                      <td><span className="priority-chip">{row.priority}</span></td>
+                      <td>
+                        <span className="priority-chip">{row.priority}</span>
+                      </td>
                       <td>
                         <button
                           type="button"
@@ -188,14 +205,16 @@ export default function ModulesListPage() {
                         </button>
                       </td>
                       <td>
-                        <button className="row-menu-btn" type="button" aria-label={`Actions for ${row.name}`}>⋮</button>
+                        <button className="row-menu-btn" type="button" aria-label={`Actions for ${row.name}`}>
+                          ⋮
+                        </button>
                       </td>
                     </tr>
                     {isExpanded && (
                       <tr key={`${row.id}-expanded`}>
                         <td className="module-nested-cell" colSpan={5}>
                           <div className="module-nested-wrap">
-                            <table className="module-nested-table">
+                            <table className="data-table module-nested-table">
                               <thead>
                                 <tr>
                                   <th>#</th>
@@ -209,10 +228,20 @@ export default function ModulesListPage() {
                                 {row.menus.map((menu, menuIndex) => (
                                   <tr key={menu.id}>
                                     <td>{menuIndex + 1}</td>
-                                    <td><span className="menu-dot" /> {menu.name}</td>
-                                    <td><span className="priority-chip">{menu.priority}</span></td>
-                                    <td><span className={`menu-type-chip ${menu.type === 'Primary' ? 'is-primary' : 'is-secondary'}`}>{menu.type}</span></td>
-                                    <td><button className="row-menu-btn" type="button" aria-label={`Actions for ${menu.name}`}>⋮</button></td>
+                                    <td>
+                                      <span className="menu-dot" /> {menu.name}
+                                    </td>
+                                    <td>
+                                      <span className="priority-chip">{menu.priority}</span>
+                                    </td>
+                                    <td>
+                                      <span className={`menu-type-chip ${menu.type === 'Primary' ? 'is-primary' : 'is-secondary'}`}>{menu.type}</span>
+                                    </td>
+                                    <td>
+                                      <button className="row-menu-btn" type="button" aria-label={`Actions for ${menu.name}`}>
+                                        ⋮
+                                      </button>
+                                    </td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -227,33 +256,49 @@ export default function ModulesListPage() {
             </tbody>
           </table>
         </div>
-
-        <div className="modules-bottom-actions">
-          <button className="clients-page__add-btn" type="button" onClick={() => setShowMenuModal(true)}>+ Add Menu</button>
-        </div>
       </div>
 
       <div className={`modal ${showModuleModal ? 'is-open' : ''}`}>
         <button className="modal__backdrop" type="button" onClick={() => setShowModuleModal(false)} />
-        <div className="modal__dialog"><button className="modal__close" onClick={() => setShowModuleModal(false)} type="button">×</button>
+        <div className="modal__dialog">
+          <button className="modal__close" onClick={() => setShowModuleModal(false)} type="button">
+            ×
+          </button>
           <h3>Add Module</h3>
           <form className="modal__body" onSubmit={onAddModule}>
             <input name="name" placeholder="Module Name" required />
             <input name="priority" type="number" min={1} placeholder="Priority" required />
-            <div className="modal__actions"><button className="clients-page__add-btn" type="submit">Save Module</button></div>
+            <div className="modal__actions">
+              <button className="clients-page__add-btn" type="submit">
+                Save Module
+              </button>
+            </div>
           </form>
         </div>
       </div>
 
       <div className={`modal ${showMenuModal ? 'is-open' : ''}`}>
         <button className="modal__backdrop" type="button" onClick={() => setShowMenuModal(false)} />
-        <div className="modal__dialog"><button className="modal__close" onClick={() => setShowMenuModal(false)} type="button">×</button>
+        <div className="modal__dialog">
+          <button className="modal__close" onClick={() => setShowMenuModal(false)} type="button">
+            ×
+          </button>
           <h3>Add Menu Under Module</h3>
           <form className="modal__body" onSubmit={onAddMenu}>
-            <select name="moduleId" required>{rows.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}</select>
+            <select name="moduleId" required>
+              {rows.map((row) => (
+                <option key={row.id} value={row.id}>
+                  {row.name}
+                </option>
+              ))}
+            </select>
             <input name="menuName" placeholder="Menu Name" required />
             <input name="priority" type="number" min={1} placeholder="Priority" required />
-            <div className="modal__actions"><button className="clients-page__add-btn" type="submit">Save Menu</button></div>
+            <div className="modal__actions">
+              <button className="clients-page__add-btn" type="submit">
+                Save Menu
+              </button>
+            </div>
           </form>
         </div>
       </div>
