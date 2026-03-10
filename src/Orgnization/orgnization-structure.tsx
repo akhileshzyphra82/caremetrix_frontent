@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 
 type LocationItem = {
   id: string;
@@ -22,7 +22,7 @@ const organizationsSeed: Organization[] = [
   {
     id: 'ORG-001',
     name: 'Caremetrix Sydney',
-    logo: 'https://i.pravatar.cc/72?img=67',
+    logo: 'https://placehold.co/96x96/e9ecff/4f46b6?text=CM',
     owner: 'Mia Collins',
     location: 'Sydney',
     status: 'Active',
@@ -34,7 +34,7 @@ const organizationsSeed: Organization[] = [
   {
     id: 'ORG-002',
     name: 'Caremetrix Melbourne',
-    logo: 'https://i.pravatar.cc/72?img=44',
+    logo: 'https://placehold.co/96x96/e7f6ff/1769aa?text=CM',
     owner: 'Oliver Hayes',
     location: 'Melbourne',
     status: 'Active',
@@ -46,7 +46,7 @@ const organizationsSeed: Organization[] = [
   {
     id: 'ORG-003',
     name: 'Caremetrix Brisbane',
-    logo: 'https://i.pravatar.cc/72?img=51',
+    logo: 'https://placehold.co/96x96/eaf9f1/127a50?text=CM',
     owner: 'Charlotte Ford',
     location: 'Brisbane',
     status: 'Inactive',
@@ -60,9 +60,25 @@ export default function OrgnizationStructurePage() {
   const [organizations] = useState(organizationsSeed);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  const [filter, setFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
+  const [locationFilter, setLocationFilter] = useState<'All' | string>('All');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [currentPage, setCurrentPage] = useState(1);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const locationOptions = useMemo(() => ['All', ...Array.from(new Set(organizations.map((organization) => organization.location)))], [organizations]);
 
   const filteredOrganizations = useMemo(() => {
     const normalizedSearch = searchTerm.toLowerCase().trim();
@@ -71,11 +87,16 @@ export default function OrgnizationStructurePage() {
         normalizedSearch.length === 0 ||
         [organization.id, organization.name, organization.owner, organization.location].join(' ').toLowerCase().includes(normalizedSearch);
 
-      const matchesFilter = filter === 'All' || organization.status === filter;
+      const matchesStatus = statusFilter === 'All' || organization.status === statusFilter;
+      const matchesLocation = locationFilter === 'All' || organization.location === locationFilter;
 
-      return matchesSearch && matchesFilter;
+      return matchesSearch && matchesStatus && matchesLocation;
     });
-  }, [filter, organizations, searchTerm]);
+  }, [locationFilter, organizations, searchTerm, statusFilter]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [locationFilter, searchTerm, statusFilter]);
 
   const totals = useMemo(() => {
     const locationCount = organizations.reduce((sum, organization) => sum + organization.locations.length, 0);
@@ -128,12 +149,38 @@ export default function OrgnizationStructurePage() {
               <input type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search Organization" />
             </label>
 
-            <button className="clients-filter" type="button" onClick={() => setFilter((prev) => (prev === 'All' ? 'Active' : prev === 'Active' ? 'Inactive' : 'All'))}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm3 6h4v2h-4v-2z" />
-              </svg>
-              Filter: {filter}
-            </button>
+            <div className="org-filter-wrap" ref={filterRef}>
+              <button className="clients-filter org-filter-icon-btn" type="button" onClick={() => setIsFilterOpen((prev) => !prev)} aria-label="Open filters">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm3 6h4v2h-4v-2z" />
+                </svg>
+              </button>
+
+              {isFilterOpen ? (
+                <div className="clients-filter-panel org-filter-panel" role="dialog" aria-label="Filter organization list">
+                  <div className="clients-filter-group">
+                    <p>Status</p>
+                    {(['All', 'Active', 'Inactive'] as Array<'All' | 'Active' | 'Inactive'>).map((status) => (
+                      <label key={status}>
+                        <input type="radio" name="org-status" checked={statusFilter === status} onChange={() => setStatusFilter(status)} />
+                        <span>{status}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="clients-filter-group">
+                    <p>Location</p>
+                    <select value={locationFilter} onChange={(event) => setLocationFilter(event.target.value)}>
+                      {locationOptions.map((location) => (
+                        <option key={location} value={location}>
+                          {location}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              ) : null}
+            </div>
 
             <button
               className="clients-view-toggle is-active"
@@ -208,7 +255,7 @@ export default function OrgnizationStructurePage() {
 
         {viewMode === 'list' ? (
           <div className="clients-table-wrap">
-            <table className="data-table clients-table org-structure-table">
+            <table className="data-table clients-table">
               <thead>
                 <tr>
                   <th className="org-col-compact">S.No.</th>
