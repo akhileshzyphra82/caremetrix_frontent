@@ -1,6 +1,10 @@
 import { type ComponentType, type FormEvent, useEffect, useMemo, useState } from 'react';
 import { getPathForMenu, sidebarModules } from './shared';
 import DashboardPage from './dashboard/dashboard';
+import OrgnizationStructurePage from './Orgnization/orgnization-structure';
+import ModulesListPage from './Orgnization/modules-list';
+import UserRolesPage from './Orgnization/user-roles';
+import NotificationPage from './Orgnization/notification';
 import ClientsPage from './participant-support/clients';
 import ProfilePage from './participant-support/profile';
 import FundingPage from './participant-support/funding';
@@ -33,6 +37,10 @@ const AUTH_STORAGE_KEY = 'carematrix-authenticated';
 const routeComponents: Record<string, ComponentType> = {
   '/': DashboardPage,
   '/dashboard': DashboardPage,
+  '/orgnization/orgnization-structure': OrgnizationStructurePage,
+  '/orgnization/modules-list': ModulesListPage,
+  '/orgnization/user-roles': UserRolesPage,
+  '/orgnization/notification': NotificationPage,
   '/participant-support/clients': ClientsPage,
   '/participant-support/profile': ProfilePage,
   '/participant-support/funding': FundingPage,
@@ -73,6 +81,8 @@ function renderModuleIcon(moduleKey: string) {
   switch (moduleKey) {
     case 'dashboard':
       return <path d="M4 11h7V4H4v7zm0 9h7v-7H4v7zm9 0h7v-7h-7v7zm0-16v7h7V4h-7z" />;
+    case 'orgnization':
+      return <path d="M4 6h16v12H4V6zm2 2v8h12V8H6zm2 2h8v2H8v-2zM8 13h5v1.8H8V13z" />;
     case 'participant-support':
       return <path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3zM8 11c1.7 0 3-1.3 3-3S9.7 5 8 5 5 6.3 5 8s1.3 3 3 3zm0 2c-2.7 0-5 1.3-5 3v2h10v-2c0-1.7-2.3-3-5-3zm8 0c-.6 0-1.2.1-1.7.2 1.2.7 2 1.7 2 2.8v2h6v-2c0-1.7-2.3-3-4.3-3z" />;
     case 'people-workforce':
