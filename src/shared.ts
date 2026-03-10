@@ -9,6 +9,16 @@ export type ModuleItem = {
 export const sidebarModules: ModuleItem[] = [
   { key: 'dashboard', label: 'Dashboard', children: [] },
   {
+    key: 'orgnization',
+    label: 'Orgnization',
+    children: [
+      { menuId: 'orgnization-structure', label: 'Orgnization Structure' },
+      { menuId: 'modules-list', label: 'Modules List' },
+      { menuId: 'user-roles', label: 'User Roles' },
+      { menuId: 'notification', label: 'Notification' }
+    ]
+  },
+  {
     key: 'participant-support',
     label: 'Participant & Support',
     children: [
