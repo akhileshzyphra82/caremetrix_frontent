@@ -1153,7 +1153,7 @@ export default function ProfilePage() {
                           aria-label={`Toggle required types for ${item.title}`}
                           onClick={() => toggleCategoryExpanded(item.id)}
                         >
-                          <span>&#8964;</span>
+                          <span aria-hidden="true">▼</span>
                         </button>
                       </div>
 
