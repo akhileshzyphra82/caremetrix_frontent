@@ -1,188 +1,308 @@
-import { Fragment, useMemo, useState, type FormEvent } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
-type LocationItem = { id: string; name: string; staffCount: number; clientCount: number };
-type Organization = { id: string; name: string; manager: string; phone: string; email: string; locations: LocationItem[] };
+type LocationItem = {
+  id: string;
+  name: string;
+  manager: string;
+  staffCount: number;
+  clientCount: number;
+};
 
-const initialOrganizations: Organization[] = [
+type Organization = {
+  id: string;
+  name: string;
+  logo: string;
+  owner: string;
+  location: string;
+  status: 'Active' | 'Inactive';
+  locations: LocationItem[];
+};
+
+const organizationsSeed: Organization[] = [
   {
-    id: 'ORG-1001',
-    name: 'CareMatrix Sydney',
-    manager: 'Mia Collins',
-    phone: '02 9000 1201',
-    email: 'sydney@carematrix.com',
+    id: 'ORG-001',
+    name: 'Caremetrix Sydney',
+    logo: 'https://i.pravatar.cc/72?img=67',
+    owner: 'Mia Collins',
+    location: 'Sydney',
+    status: 'Active',
     locations: [
-      { id: 'LOC-01', name: 'Parramatta', staffCount: 32, clientCount: 88 },
-      { id: 'LOC-02', name: 'Liverpool', staffCount: 25, clientCount: 70 }
+      { id: 'LOC-11', name: 'Parramatta', manager: 'Ava Ray', staffCount: 32, clientCount: 88 },
+      { id: 'LOC-12', name: 'Liverpool', manager: 'Liam Knox', staffCount: 24, clientCount: 74 }
     ]
   },
   {
-    id: 'ORG-1002',
-    name: 'CareMatrix Melbourne',
-    manager: 'Liam Turner',
-    phone: '03 9000 3402',
-    email: 'melbourne@carematrix.com',
+    id: 'ORG-002',
+    name: 'Caremetrix Melbourne',
+    logo: 'https://i.pravatar.cc/72?img=44',
+    owner: 'Oliver Hayes',
+    location: 'Melbourne',
+    status: 'Active',
     locations: [
-      { id: 'LOC-03', name: 'Footscray', staffCount: 24, clientCount: 62 },
-      { id: 'LOC-04', name: 'Dandenong', staffCount: 19, clientCount: 55 }
+      { id: 'LOC-21', name: 'Dandenong', manager: 'Noah Green', staffCount: 18, clientCount: 57 },
+      { id: 'LOC-22', name: 'Footscray', manager: 'Ella Hart', staffCount: 28, clientCount: 79 }
     ]
+  },
+  {
+    id: 'ORG-003',
+    name: 'Caremetrix Brisbane',
+    logo: 'https://i.pravatar.cc/72?img=51',
+    owner: 'Charlotte Ford',
+    location: 'Brisbane',
+    status: 'Inactive',
+    locations: [{ id: 'LOC-31', name: 'South Brisbane', manager: 'Lucas Dale', staffCount: 14, clientCount: 42 }]
   }
 ];
 
+const PAGE_SIZE = 10;
+
 export default function OrgnizationStructurePage() {
-  const [organizations, setOrganizations] = useState(initialOrganizations);
+  const [organizations] = useState(organizationsSeed);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [filter, setFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
-  const [search, setSearch] = useState('');
-  const [showOrgModal, setShowOrgModal] = useState(false);
-  const [showLocationModalFor, setShowLocationModalFor] = useState<string | null>(null);
-  const [editingOrgId, setEditingOrgId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredOrganizations = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return organizations;
-    return organizations.filter((org) => [org.id, org.name, org.manager, org.phone, org.email].join(' ').toLowerCase().includes(q));
-  }, [organizations, search]);
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+    return organizations.filter((organization) => {
+      const matchesSearch =
+        normalizedSearch.length === 0 ||
+        [organization.id, organization.name, organization.owner, organization.location].join(' ').toLowerCase().includes(normalizedSearch);
+
+      const matchesFilter = filter === 'All' || organization.status === filter;
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [filter, organizations, searchTerm]);
 
   const totals = useMemo(() => {
-    const locationCount = organizations.reduce((acc, org) => acc + org.locations.length, 0);
-    const staffCount = organizations.reduce((acc, org) => acc + org.locations.reduce((a, l) => a + l.staffCount, 0), 0);
-    const clientCount = organizations.reduce((acc, org) => acc + org.locations.reduce((a, l) => a + l.clientCount, 0), 0);
+    const locationCount = organizations.reduce((sum, organization) => sum + organization.locations.length, 0);
+    const staffCount = organizations.reduce(
+      (sum, organization) => sum + organization.locations.reduce((locationSum, location) => locationSum + location.staffCount, 0),
+      0
+    );
+    const clientCount = organizations.reduce(
+      (sum, organization) => sum + organization.locations.reduce((locationSum, location) => locationSum + location.clientCount, 0),
+      0
+    );
+
     return { organizationCount: organizations.length, locationCount, staffCount, clientCount };
   }, [organizations]);
 
-  const orgToEdit = editingOrgId ? organizations.find((org) => org.id === editingOrgId) : null;
-
-  const onOrgSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const newOrg: Organization = {
-      id: String(formData.get('id') || '').trim(),
-      name: String(formData.get('name') || '').trim(),
-      manager: String(formData.get('manager') || '').trim(),
-      phone: String(formData.get('phone') || '').trim(),
-      email: String(formData.get('email') || '').trim(),
-      locations: orgToEdit?.locations ?? []
-    };
-    if (!newOrg.id || !newOrg.name) return;
-    setOrganizations((prev) => (orgToEdit ? prev.map((org) => (org.id === orgToEdit.id ? { ...org, ...newOrg } : org)) : [newOrg, ...prev]));
-    setShowOrgModal(false);
-    setEditingOrgId(null);
-  };
-
-  const onLocationSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!showLocationModalFor) return;
-    const formData = new FormData(event.currentTarget);
-    const newLocation: LocationItem = {
-      id: `LOC-${Math.floor(Math.random() * 900 + 100)}`,
-      name: String(formData.get('name') || '').trim(),
-      staffCount: Number(formData.get('staffCount') || 0),
-      clientCount: Number(formData.get('clientCount') || 0)
-    };
-    if (!newLocation.name) return;
-    setOrganizations((prev) => prev.map((org) => (org.id === showLocationModalFor ? { ...org, locations: [...org.locations, newLocation] } : org)));
-    setExpandedRows((prev) => ({ ...prev, [showLocationModalFor]: true }));
-    setShowLocationModalFor(null);
-  };
+  const totalPages = Math.max(1, Math.ceil(filteredOrganizations.length / PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const pagedOrganizations = filteredOrganizations.slice((safeCurrentPage - 1) * PAGE_SIZE, safeCurrentPage * PAGE_SIZE);
+  const startRecord = filteredOrganizations.length === 0 ? 0 : (safeCurrentPage - 1) * PAGE_SIZE + 1;
+  const endRecord = Math.min(safeCurrentPage * PAGE_SIZE, filteredOrganizations.length);
 
   return (
     <section className="menu-panel active clients-page">
-      <div className="clients-page__card">
+      <div className="clients-page__header-row">
+        <div className="clients-breadcrumb" aria-label="Breadcrumb">
+          <span>Dashboard</span>
+          <span className="clients-breadcrumb__divider">›</span>
+          <span>Organization</span>
+          <span className="clients-breadcrumb__divider">›</span>
+          <strong>Organization Structure</strong>
+        </div>
+
+        <button className="btn clients-page__add-btn" type="button">
+          <span aria-hidden="true">＋</span> Add Organization
+        </button>
+      </div>
+
+      <div className="clients-page__card org-structure-page">
         <div className="clients-page__topbar">
           <div>
-            <h1>Orgnization Structure</h1>
-            <p>Manage organizations, branches, and operational counts.</p>
+            <h1>Organization List</h1>
+            <p>Manage organizations, locations, staff, and clients from one place.</p>
           </div>
-          <button className="clients-page__add-btn" type="button" onClick={() => setShowOrgModal(true)}>+ Add Orgnization</button>
+
+          <div className="clients-toolbar org-toolbar">
+            <label className="clients-search" aria-label="Search organization">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.5 14h-.8l-.3-.3a6 6 0 10-.9.9l.3.3v.8l5 5 1.5-1.5-5-5zM10 15a5 5 0 110-10 5 5 0 010 10z" />
+              </svg>
+              <input type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search Organization" />
+            </label>
+
+            <button className="clients-filter" type="button" onClick={() => setFilter((prev) => (prev === 'All' ? 'Active' : prev === 'Active' ? 'Inactive' : 'All'))}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm3 6h4v2h-4v-2z" />
+              </svg>
+              Filter: {filter}
+            </button>
+
+            <button className={`clients-view-toggle ${viewMode === 'grid' ? 'is-active' : ''}`} type="button" onClick={() => setViewMode('grid')} aria-label="Grid view">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+              </svg>
+            </button>
+            <button className={`clients-view-toggle ${viewMode === 'list' ? 'is-active' : ''}`} type="button" onClick={() => setViewMode('list')} aria-label="List view">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" />
+              </svg>
+            </button>
+
+            <button className="clients-export" type="button" aria-label="Export data">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 20h14v-2H5v2zM12 2l-5 5h3v6h4V7h3l-5-5z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="org-stat-grid">
-          <div className="stat-card stat-card--mint"><p>Orgnization Count</p><h3>{totals.organizationCount}</h3></div>
-          <div className="stat-card stat-card--sky"><p>Location Count</p><h3>{totals.locationCount}</h3></div>
-          <div className="stat-card stat-card--lavender"><p>Staff Count</p><h3>{totals.staffCount}</h3></div>
-          <div className="stat-card"><p>Client Count</p><h3>{totals.clientCount}</h3></div>
+          <div className="stat-card stat-card--mint"><p>Organization</p><h3>{totals.organizationCount}</h3></div>
+          <div className="stat-card stat-card--sky"><p>Location</p><h3>{totals.locationCount}</h3></div>
+          <div className="stat-card stat-card--lavender"><p>Staff</p><h3>{totals.staffCount}</h3></div>
+          <div className="stat-card"><p>Client</p><h3>{totals.clientCount}</h3></div>
         </div>
 
-        <div className="clients-toolbar">
-          <label className="clients-search" aria-label="Search organization">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.8l-.3-.3a6 6 0 10-.9.9l.3.3v.8l5 5 1.5-1.5-5-5zM10 15a5 5 0 110-10 5 5 0 010 10z" /></svg>
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search Orgnization" />
-          </label>
+        <div className="clients-pagination-bar">
+          <p>
+            Showing {startRecord}-{endRecord} of {filteredOrganizations.length} records
+          </p>
+
+          <div className="clients-pagination-controls">
+            <button className="clients-pagination-apply" type="button">Apply</button>
+            <button className="clients-page-btn" type="button" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={safeCurrentPage === 1}>
+              Prev
+            </button>
+            <button className="clients-page-btn clients-page-btn--number is-active" type="button">
+              {safeCurrentPage}
+            </button>
+            <button className="clients-page-btn" type="button" onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))} disabled={safeCurrentPage === totalPages}>
+              Next
+            </button>
+          </div>
         </div>
 
-        <div className="clients-table-wrap">
-          <table className="data-table clients-table">
-            <thead><tr><th>Toggle</th><th>Orgnization</th><th>Manager</th><th>Location Count</th><th>Staff Count</th><th>Client Count</th><th>Action</th></tr></thead>
-            <tbody>
-              {filteredOrganizations.map((org) => {
-                const staffCount = org.locations.reduce((acc, location) => acc + location.staffCount, 0);
-                const clientCount = org.locations.reduce((acc, location) => acc + location.clientCount, 0);
-                const isExpanded = Boolean(expandedRows[org.id]);
-                return (
-                  <Fragment key={org.id}>
-                    <tr key={org.id}>
-                      <td><button className="icon-btn" type="button" onClick={() => setExpandedRows((prev) => ({ ...prev, [org.id]: !isExpanded }))}>{isExpanded ? '▾' : '▸'}</button></td>
-                      <td><strong>{org.name}</strong><br /><small>{org.id}</small></td>
-                      <td>{org.manager}</td><td>{org.locations.length}</td><td>{staffCount}</td><td>{clientCount}</td>
-                      <td>
-                        <div className="org-action-row">
-                          <button className="clients-filter" type="button" onClick={() => { setEditingOrgId(org.id); setShowOrgModal(true); }}>Edit</button>
-                          <button className="clients-filter" type="button" onClick={() => setShowLocationModalFor(org.id)}>New Location</button>
-                          <button className="clients-filter" type="button" onClick={() => setOrganizations((prev) => prev.filter((item) => item.id !== org.id))}>Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                    {isExpanded ? (
-                      <tr key={`${org.id}-locations`}>
-                        <td colSpan={7}>
-                          <div className="org-location-box">
-                            <h4>Location Details</h4>
-                            {org.locations.map((location) => (
-                              <div key={location.id} className="org-location-item">
-                                <strong>{location.name}</strong>
-                                <span>Staff Count: {location.staffCount}</span>
-                                <span>Client Count: {location.clientCount}</span>
-                              </div>
-                            ))}
+        {viewMode === 'list' ? (
+          <div className="clients-table-wrap">
+            <table className="data-table clients-table org-structure-table">
+              <thead>
+                <tr>
+                  <th>S.No.</th>
+                  <th>Organization</th>
+                  <th>Owner</th>
+                  <th>Location</th>
+                  <th>Staff</th>
+                  <th>Client</th>
+                  <th>Action</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {pagedOrganizations.map((organization, index) => {
+                  const staffCount = organization.locations.reduce((sum, location) => sum + location.staffCount, 0);
+                  const clientCount = organization.locations.reduce((sum, location) => sum + location.clientCount, 0);
+                  const isExpanded = Boolean(expandedRows[organization.id]);
+                  return (
+                    <Fragment key={organization.id}>
+                      <tr>
+                        <td>{(safeCurrentPage - 1) * PAGE_SIZE + index + 1}</td>
+                        <td>
+                          <div className="org-name-cell">
+                            <img src={organization.logo} alt={organization.name} />
+                            <div>
+                              <strong>{organization.name}</strong>
+                              <small>{organization.id}</small>
+                            </div>
                           </div>
                         </td>
+                        <td>{organization.owner}</td>
+                        <td>{organization.location}</td>
+                        <td>{staffCount}</td>
+                        <td>{clientCount}</td>
+                        <td>
+                          <details className="org-kebab-menu">
+                            <summary aria-label="Row actions"><span /><span /><span /></summary>
+                            <div>
+                              <button type="button">Edit</button>
+                              <button type="button">Delete</button>
+                              <button type="button">Add new location</button>
+                            </div>
+                          </details>
+                        </td>
+                        <td>
+                          <button className="icon-btn org-toggle-btn" type="button" onClick={() => setExpandedRows((prev) => ({ ...prev, [organization.id]: !isExpanded }))} aria-label="Toggle locations">
+                            {isExpanded ? '▾' : '▸'}
+                          </button>
+                        </td>
                       </tr>
-                    ) : null}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      <div className={`modal ${showOrgModal ? 'is-open' : ''}`}>
-        <button className="modal__backdrop" type="button" onClick={() => { setShowOrgModal(false); setEditingOrgId(null); }} />
-        <div className="modal__dialog">
-          <button className="modal__close" type="button" onClick={() => { setShowOrgModal(false); setEditingOrgId(null); }}>×</button>
-          <h3>{orgToEdit ? 'Edit Orgnization' : 'Add Orgnization'}</h3>
-          <form className="modal__body" onSubmit={onOrgSubmit}>
-            <input name="id" placeholder="Orgnization ID" defaultValue={orgToEdit?.id} required disabled={Boolean(orgToEdit)} />
-            <input name="name" placeholder="Orgnization Name" defaultValue={orgToEdit?.name} required />
-            <input name="manager" placeholder="Manager Name" defaultValue={orgToEdit?.manager} required />
-            <input name="phone" placeholder="Phone" defaultValue={orgToEdit?.phone} required />
-            <input name="email" type="email" placeholder="Email" defaultValue={orgToEdit?.email} required />
-            <div className="modal__actions"><button className="clients-page__add-btn" type="submit">Save</button></div>
-          </form>
-        </div>
-      </div>
-
-      <div className={`modal ${showLocationModalFor ? 'is-open' : ''}`}>
-        <button className="modal__backdrop" type="button" onClick={() => setShowLocationModalFor(null)} />
-        <div className="modal__dialog">
-          <button className="modal__close" type="button" onClick={() => setShowLocationModalFor(null)}>×</button>
-          <h3>Add New Location</h3>
-          <form className="modal__body" onSubmit={onLocationSubmit}>
-            <input name="name" placeholder="Location Name" required />
-            <input name="staffCount" type="number" min={0} placeholder="Staff Count" required />
-            <input name="clientCount" type="number" min={0} placeholder="Client Count" required />
-            <div className="modal__actions"><button className="clients-page__add-btn" type="submit">Add Location</button></div>
-          </form>
-        </div>
+                      {isExpanded ? (
+                        <tr>
+                          <td colSpan={8}>
+                            <div className="org-location-box">
+                              <table className="data-table org-subtable">
+                                <thead>
+                                  <tr>
+                                    <th>S.No.</th>
+                                    <th>Location name</th>
+                                    <th>Manager</th>
+                                    <th>Staff</th>
+                                    <th>Client</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {organization.locations.map((location, locationIndex) => (
+                                    <tr key={location.id}>
+                                      <td>{locationIndex + 1}</td>
+                                      <td>{location.name}</td>
+                                      <td>{location.manager}</td>
+                                      <td>{location.staffCount}</td>
+                                      <td>{location.clientCount}</td>
+                                      <td>
+                                        <details className="org-kebab-menu">
+                                          <summary aria-label="Location actions"><span /><span /><span /></summary>
+                                          <div>
+                                            <button type="button">Edit</button>
+                                            <button type="button">Delete</button>
+                                          </div>
+                                        </details>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : null}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="clients-grid org-grid-view">
+            {pagedOrganizations.map((organization) => {
+              const staffCount = organization.locations.reduce((sum, location) => sum + location.staffCount, 0);
+              const clientCount = organization.locations.reduce((sum, location) => sum + location.clientCount, 0);
+              return (
+                <article key={organization.id} className="clients-user-card org-grid-card">
+                  <div className="org-name-cell">
+                    <img src={organization.logo} alt={organization.name} />
+                    <div>
+                      <strong>{organization.name}</strong>
+                      <small>{organization.location}</small>
+                    </div>
+                  </div>
+                  <p>Owner: <strong>{organization.owner}</strong></p>
+                  <p>Staff: <strong>{staffCount}</strong></p>
+                  <p>Client: <strong>{clientCount}</strong></p>
+                  <p>Locations: <strong>{organization.locations.length}</strong></p>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
