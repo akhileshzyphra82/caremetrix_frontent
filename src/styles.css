@@ -6268,48 +6268,57 @@ label {
 }
 
 .org-stat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .org-stat-card {
-  min-height: 104px;
-  border-radius: 18px;
-  padding: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  padding: 7px 10px;
+  border-radius: 999px;
   border: 1px solid #e3e7f3;
-  background: linear-gradient(145deg, #ffffff, #f8f9ff);
-  box-shadow: 0 10px 24px rgba(53, 67, 106, 0.08);
+  background: #fff;
+  box-shadow: none;
 }
 
-.org-stat-card .stat-card__icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+.org-stat-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.org-stat-card .stat-card__icon svg {
-  width: 18px;
-  height: 18px;
+.org-stat-icon svg {
+  width: 12px;
+  height: 12px;
 }
 
 .org-stat-card h3 {
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 13px;
+  line-height: 1;
+  margin: 0;
 }
 
 .org-stat-card p {
-  font-size: 11px;
-  margin-top: 6px;
+  font-size: 10px;
+  margin-top: 2px;
   color: #6f6a84;
+  line-height: 1;
 }
 
 .org-stat-card.stat-card--mint {
   border-color: #d8ddfb;
 }
 
-.org-stat-card.stat-card--mint .stat-card__icon {
+.org-stat-card.stat-card--mint .org-stat-icon {
   background: #eef0ff;
   color: #4d4fbf;
 }
@@ -6318,7 +6327,7 @@ label {
   border-color: #d8e4f9;
 }
 
-.org-stat-card.stat-card--sky .stat-card__icon {
+.org-stat-card.stat-card--sky .org-stat-icon {
   background: #ebf2ff;
   color: #2d72da;
 }
@@ -6327,7 +6336,7 @@ label {
   border-color: #f2e2cf;
 }
 
-.org-stat-card.stat-card--lavender .stat-card__icon {
+.org-stat-card.stat-card--lavender .org-stat-icon {
   background: #faf3eb;
   color: #d48816;
 }
@@ -6336,7 +6345,7 @@ label {
   border-color: #d7e9df;
 }
 
-.org-stat-card:not(.stat-card--mint):not(.stat-card--sky):not(.stat-card--lavender) .stat-card__icon {
+.org-stat-card:not(.stat-card--mint):not(.stat-card--sky):not(.stat-card--lavender) .org-stat-icon {
   background: #e8f5ee;
   color: #178a59;
 }
@@ -6481,17 +6490,12 @@ label {
     flex-wrap: wrap;
   }
 
-  .org-stat-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .org-grid-view {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 780px) {
-  .org-stat-grid,
   .org-grid-view {
     grid-template-columns: 1fr;
   }
