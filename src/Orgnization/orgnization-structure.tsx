@@ -214,25 +214,25 @@ export default function OrgnizationStructurePage() {
             <span className="org-stat-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-7H9v7H5a1 1 0 01-1-1v-9.5z" /></svg>
             </span>
-            <div><h3>{totals.organizationCount}</h3><p>Organizations</p></div>
+            <div className="org-stat-metric"><h3>{totals.organizationCount}</h3><p>Organizations</p></div>
           </div>
           <div className="org-stat-card stat-card--sky">
             <span className="org-stat-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 00-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 00-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z" /></svg>
             </span>
-            <div><h3>{totals.locationCount}</h3><p>Locations</p></div>
+            <div className="org-stat-metric"><h3>{totals.locationCount}</h3><p>Locations</p></div>
           </div>
           <div className="org-stat-card stat-card--lavender">
             <span className="org-stat-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M16 11a4 4 0 10-4-4 4 4 0 004 4zm-8 0a3 3 0 10-3-3 3 3 0 003 3zm0 2c-2.67 0-8 1.34-8 4v3h10v-3c0-.89.36-1.72 1-2.39A13.7 13.7 0 008 13zm8 0c-.29 0-.62.02-.97.05A5.45 5.45 0 0118 17v3h6v-3c0-2.66-5.33-4-8-4z" /></svg>
             </span>
-            <div><h3>{totals.staffCount}</h3><p>Staff Members</p></div>
+            <div className="org-stat-metric"><h3>{totals.staffCount}</h3><p>Staff Members</p></div>
           </div>
           <div className="org-stat-card">
             <span className="org-stat-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 10-5-5 5 5 0 005 5zm0 2c-4.42 0-8 2.24-8 5v2h16v-2c0-2.76-3.58-5-8-5z" /></svg>
             </span>
-            <div><h3>{totals.clientCount}</h3><p>Total Clients</p></div>
+            <div className="org-stat-metric"><h3>{totals.clientCount}</h3><p>Total Clients</p></div>
           </div>
         </div>
 
