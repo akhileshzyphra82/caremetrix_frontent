@@ -81,9 +81,14 @@ export default function ModulesListPage() {
   const [search, setSearch] = useState('');
   const [expandedModuleId, setExpandedModuleId] = useState(defaultRows[0].id);
   const [showModuleModal, setShowModuleModal] = useState(false);
+  const [moduleModalMode, setModuleModalMode] = useState<'add' | 'edit'>('add');
+  const [activeModule, setActiveModule] = useState<ModuleRow | null>(null);
   const [showMenuModal, setShowMenuModal] = useState(false);
+  const [menuModalMode, setMenuModalMode] = useState<'add' | 'edit'>('add');
   const [activeMenuModule, setActiveMenuModule] = useState<ModuleRow | null>(null);
+  const [activeMenu, setActiveMenu] = useState<Menu | null>(null);
   const [activeActionRowId, setActiveActionRowId] = useState('');
+  const [activeActionMenuId, setActiveActionMenuId] = useState('');
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [pendingRecordsPerPage, setPendingRecordsPerPage] = useState(10);
   const [page, setPage] = useState(1);
@@ -107,20 +112,25 @@ export default function ModulesListPage() {
   const onAddModule = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const nextId = `MOD-${Math.floor(Math.random() * 900 + 100)}`;
-    setRows((prev) => [
-      {
-        id: nextId,
-        name: String(formData.get('name')),
-        about: String(formData.get('about')),
-        icon: String(formData.get('icon')),
-        priority: Number(formData.get('priority')),
-        menus: []
-      },
-      ...prev
-    ]);
-    setExpandedModuleId(nextId);
+    const modulePayload = {
+      name: String(formData.get('name')),
+      about: String(formData.get('about')),
+      icon: String(formData.get('icon')),
+      priority: Number(formData.get('priority'))
+    };
+
+    if (moduleModalMode === 'edit' && activeModule) {
+      setRows((prev) => prev.map((row) => (row.id === activeModule.id ? { ...row, ...modulePayload } : row)));
+      setExpandedModuleId(activeModule.id);
+    } else {
+      const nextId = `MOD-${Math.floor(Math.random() * 900 + 100)}`;
+      setRows((prev) => [{ id: nextId, ...modulePayload, menus: [] }, ...prev]);
+      setExpandedModuleId(nextId);
+    }
+
     setShowModuleModal(false);
+    setModuleModalMode('add');
+    setActiveModule(null);
   };
 
   const onAddMenu = (event: FormEvent<HTMLFormElement>) => {
@@ -130,28 +140,52 @@ export default function ModulesListPage() {
     }
 
     const formData = new FormData(event.currentTarget);
-    const menuName = String(formData.get('menuName'));
-    const priority = Number(formData.get('priority'));
-    const type = String(formData.get('type')) as MenuType;
-    const urlPath = String(formData.get('urlPath'));
+    const menuPayload = {
+      name: String(formData.get('menuName')),
+      priority: Number(formData.get('priority')),
+      type: String(formData.get('type')) as MenuType,
+      urlPath: String(formData.get('urlPath'))
+    };
+
     setRows((prev) =>
       prev.map((row) =>
         row.id === activeMenuModule.id
           ? {
               ...row,
-              menus: [...row.menus, { id: `MN-${Math.floor(Math.random() * 900 + 100)}`, name: menuName, priority, type, urlPath }]
+              menus:
+                menuModalMode === 'edit' && activeMenu
+                  ? row.menus.map((menu) => (menu.id === activeMenu.id ? { ...menu, ...menuPayload } : menu))
+                  : [...row.menus, { id: `MN-${Math.floor(Math.random() * 900 + 100)}`, ...menuPayload }]
             }
           : row
       )
     );
     setExpandedModuleId(activeMenuModule.id);
     setShowMenuModal(false);
+    setMenuModalMode('add');
     setActiveMenuModule(null);
+    setActiveMenu(null);
     setActiveActionRowId('');
+    setActiveActionMenuId('');
   };
 
   const openAddMenu = (row: ModuleRow) => {
+    setMenuModalMode('add');
     setActiveMenuModule(row);
+    setActiveMenu(null);
+    setShowMenuModal(true);
+  };
+
+  const openEditModule = (row: ModuleRow) => {
+    setModuleModalMode('edit');
+    setActiveModule(row);
+    setShowModuleModal(true);
+  };
+
+  const openEditMenu = (row: ModuleRow, menu: Menu) => {
+    setMenuModalMode('edit');
+    setActiveMenuModule(row);
+    setActiveMenu(menu);
     setShowMenuModal(true);
   };
 
@@ -166,7 +200,11 @@ export default function ModulesListPage() {
           <strong>Modules List</strong>
         </div>
 
-        <button className="btn clients-page__add-btn" type="button" onClick={() => setShowModuleModal(true)}>
+        <button className="btn clients-page__add-btn" type="button" onClick={() => {
+          setModuleModalMode('add');
+          setActiveModule(null);
+          setShowModuleModal(true);
+        }}>
           <span aria-hidden="true">＋</span> Add Module
         </button>
       </div>
@@ -292,6 +330,25 @@ export default function ModulesListPage() {
                             >
                               Add Menu
                             </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                openEditModule(row);
+                                setActiveActionRowId('');
+                              }}
+                            >
+                              Edit Module
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRows((prev) => prev.filter((item) => item.id !== row.id));
+                                setExpandedModuleId((prev) => (prev === row.id ? '' : prev));
+                                setActiveActionRowId('');
+                              }}
+                            >
+                              Delete Module
+                            </button>
                           </div>
                         )}
                       </td>
@@ -326,9 +383,42 @@ export default function ModulesListPage() {
                                     </td>
                                     <td>{menu.urlPath}</td>
                                     <td>
-                                      <button className="row-menu-btn" type="button" aria-label={`Actions for ${menu.name}`}>
+                                      <button
+                                        className="row-menu-btn"
+                                        type="button"
+                                        aria-label={`Actions for ${menu.name}`}
+                                        onClick={() => setActiveActionMenuId((prev) => (prev === menu.id ? '' : menu.id))}
+                                      >
                                         ⋮
                                       </button>
+                                      {activeActionMenuId === menu.id && (
+                                        <div className="module-row-actions" role="menu" aria-label={`${menu.name} actions`}>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              openEditMenu(row, menu);
+                                              setActiveActionMenuId('');
+                                            }}
+                                          >
+                                            Edit Menu
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              setRows((prev) =>
+                                                prev.map((moduleItem) =>
+                                                  moduleItem.id === row.id
+                                                    ? { ...moduleItem, menus: moduleItem.menus.filter((item) => item.id !== menu.id) }
+                                                    : moduleItem
+                                                )
+                                              );
+                                              setActiveActionMenuId('');
+                                            }}
+                                          >
+                                            Delete Menu
+                                          </button>
+                                        </div>
+                                      )}
                                     </td>
                                   </tr>
                                 ))}
@@ -347,20 +437,28 @@ export default function ModulesListPage() {
       </div>
 
       <div className={`modal ${showModuleModal ? 'is-open' : ''}`}>
-        <button className="modal__backdrop" type="button" onClick={() => setShowModuleModal(false)} />
+        <button className="modal__backdrop" type="button" onClick={() => {
+          setShowModuleModal(false);
+          setModuleModalMode('add');
+          setActiveModule(null);
+        }} />
         <div className="modal__dialog">
-          <button className="modal__close" onClick={() => setShowModuleModal(false)} type="button">
+          <button className="modal__close" onClick={() => {
+            setShowModuleModal(false);
+            setModuleModalMode('add');
+            setActiveModule(null);
+          }} type="button">
             ×
           </button>
-          <h3>Add Module</h3>
+          <h3>{moduleModalMode === 'edit' ? 'Edit Module' : 'Add Module'}</h3>
           <form className="modal__body" onSubmit={onAddModule}>
-            <input name="name" placeholder="Module Name" required />
-            <input name="icon" placeholder="Module Icon" required />
-            <input name="priority" type="number" min={1} placeholder="Priority" required />
-            <textarea name="about" placeholder="About" rows={3} required />
+            <input name="name" placeholder="Module Name" defaultValue={activeModule?.name ?? ''} required />
+            <input name="icon" placeholder="Module Icon" defaultValue={activeModule?.icon ?? ''} required />
+            <input name="priority" type="number" min={1} placeholder="Priority" defaultValue={activeModule?.priority ?? 1} required />
+            <textarea name="about" placeholder="About" rows={3} defaultValue={activeModule?.about ?? ''} required />
             <div className="modal__actions">
               <button className="clients-page__add-btn" type="submit">
-                Save Module
+                {moduleModalMode === 'edit' ? 'Update Module' : 'Save Module'}
               </button>
             </div>
           </form>
@@ -379,18 +477,18 @@ export default function ModulesListPage() {
           }} type="button">
             ×
           </button>
-          <h3>Add Menu - {activeMenuModule?.name ?? 'Module'}</h3>
+          <h3>{menuModalMode === 'edit' ? 'Edit Menu' : 'Add Menu'} - {activeMenuModule?.name ?? 'Module'}</h3>
           <form className="modal__body" onSubmit={onAddMenu}>
-            <input name="menuName" placeholder="Menu Name" required />
-            <input name="priority" type="number" min={1} placeholder="Priority" required />
-            <select name="type" required defaultValue="Feature">
+            <input name="menuName" placeholder="Menu Name" defaultValue={activeMenu?.name ?? ''} required />
+            <input name="priority" type="number" min={1} placeholder="Priority" defaultValue={activeMenu?.priority ?? 1} required />
+            <select name="type" required defaultValue={activeMenu?.type ?? 'Feature'}>
               <option value="Feature">Feature</option>
               <option value="Report">Report</option>
             </select>
-            <input name="urlPath" placeholder="Url Path" required />
+            <input name="urlPath" placeholder="Url Path" defaultValue={activeMenu?.urlPath ?? ''} required />
             <div className="modal__actions">
               <button className="clients-page__add-btn" type="submit">
-                Save Menu
+                {menuModalMode === 'edit' ? 'Update Menu' : 'Save Menu'}
               </button>
             </div>
           </form>
