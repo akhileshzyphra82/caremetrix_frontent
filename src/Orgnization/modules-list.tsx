@@ -1,9 +1,9 @@
 import { Fragment, useMemo, useState, type FormEvent } from 'react';
 
-type MenuType = 'Primary' | 'Secondary';
+type MenuType = 'Feature' | 'Report';
 
-type Menu = { id: string; name: string; priority: number; type: MenuType };
-type ModuleRow = { id: string; icon: string; name: string; priority: number; menus: Menu[] };
+type Menu = { id: string; name: string; priority: number; type: MenuType; urlPath: string };
+type ModuleRow = { id: string; icon: string; name: string; priority: number; about: string; menus: Menu[] };
 
 const defaultRows: ModuleRow[] = [
   {
@@ -11,9 +11,10 @@ const defaultRows: ModuleRow[] = [
     icon: '👥',
     name: 'Participant & Support',
     priority: 1,
+    about: 'Core participant and support workflows.',
     menus: [
-      { id: 'MN-01', name: 'Clients', priority: 1, type: 'Primary' },
-      { id: 'MN-02', name: 'Funding', priority: 2, type: 'Secondary' }
+      { id: 'MN-01', name: 'Clients', priority: 1, type: 'Feature', urlPath: '/participant-support/clients' },
+      { id: 'MN-02', name: 'Funding', priority: 2, type: 'Report', urlPath: '/participant-support/funding' }
     ]
   },
   {
@@ -21,9 +22,10 @@ const defaultRows: ModuleRow[] = [
     icon: '🏢',
     name: 'People & Workforce',
     priority: 2,
+    about: 'Workforce planning and staff lifecycle records.',
     menus: [
-      { id: 'MN-03', name: 'Staff', priority: 1, type: 'Primary' },
-      { id: 'MN-04', name: 'Rosters', priority: 2, type: 'Secondary' }
+      { id: 'MN-03', name: 'Staff', priority: 1, type: 'Feature', urlPath: '/people-workforce/staff' },
+      { id: 'MN-04', name: 'Rosters', priority: 2, type: 'Feature', urlPath: '/people-workforce/rosters' }
     ]
   },
   {
@@ -31,10 +33,11 @@ const defaultRows: ModuleRow[] = [
     icon: '💳',
     name: 'Finance & Billing',
     priority: 3,
+    about: 'Billing, claims, and payment operations.',
     menus: [
-      { id: 'MN-05', name: 'Invoices', priority: 1, type: 'Primary' },
-      { id: 'MN-06', name: 'Payments', priority: 2, type: 'Secondary' },
-      { id: 'MN-07', name: 'Claims', priority: 3, type: 'Secondary' }
+      { id: 'MN-05', name: 'Invoices', priority: 1, type: 'Feature', urlPath: '/finance/invoices' },
+      { id: 'MN-06', name: 'Payments', priority: 2, type: 'Report', urlPath: '/finance/payments' },
+      { id: 'MN-07', name: 'Claims', priority: 3, type: 'Report', urlPath: '/finance/claims' }
     ]
   },
   {
@@ -42,9 +45,10 @@ const defaultRows: ModuleRow[] = [
     icon: '⚙️',
     name: 'Settings & Config',
     priority: 4,
+    about: 'Platform setup and configurable settings.',
     menus: [
-      { id: 'MN-08', name: 'Preferences', priority: 1, type: 'Primary' },
-      { id: 'MN-09', name: 'Permissions', priority: 2, type: 'Secondary' }
+      { id: 'MN-08', name: 'Preferences', priority: 1, type: 'Feature', urlPath: '/settings/preferences' },
+      { id: 'MN-09', name: 'Permissions', priority: 2, type: 'Feature', urlPath: '/settings/permissions' }
     ]
   },
   {
@@ -52,9 +56,10 @@ const defaultRows: ModuleRow[] = [
     icon: '📊',
     name: 'Reports & Analytics',
     priority: 5,
+    about: 'Business intelligence and reporting outputs.',
     menus: [
-      { id: 'MN-10', name: 'Dashboards', priority: 1, type: 'Primary' },
-      { id: 'MN-11', name: 'Exports', priority: 2, type: 'Secondary' }
+      { id: 'MN-10', name: 'Dashboards', priority: 1, type: 'Feature', urlPath: '/reports/dashboard' },
+      { id: 'MN-11', name: 'Exports', priority: 2, type: 'Report', urlPath: '/reports/exports' }
     ]
   },
   {
@@ -62,10 +67,11 @@ const defaultRows: ModuleRow[] = [
     icon: '💬',
     name: 'Communication',
     priority: 6,
+    about: 'Messages, templates, and communication campaigns.',
     menus: [
-      { id: 'MN-12', name: 'Messages', priority: 1, type: 'Primary' },
-      { id: 'MN-13', name: 'Templates', priority: 2, type: 'Secondary' },
-      { id: 'MN-14', name: 'Broadcast', priority: 3, type: 'Secondary' }
+      { id: 'MN-12', name: 'Messages', priority: 1, type: 'Feature', urlPath: '/communication/messages' },
+      { id: 'MN-13', name: 'Templates', priority: 2, type: 'Feature', urlPath: '/communication/templates' },
+      { id: 'MN-14', name: 'Broadcast', priority: 3, type: 'Report', urlPath: '/communication/broadcast' }
     ]
   }
 ];
@@ -76,6 +82,11 @@ export default function ModulesListPage() {
   const [expandedModuleId, setExpandedModuleId] = useState(defaultRows[0].id);
   const [showModuleModal, setShowModuleModal] = useState(false);
   const [showMenuModal, setShowMenuModal] = useState(false);
+  const [activeMenuModule, setActiveMenuModule] = useState<ModuleRow | null>(null);
+  const [activeActionRowId, setActiveActionRowId] = useState('');
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [pendingRecordsPerPage, setPendingRecordsPerPage] = useState(10);
+  const [page, setPage] = useState(1);
 
   const visibleRows = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -83,8 +94,15 @@ export default function ModulesListPage() {
       return rows;
     }
 
-    return rows.filter((row) => [row.name, ...row.menus.map((menu) => menu.name)].join(' ').toLowerCase().includes(q));
+    return rows.filter((row) => [row.name, row.about, ...row.menus.map((menu) => menu.name)].join(' ').toLowerCase().includes(q));
   }, [rows, search]);
+
+  const pageCount = Math.max(1, Math.ceil(visibleRows.length / recordsPerPage));
+  const safePage = Math.min(page, pageCount);
+  const pageStart = visibleRows.length === 0 ? 0 : (safePage - 1) * recordsPerPage;
+  const pageRows = visibleRows.slice(pageStart, pageStart + recordsPerPage);
+  const visibleStart = visibleRows.length === 0 ? 0 : pageStart + 1;
+  const visibleEnd = Math.min(pageStart + recordsPerPage, visibleRows.length);
 
   const onAddModule = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -93,8 +111,9 @@ export default function ModulesListPage() {
     setRows((prev) => [
       {
         id: nextId,
-        icon: '🧩',
         name: String(formData.get('name')),
+        about: String(formData.get('about')),
+        icon: String(formData.get('icon')),
         priority: Number(formData.get('priority')),
         menus: []
       },
@@ -106,22 +125,34 @@ export default function ModulesListPage() {
 
   const onAddMenu = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!activeMenuModule) {
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
-    const moduleId = String(formData.get('moduleId'));
     const menuName = String(formData.get('menuName'));
     const priority = Number(formData.get('priority'));
+    const type = String(formData.get('type')) as MenuType;
+    const urlPath = String(formData.get('urlPath'));
     setRows((prev) =>
       prev.map((row) =>
-        row.id === moduleId
+        row.id === activeMenuModule.id
           ? {
               ...row,
-              menus: [...row.menus, { id: `MN-${Math.floor(Math.random() * 900 + 100)}`, name: menuName, priority, type: 'Secondary' }]
+              menus: [...row.menus, { id: `MN-${Math.floor(Math.random() * 900 + 100)}`, name: menuName, priority, type, urlPath }]
             }
           : row
       )
     );
-    setExpandedModuleId(moduleId);
+    setExpandedModuleId(activeMenuModule.id);
     setShowMenuModal(false);
+    setActiveMenuModule(null);
+    setActiveActionRowId('');
+  };
+
+  const openAddMenu = (row: ModuleRow) => {
+    setActiveMenuModule(row);
+    setShowMenuModal(true);
   };
 
   return (
@@ -153,8 +184,15 @@ export default function ModulesListPage() {
               </svg>
               <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search module or menu" />
             </label>
-            <button className="clients-filter" type="button" onClick={() => setShowMenuModal(true)}>
-              <span>+ Add Menu</span>
+            <button className="clients-filter modules-icon-btn" type="button" aria-label="Filter modules">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 5h18l-7 8v5l-4 2v-7L3 5z" />
+              </svg>
+            </button>
+            <button className="clients-filter modules-icon-btn" type="button" aria-label="Export modules in excel">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm0 2.5L18.5 9H14zM8 13h2.2l1.1 1.7L12.4 13h2.2l-2.2 3 2.2 3h-2.2l-1.1-1.7-1.1 1.7H8l2.2-3z" />
+              </svg>
             </button>
           </div>
         </div>
@@ -162,8 +200,37 @@ export default function ModulesListPage() {
         <div className="table-wrap clients-table-wrap modules-table-wrap">
           <div className="clients-pagination-bar" aria-label="Modules table info">
             <p>
-              Showing 1-{visibleRows.length} of {visibleRows.length} records
+              Showing {visibleStart}-{visibleEnd} of {visibleRows.length} records
             </p>
+            <div className="clients-pagination-controls">
+              <label className="clients-records-per-page">
+                Records per page
+                <select value={pendingRecordsPerPage} onChange={(event) => setPendingRecordsPerPage(Number(event.target.value))}>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </label>
+              <button
+                className="clients-pagination-apply"
+                type="button"
+                onClick={() => {
+                  setRecordsPerPage(pendingRecordsPerPage);
+                  setPage(1);
+                }}
+              >
+                Apply
+              </button>
+              <button className="clients-page-btn" type="button" disabled={safePage === 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))}>
+                Prev
+              </button>
+              <button className="clients-page-btn clients-page-btn--number is-active" type="button">
+                {safePage}
+              </button>
+              <button className="clients-page-btn" type="button" disabled={safePage === pageCount} onClick={() => setPage((prev) => Math.min(pageCount, prev + 1))}>
+                Next
+              </button>
+            </div>
           </div>
 
           <table className="data-table clients-table modules-table">
@@ -177,13 +244,14 @@ export default function ModulesListPage() {
               </tr>
             </thead>
             <tbody>
-              {visibleRows.map((row, moduleIndex) => {
+              {pageRows.map((row, moduleIndex) => {
                 const isExpanded = expandedModuleId === row.id;
+                const isActionsOpen = activeActionRowId === row.id;
 
                 return (
                   <Fragment key={row.id}>
                     <tr>
-                      <td>{moduleIndex + 1}</td>
+                      <td>{pageStart + moduleIndex + 1}</td>
                       <td>
                         <div className="module-name-cell">
                           <span className="module-icon" aria-hidden="true">
@@ -205,9 +273,27 @@ export default function ModulesListPage() {
                         </button>
                       </td>
                       <td>
-                        <button className="row-menu-btn" type="button" aria-label={`Actions for ${row.name}`}>
+                        <button
+                          className="row-menu-btn"
+                          type="button"
+                          aria-label={`Actions for ${row.name}`}
+                          onClick={() => setActiveActionRowId((prev) => (prev === row.id ? '' : row.id))}
+                        >
                           ⋮
                         </button>
+                        {isActionsOpen && (
+                          <div className="module-row-actions" role="menu" aria-label={`${row.name} actions`}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                openAddMenu(row);
+                                setActiveActionRowId('');
+                              }}
+                            >
+                              Add Menu
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                     {isExpanded && (
@@ -221,6 +307,7 @@ export default function ModulesListPage() {
                                   <th>Menu Name</th>
                                   <th>Priority</th>
                                   <th>Type</th>
+                                  <th>URL Path</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -235,8 +322,9 @@ export default function ModulesListPage() {
                                       <span className="priority-chip">{menu.priority}</span>
                                     </td>
                                     <td>
-                                      <span className={`menu-type-chip ${menu.type === 'Primary' ? 'is-primary' : 'is-secondary'}`}>{menu.type}</span>
+                                      <span className={`menu-type-chip ${menu.type === 'Feature' ? 'is-primary' : 'is-secondary'}`}>{menu.type}</span>
                                     </td>
+                                    <td>{menu.urlPath}</td>
                                     <td>
                                       <button className="row-menu-btn" type="button" aria-label={`Actions for ${menu.name}`}>
                                         ⋮
@@ -267,7 +355,9 @@ export default function ModulesListPage() {
           <h3>Add Module</h3>
           <form className="modal__body" onSubmit={onAddModule}>
             <input name="name" placeholder="Module Name" required />
+            <input name="icon" placeholder="Module Icon" required />
             <input name="priority" type="number" min={1} placeholder="Priority" required />
+            <textarea name="about" placeholder="About" rows={3} required />
             <div className="modal__actions">
               <button className="clients-page__add-btn" type="submit">
                 Save Module
@@ -278,22 +368,26 @@ export default function ModulesListPage() {
       </div>
 
       <div className={`modal ${showMenuModal ? 'is-open' : ''}`}>
-        <button className="modal__backdrop" type="button" onClick={() => setShowMenuModal(false)} />
+        <button className="modal__backdrop" type="button" onClick={() => {
+          setShowMenuModal(false);
+          setActiveMenuModule(null);
+        }} />
         <div className="modal__dialog">
-          <button className="modal__close" onClick={() => setShowMenuModal(false)} type="button">
+          <button className="modal__close" onClick={() => {
+            setShowMenuModal(false);
+            setActiveMenuModule(null);
+          }} type="button">
             ×
           </button>
-          <h3>Add Menu Under Module</h3>
+          <h3>Add Menu - {activeMenuModule?.name ?? 'Module'}</h3>
           <form className="modal__body" onSubmit={onAddMenu}>
-            <select name="moduleId" required>
-              {rows.map((row) => (
-                <option key={row.id} value={row.id}>
-                  {row.name}
-                </option>
-              ))}
-            </select>
             <input name="menuName" placeholder="Menu Name" required />
             <input name="priority" type="number" min={1} placeholder="Priority" required />
+            <select name="type" required defaultValue="Feature">
+              <option value="Feature">Feature</option>
+              <option value="Report">Report</option>
+            </select>
+            <input name="urlPath" placeholder="Url Path" required />
             <div className="modal__actions">
               <button className="clients-page__add-btn" type="submit">
                 Save Menu
