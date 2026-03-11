@@ -54,7 +54,7 @@ const organizationsSeed: Organization[] = [
   }
 ];
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE_OPTIONS = [10, 20, 50] as const;
 
 export default function OrgnizationStructurePage() {
   const [organizations] = useState(organizationsSeed);
@@ -65,6 +65,8 @@ export default function OrgnizationStructurePage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage, setRecordsPerPage] = useState<number>(PAGE_SIZE_OPTIONS[0]);
+  const [recordsPerPageDraft, setRecordsPerPageDraft] = useState<number>(PAGE_SIZE_OPTIONS[0]);
   const filterRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -112,11 +114,11 @@ export default function OrgnizationStructurePage() {
     return { organizationCount: organizations.length, locationCount, staffCount, clientCount };
   }, [organizations]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredOrganizations.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filteredOrganizations.length / recordsPerPage));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const pagedOrganizations = filteredOrganizations.slice((safeCurrentPage - 1) * PAGE_SIZE, safeCurrentPage * PAGE_SIZE);
-  const startRecord = filteredOrganizations.length === 0 ? 0 : (safeCurrentPage - 1) * PAGE_SIZE + 1;
-  const endRecord = Math.min(safeCurrentPage * PAGE_SIZE, filteredOrganizations.length);
+  const pagedOrganizations = filteredOrganizations.slice((safeCurrentPage - 1) * recordsPerPage, safeCurrentPage * recordsPerPage);
+  const startRecord = filteredOrganizations.length === 0 ? 0 : (safeCurrentPage - 1) * recordsPerPage + 1;
+  const endRecord = Math.min(safeCurrentPage * recordsPerPage, filteredOrganizations.length);
 
   return (
     <section className="menu-panel active clients-page">
@@ -240,7 +242,30 @@ export default function OrgnizationStructurePage() {
           </p>
 
           <div className="clients-pagination-controls">
-            <button className="clients-pagination-apply" type="button">Apply</button>
+            <label className="clients-records-per-page" htmlFor="org-records-per-page">
+              <span>Records per page</span>
+              <select
+                id="org-records-per-page"
+                value={recordsPerPageDraft}
+                onChange={(event) => setRecordsPerPageDraft(Number(event.target.value))}
+              >
+                {PAGE_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              className="clients-pagination-apply"
+              type="button"
+              onClick={() => {
+                setRecordsPerPage(recordsPerPageDraft);
+                setCurrentPage(1);
+              }}
+            >
+              Apply
+            </button>
             <button className="clients-page-btn" type="button" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={safeCurrentPage === 1}>
               Prev
             </button>
@@ -274,7 +299,7 @@ export default function OrgnizationStructurePage() {
                   return (
                     <Fragment key={organization.id}>
                       <tr>
-                        <td className="org-col-compact">{(safeCurrentPage - 1) * PAGE_SIZE + index + 1}</td>
+                        <td className="org-col-compact">{(safeCurrentPage - 1) * recordsPerPage + index + 1}</td>
                         <td>
                           <div className="org-name-cell">
                             <img src={organization.logo} alt={organization.name} />
@@ -284,28 +309,27 @@ export default function OrgnizationStructurePage() {
                             </div>
                           </div>
                         </td>
-                        <td className="org-col-compact">{organization.locations.length}</td>
+                        <td className="org-col-compact">
+                          <button
+                            className={`org-location-chip ${isExpanded ? 'is-open' : ''}`}
+                            type="button"
+                            onClick={() => setExpandedRows((prev) => ({ ...prev, [organization.id]: !isExpanded }))}
+                            aria-label={`${isExpanded ? 'Hide' : 'Show'} locations for ${organization.name}`}
+                          >
+                            {organization.locations.length} Locations <span aria-hidden="true">{isExpanded ? '▴' : '▾'}</span>
+                          </button>
+                        </td>
                         <td className="org-col-compact">{staffCount}</td>
                         <td className="org-col-compact">{clientCount}</td>
                         <td className="org-col-compact">
-                          <div className="org-row-actions">
-                            <details className="org-kebab-menu">
-                              <summary aria-label="Row actions"><span /><span /><span /></summary>
-                              <div>
-                                <button type="button">Edit</button>
-                                <button type="button">Delete</button>
-                                <button type="button">Add new location</button>
-                              </div>
-                            </details>
-                            <button
-                              className="icon-btn org-toggle-btn"
-                              type="button"
-                              onClick={() => setExpandedRows((prev) => ({ ...prev, [organization.id]: !isExpanded }))}
-                              aria-label="Toggle locations"
-                            >
-                              {isExpanded ? '▾' : '▸'}
-                            </button>
-                          </div>
+                          <details className="org-kebab-menu">
+                            <summary aria-label="Row actions"><span /><span /><span /></summary>
+                            <div>
+                              <button type="button">Edit</button>
+                              <button type="button">Delete</button>
+                              <button type="button">Add new location</button>
+                            </div>
+                          </details>
                         </td>
                       </tr>
 

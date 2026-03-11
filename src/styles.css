@@ -6271,6 +6271,7 @@ label {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -6280,7 +6281,7 @@ label {
   align-items: center;
   gap: 8px;
   min-height: 0;
-  padding: 7px 10px;
+  padding: 6px 10px;
   border-radius: 999px;
   border: 1px solid #e3e7f3;
   background: #fff;
@@ -6302,9 +6303,10 @@ label {
 }
 
 .org-stat-card h3 {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1;
   margin: 0;
+  font-weight: 700;
 }
 
 .org-stat-card p {
@@ -6359,6 +6361,26 @@ label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.org-location-chip {
+  border: 1px solid #e7d9ef;
+  background: #fbf2ff;
+  color: #7e4f96;
+  border-radius: 999px;
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.org-location-chip.is-open {
+  background: #f3e6fb;
+  border-color: #dcc5ea;
 }
 
 .org-name-cell {
@@ -6445,15 +6467,6 @@ label {
 
 .org-kebab-menu > div button:hover {
   background: #f4f1fa;
-}
-
-.org-toggle-btn {
-  border: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: #f0ecf7;
-  color: #6d6684;
 }
 
 .org-location-box {
