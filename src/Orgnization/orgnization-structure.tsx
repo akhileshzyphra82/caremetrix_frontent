@@ -58,6 +58,7 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50] as const;
 
 export default function OrgnizationStructurePage() {
   const [organizations] = useState(organizationsSeed);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
@@ -67,7 +68,25 @@ export default function OrgnizationStructurePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState<number>(PAGE_SIZE_OPTIONS[0]);
   const [recordsPerPageDraft, setRecordsPerPageDraft] = useState<number>(PAGE_SIZE_OPTIONS[0]);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const filterRef = useRef<HTMLDivElement | null>(null);
+  const addOrganizationFormRef = useRef<HTMLFormElement | null>(null);
+
+  const requiredFields = [
+    'organizationLogo',
+    'organizationSmallLogo',
+    'organizationName',
+    'organizationCode',
+    'about',
+    'ownerName',
+    'organizationEmail',
+    'organizationContactNumber',
+    'country',
+    'state',
+    'district',
+    'address',
+    'postalCode'
+  ];
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -131,7 +150,7 @@ export default function OrgnizationStructurePage() {
           <strong>Organization Structure</strong>
         </div>
 
-        <button className="btn clients-page__add-btn" type="button">
+        <button className="btn clients-page__add-btn" type="button" onClick={() => setIsAddModalOpen(true)}>
           <span aria-hidden="true">＋</span> Add Organization
         </button>
       </div>
@@ -402,6 +421,85 @@ export default function OrgnizationStructurePage() {
           </div>
         )}
       </div>
+
+      {isAddModalOpen ? (
+        <div className="org-add-modal" role="dialog" aria-modal="true" aria-labelledby="org-add-modal-title">
+          <div className="org-add-modal__backdrop" onClick={() => setIsAddModalOpen(false)} />
+          <div className="org-add-modal__dialog">
+            <button className="org-add-modal__close" type="button" aria-label="Close" onClick={() => setIsAddModalOpen(false)}>
+              ×
+            </button>
+            <h2 id="org-add-modal-title">Add Organization</h2>
+            <p>Create a new organization profile with complete contact and location details.</p>
+
+            <form
+              ref={addOrganizationFormRef}
+              className="org-add-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const form = addOrganizationFormRef.current;
+                if (!form) return;
+                const formData = new FormData(form);
+                const nextErrors: Record<string, string> = {};
+
+                requiredFields.forEach((fieldName) => {
+                  const value = String(formData.get(fieldName) ?? '').trim();
+                  if (!value) {
+                    nextErrors[fieldName] = 'This field is required';
+                  }
+                });
+
+                setFormErrors(nextErrors);
+
+                if (Object.keys(nextErrors).length > 0) {
+                  return;
+                }
+
+                form.reset();
+                setIsAddModalOpen(false);
+              }}
+              onReset={() => setFormErrors({})}
+            >
+              <div className="org-add-form__grid">
+                {[
+                  ['organizationLogo', 'Organization Logo', 'text'],
+                  ['organizationSmallLogo', 'Organization Small Logo', 'text'],
+                  ['organizationName', 'Organization Name', 'text'],
+                  ['organizationCode', 'Organization Code', 'text'],
+                  ['about', 'About', 'textarea'],
+                  ['ownerName', 'Owner Name', 'text'],
+                  ['organizationEmail', 'Organization Email', 'email'],
+                  ['organizationContactNumber', 'Organization Contact Number', 'tel'],
+                  ['country', 'Country', 'text'],
+                  ['state', 'State', 'text'],
+                  ['district', 'District', 'text'],
+                  ['address', 'Address', 'textarea'],
+                  ['postalCode', 'Postal Code', 'text']
+                ].map(([name, label, fieldType]) => {
+                  const fieldId = `organization-${name}`;
+                  const hasError = Boolean(formErrors[name]);
+                  return (
+                    <label key={name} htmlFor={fieldId} className={`org-add-form__field ${hasError ? 'has-error' : ''}`}>
+                      <span className="org-add-form__label is-required">{label}</span>
+                      {fieldType === 'textarea' ? (
+                        <textarea id={fieldId} name={name} required rows={3} />
+                      ) : (
+                        <input id={fieldId} type={fieldType} name={name} required />
+                      )}
+                      {hasError ? <small>{formErrors[name]}</small> : null}
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div className="org-add-form__actions">
+                <button className="btn clients-page__add-btn" type="submit">Submit</button>
+                <button className="btn clients-page-btn" type="reset">Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
