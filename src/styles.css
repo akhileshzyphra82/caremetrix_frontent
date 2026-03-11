@@ -6565,12 +6565,59 @@ label {
   min-width: 300px;
 }
 
+
+.modules-icon-btn {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modules-icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.modules-table td:last-child {
+  position: relative;
+}
+
+.module-row-actions {
+  position: absolute;
+  right: 16px;
+  top: calc(100% - 4px);
+  z-index: 3;
+  min-width: 130px;
+  border: 1px solid #e0d3f3;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 16px 32px rgba(40, 23, 78, 0.12);
+  padding: 6px;
+}
+
+.module-row-actions button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #5a437f;
+  font-weight: 600;
+}
+
+.module-row-actions button:hover {
+  background: #f4edff;
+}
 .modules-table-wrap {
   margin-top: 8px;
 }
 
 .modules-table {
-  min-width: 800px;
+  width: 100%;
 }
 
 .module-name-cell {
