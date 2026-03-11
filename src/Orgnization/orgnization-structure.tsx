@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 type LocationItem = {
   id: string;
@@ -16,6 +16,14 @@ type Organization = {
   location: string;
   status: 'Active' | 'Inactive';
   locations: LocationItem[];
+};
+
+type OrganizationFieldConfig = {
+  name: string;
+  label: string;
+  fieldType: 'text' | 'email' | 'tel' | 'textarea' | 'file';
+  icon: ReactNode;
+  accept?: string;
 };
 
 const organizationsSeed: Organization[] = [
@@ -86,6 +94,34 @@ export default function OrgnizationStructurePage() {
     'district',
     'address',
     'postalCode'
+  ];
+
+  const organizationFieldConfigs: OrganizationFieldConfig[] = [
+    {
+      name: 'organizationLogo',
+      label: 'Organization Logo',
+      fieldType: 'file',
+      accept: '.pdf,.doc,.docx,.png,.jpg,.jpeg',
+      icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-1 14l-3.5-4.5-2.5 3.01L9.5 13 6 17h12zM8.5 9.5A1.5 1.5 0 107 8a1.5 1.5 0 001.5 1.5z"/></svg>
+    },
+    {
+      name: 'organizationSmallLogo',
+      label: 'Organization Small Logo',
+      fieldType: 'file',
+      accept: '.pdf,.doc,.docx,.png,.jpg,.jpeg',
+      icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-1 14l-3.5-4.5-2.5 3.01L9.5 13 6 17h12zM8.5 9.5A1.5 1.5 0 107 8a1.5 1.5 0 001.5 1.5z"/></svg>
+    },
+    { name: 'organizationName', label: 'Organization Name', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2zm0 2.2L5 7.3v8.4l7 3.5 7-3.5V7.3l-7-3.1z"/></svg> },
+    { name: 'organizationCode', label: 'Organization Code', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 16.6L4 12l4.6-4.6L10 8.8 6.8 12 10 15.2l-1.4 1.4zm6.8 0L14 15.2l3.2-3.2L14 8.8l1.4-1.4L20 12l-4.6 4.6z"/></svg> },
+    { name: 'about', label: 'About', fieldType: 'textarea', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2H4V4zm0 5h16v2H4V9zm0 5h10v2H4v-2z"/></svg> },
+    { name: 'ownerName', label: 'Owner Name', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 10-5-5 5 5 0 005 5zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg> },
+    { name: 'organizationEmail', label: 'Organization Email', fieldType: 'email', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5L4 8V6l8 5 8-5v2z"/></svg> },
+    { name: 'organizationContactNumber', label: 'Organization Contact Number', fieldType: 'tel', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.7 15.7 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11.3 11.3 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.3 11.3 0 00.57 3.56 1 1 0 01-.24 1l-2.23 2.24z"/></svg> },
+    { name: 'country', label: 'Country', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.9 9h-3.07a15.5 15.5 0 00-1-5A8.04 8.04 0 0118.9 11zM12 4c.83 1.2 1.46 3.04 1.74 5h-3.48c.28-1.96.91-3.8 1.74-5zM4.1 13h3.07a15.5 15.5 0 001 5A8.04 8.04 0 014.1 13zm3.07-2H4.1a8.04 8.04 0 014.07-5 15.5 15.5 0 00-1 5zm2.02 2h5.62c-.3 2.24-1.1 4.22-2.81 6-1.71-1.78-2.5-3.76-2.81-6zm0-2c.3-2.24 1.1-4.22 2.81-6 1.71 1.78 2.5 3.76 2.81 6H9.19zm5.64 7a15.5 15.5 0 001-5h3.07a8.04 8.04 0 01-4.07 5z"/></svg> },
+    { name: 'state', label: 'State', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L1 21h22L12 2zm0 4.2L19.2 19H4.8L12 6.2zM11 10h2v5h-2zm0 6h2v2h-2z"/></svg> },
+    { name: 'district', label: 'District', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4zm0 2.2l6 3v4.8c0 4.2-2.7 8.6-6 10-3.3-1.4-6-5.8-6-10V7.2l6-3z"/></svg> },
+    { name: 'address', label: 'Address', fieldType: 'textarea', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 00-7 7c0 4.8 7 13 7 13s7-8.2 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1114.5 9 2.5 2.5 0 0112 11.5z"/></svg> },
+    { name: 'postalCode', label: 'Postal Code', fieldType: 'text', icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8h-3V4H3v13h2a3 3 0 106 0h2a3 3 0 106 0h2v-5l-3-4zM6 18.5A1.5 1.5 0 117.5 20 1.5 1.5 0 016 18.5zm10 0A1.5 1.5 0 1117.5 20 1.5 1.5 0 0116 18.5zM15 10h3.9l1.5 2H15v-2z"/></svg> }
   ];
 
   useEffect(() => {
@@ -443,8 +479,11 @@ export default function OrgnizationStructurePage() {
                 const nextErrors: Record<string, string> = {};
 
                 requiredFields.forEach((fieldName) => {
-                  const value = String(formData.get(fieldName) ?? '').trim();
-                  if (!value) {
+                  const value = formData.get(fieldName);
+                  const isEmptyFile = value instanceof File && value.size === 0;
+                  const isEmptyText = typeof value === 'string' && !value.trim();
+
+                  if (!value || isEmptyFile || isEmptyText) {
                     nextErrors[fieldName] = 'This field is required';
                   }
                 });
@@ -461,30 +500,33 @@ export default function OrgnizationStructurePage() {
               onReset={() => setFormErrors({})}
             >
               <div className="org-add-form__grid">
-                {[
-                  ['organizationLogo', 'Organization Logo', 'text'],
-                  ['organizationSmallLogo', 'Organization Small Logo', 'text'],
-                  ['organizationName', 'Organization Name', 'text'],
-                  ['organizationCode', 'Organization Code', 'text'],
-                  ['about', 'About', 'textarea'],
-                  ['ownerName', 'Owner Name', 'text'],
-                  ['organizationEmail', 'Organization Email', 'email'],
-                  ['organizationContactNumber', 'Organization Contact Number', 'tel'],
-                  ['country', 'Country', 'text'],
-                  ['state', 'State', 'text'],
-                  ['district', 'District', 'text'],
-                  ['address', 'Address', 'textarea'],
-                  ['postalCode', 'Postal Code', 'text']
-                ].map(([name, label, fieldType]) => {
+                {organizationFieldConfigs.map(({ name, label, fieldType, icon, accept }) => {
                   const fieldId = `organization-${name}`;
                   const hasError = Boolean(formErrors[name]);
+                  const isFileField = fieldType === 'file';
+
                   return (
-                    <label key={name} htmlFor={fieldId} className={`org-add-form__field ${hasError ? 'has-error' : ''}`}>
+                    <label key={name} htmlFor={fieldId} className={`org-add-form__field ${hasError ? 'has-error' : ''} ${isFileField ? 'org-add-form__field--upload' : ''}`}>
                       <span className="org-add-form__label is-required">{label}</span>
-                      {fieldType === 'textarea' ? (
-                        <textarea id={fieldId} name={name} required rows={3} />
+                      {isFileField ? (
+                        <>
+                          <input id={fieldId} type="file" name={name} required accept={accept} />
+                          <span className="org-upload-box" role="presentation">
+                            <span className="org-upload-box__icon">{icon}</span>
+                            <strong>Click to upload or drag &amp; drop</strong>
+                            <small>PDF, DOC, DOCX, PNG, JPG — max 10MB</small>
+                          </span>
+                        </>
+                      ) : fieldType === 'textarea' ? (
+                        <span className="org-add-form__control-wrap">
+                          <span className="org-add-form__icon">{icon}</span>
+                          <textarea id={fieldId} name={name} required rows={3} />
+                        </span>
                       ) : (
-                        <input id={fieldId} type={fieldType} name={name} required />
+                        <span className="org-add-form__control-wrap">
+                          <span className="org-add-form__icon">{icon}</span>
+                          <input id={fieldId} type={fieldType} name={name} required />
+                        </span>
                       )}
                       {hasError ? <small>{formErrors[name]}</small> : null}
                     </label>
