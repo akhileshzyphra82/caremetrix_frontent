@@ -7115,8 +7115,79 @@ label {
   gap: 10px;
 }
 
+.role-add-modal__dialog {
+  width: min(1080px, 100%);
+}
+
+.role-form-section {
+  border: 1px solid #e9e0fb;
+  background: linear-gradient(180deg, #fdfbff 0%, #f8f4ff 100%);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.role-form-section h3 {
+  margin: 0 0 12px;
+  color: #38295f;
+  font-size: 16px;
+}
+
+.role-add-form__grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.role-add-form__field--full {
+  grid-column: 1 / -1;
+}
+
+.role-add-form__grid .org-add-form__control-wrap select {
+  border: none;
+  width: 100%;
+  background: transparent;
+  outline: none;
+  color: #2d2940;
+  font-size: 13px;
+}
+
+.role-permission-builder-wrap {
+  border: 1px solid #e5daf7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.role-permission-builder {
+  min-width: 860px;
+}
+
+.role-permission-builder th:nth-child(n + 2),
+.role-permission-builder td:nth-child(n + 2) {
+  text-align: center;
+}
+
+.role-module-row td {
+  background: #f1eafd;
+  font-weight: 700;
+  color: #5f3ea8;
+}
+
+.role-menu-cell {
+  padding-left: 30px !important;
+  color: #39314e;
+}
+
+.role-permission-builder input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #7b59d8;
+}
+
 @media (max-width: 780px) {
   .org-add-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-add-form__grid {
     grid-template-columns: 1fr;
   }
 }
